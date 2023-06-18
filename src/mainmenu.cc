@@ -177,6 +177,12 @@ int mainMenuWindowInit()
     configGetInt(&gSfallConfig, SFALL_CONFIG_MISC_KEY, SFALL_CONFIG_MAIN_MENU_OFFSET_X_KEY, &offsetX);
     configGetInt(&gSfallConfig, SFALL_CONFIG_MISC_KEY, SFALL_CONFIG_MAIN_MENU_OFFSET_Y_KEY, &offsetY);
 
+    Rect offset;
+    offset.top = -5;
+    offset.bottom = 5;
+    offset.left = -5;
+    offset.right = 160;
+
     for (int index = 0; index < MAIN_MENU_BUTTON_COUNT; index++) {
         gMainMenuButtons[index] = buttonCreate(gMainMenuWindow,
             offsetX + 30,
@@ -190,7 +196,8 @@ int mainMenuWindowInit()
             _mainMenuButtonNormalFrmImage.getData(),
             _mainMenuButtonPressedFrmImage.getData(),
             0,
-            BUTTON_FLAG_TRANSPARENT);
+            BUTTON_FLAG_TRANSPARENT,
+            offset);
         if (gMainMenuButtons[index] == -1) {
             // NOTE: Uninline.
             return main_menu_fatal_error();

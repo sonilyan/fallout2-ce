@@ -9,6 +9,7 @@
 #include "character_editor.h"
 #include "color.h"
 #include "debug.h"
+#include "delay.h"
 #include "draw.h"
 #include "game.h"
 #include "game_sound.h"
@@ -286,6 +287,11 @@ int showDialogBox(const char* title, const char** body, int bodyLength, int x, i
                 _colorTable[18979]);
         }
 
+        Rect offset;
+        offset.top = -5;
+        offset.bottom = 5;
+        offset.left = -18;
+        offset.right = 82;
         int btn = buttonCreate(win,
             v27 + 13,
             _doneY[dialogType] + 4,
@@ -298,7 +304,8 @@ int showDialogBox(const char* title, const char** body, int bodyLength, int x, i
             buttonNormalFrmImage.getData(),
             buttonPressedFrmImage.getData(),
             NULL,
-            BUTTON_FLAG_TRANSPARENT);
+            BUTTON_FLAG_TRANSPARENT,
+            offset);
         if (btn != -1) {
             buttonSetCallbacks(btn, _gsound_red_butt_press, _gsound_red_butt_release);
         }
@@ -327,6 +334,11 @@ int showDialogBox(const char* title, const char** body, int bodyLength, int x, i
                 backgroundFrmImage.getWidth(),
                 _colorTable[18979]);
 
+            Rect offset;
+            offset.top = -5;
+            offset.bottom = 5;
+            offset.left = -17;
+            offset.right = 82;
             int btn = buttonCreate(win,
                 doneBoxFrmImage.getWidth() + _doneX[dialogType] + 37,
                 _doneY[dialogType] + 4,
@@ -339,7 +351,8 @@ int showDialogBox(const char* title, const char** body, int bodyLength, int x, i
                 buttonNormalFrmImage.getData(),
                 buttonPressedFrmImage.getData(),
                 0,
-                BUTTON_FLAG_TRANSPARENT);
+                BUTTON_FLAG_TRANSPARENT,
+                offset);
             if (btn != -1) {
                 buttonSetCallbacks(btn, _gsound_red_butt_press, _gsound_red_butt_release);
             }
@@ -456,8 +469,8 @@ int showDialogBox(const char* title, const char** body, int bodyLength, int x, i
                 backgroundFrmImage.getWidth(),
                 titleColor);
         }
-        nextY += fontGetLineHeight();
-    }
+        //nextY += fontGetLineHeight();
+        nextY += 10;    }
 
     for (int index = 0; index < bodyLength && nextY < maxY; index++) {
         int width = fontGetStringWidth(body[index]);
@@ -477,7 +490,8 @@ int showDialogBox(const char* title, const char** body, int bodyLength, int x, i
                     backgroundFrmImage.getWidth(),
                     bodyColor);
             }
-            nextY += fontGetLineHeight();
+            //nextY += fontGetLineHeight();
+            nextY += 10;
         } else {
             short beginnings[WORD_WRAP_MAX_COUNT];
             short count;
@@ -515,8 +529,8 @@ int showDialogBox(const char* title, const char** body, int bodyLength, int x, i
                         backgroundFrmImage.getWidth(),
                         bodyColor);
                 }
-                nextY += fontGetLineHeight();
-            }
+                //nextY += fontGetLineHeight();
+                nextY += 10;            }
         }
     }
 
@@ -885,8 +899,8 @@ int showLoadFileDialog(char* title, char** fileList, char* dest, int fileListLen
                 }
 
                 unsigned int delay = (scrollCounter > 14.4) ? 1000 / scrollDelay : 1000 / 24;
-                while (getTicksSince(scrollTick) < delay) {
-                }
+
+                delay_ms(delay - (getTicks() - scrollTick));
 
                 if (_game_user_wants_to_quit != 0) {
                     rc = 1;
@@ -909,8 +923,7 @@ int showLoadFileDialog(char* title, char** fileList, char* dest, int fileListLen
                 doubleClickSelectedFileIndex = -2;
             }
 
-            while (getTicksSince(tick) < (1000 / 24)) {
-            }
+            delay_ms(1000 / 24 - (getTicks() - tick));
         }
 
         if (_game_user_wants_to_quit) {
@@ -1335,8 +1348,7 @@ int showSaveFileDialog(char* title, char** fileList, char* dest, int fileListLen
                 // FIXME: Missing windowRefresh makes blinking useless.
 
                 unsigned int delay = (scrollCounter > 14.4) ? 1000 / scrollDelay : 1000 / 24;
-                while (getTicksSince(scrollTick) < delay) {
-                }
+                delay_ms(delay - (getTicks() - scrollTick));
 
                 if (_game_user_wants_to_quit != 0) {
                     rc = 1;
@@ -1369,8 +1381,7 @@ int showSaveFileDialog(char* title, char** fileList, char* dest, int fileListLen
                 doubleClickSelectedFileIndex = -2;
             }
 
-            while (getTicksSince(tick) < (1000 / 24)) {
-            }
+            delay_ms(1000 / 24 - (getTicks() - tick));
         }
 
         if (_game_user_wants_to_quit != 0) {

@@ -18,6 +18,7 @@
 #include "db.h"
 #include "dbox.h"
 #include "debug.h"
+#include "delay.h"
 #include "display_monitor.h"
 #include "draw.h"
 #include "file_utils.h"
@@ -553,7 +554,8 @@ int lsgSaveGame(int mode)
                     int mouseY;
                     mouseGetPositionInWindow(gLoadSaveWindow, &mouseX, &mouseY);
 
-                    _slot_cursor = (mouseY - 79) / (3 * fontGetLineHeight() + 4);
+                    //_slot_cursor = (mouseY - 79) / (3 * fontGetLineHeight() + 4);
+                    _slot_cursor = (mouseY - 79) / (3 * 10 + 4);
                     if (_slot_cursor < 0) {
                         _slot_cursor = 0;
                     }
@@ -672,9 +674,9 @@ int lsgSaveGame(int mode)
                 }
 
                 if (scrollCounter > 14.4) {
-                    while (getTicksSince(start) < 1000 / scrollVelocity) { }
+                    delay_ms(1000 / scrollVelocity - (getTicks() - start));
                 } else {
-                    while (getTicksSince(start) < 1000 / 24) { }
+                    delay_ms(1000 / 24 - (getTicks() - start));
                 }
 
                 keyCode = inputGetInput();
@@ -718,12 +720,11 @@ int lsgSaveGame(int mode)
                 doubleClickSlot = -1;
             }
 
-            while (getTicksSince(tick) < 1000 / 24) {
-            }
+            delay_ms(1000 / 24 - (getTicks() - tick));
         }
 
         if (rc == 1) {
-            int v50 = _GetComment(_slot_cursor);
+            int v50 = 1;//_GetComment(_slot_cursor);
             if (v50 == -1) {
                 gameMouseSetCursor(MOUSE_CURSOR_ARROW);
                 soundPlayFile("iisxxxx1");
@@ -1058,7 +1059,8 @@ int lsgLoadGame(int mode)
                     int mouseY;
                     mouseGetPositionInWindow(gLoadSaveWindow, &mouseX, &mouseY);
 
-                    int clickedSlot = (mouseY - 79) / (3 * fontGetLineHeight() + 4);
+                    //int clickedSlot = (mouseY - 79) / (3 * fontGetLineHeight() + 4);
+                    int clickedSlot = (mouseY - 79) / (3 * 10 + 4);
                     if (clickedSlot < 0) {
                         clickedSlot = 0;
                     } else if (clickedSlot > 9) {
@@ -1175,9 +1177,9 @@ int lsgLoadGame(int mode)
                 }
 
                 if (scrollCounter > 14.4) {
-                    while (getTicksSince(start) < 1000 / scrollVelocity) { }
+                    delay_ms(1000 / scrollVelocity - (getTicks() - start));
                 } else {
-                    while (getTicksSince(start) < 1000 / 24) { }
+                    delay_ms(1000 / 24 - (getTicks() - start));
                 }
 
                 keyCode = inputGetInput();
@@ -1227,7 +1229,7 @@ int lsgLoadGame(int mode)
                 doubleClickSlot = -1;
             }
 
-            while (getTicksSince(time) < 1000 / 24) { }
+            delay_ms(1000 / 24 - (getTicks() - time));
         }
 
         if (rc == 1) {
@@ -1430,6 +1432,12 @@ static int lsgWindowInit(int windowType)
 
     int btn;
 
+    Rect offset;
+    offset.top = -5;
+    offset.bottom = 5;
+    offset.left = -12;
+    offset.right = 72;
+
     btn = buttonCreate(gLoadSaveWindow,
         391,
         349,
@@ -1442,7 +1450,8 @@ static int lsgWindowInit(int windowType)
         _loadsaveFrmImages[LOAD_SAVE_FRM_RED_BUTTON_NORMAL].getData(),
         _loadsaveFrmImages[LOAD_SAVE_FRM_RED_BUTTON_PRESSED].getData(),
         NULL,
-        BUTTON_FLAG_TRANSPARENT);
+        BUTTON_FLAG_TRANSPARENT,
+        offset);
     if (btn != -1) {
         buttonSetCallbacks(btn, _gsound_red_butt_press, _gsound_red_butt_release);
     }
@@ -1459,7 +1468,8 @@ static int lsgWindowInit(int windowType)
         _loadsaveFrmImages[LOAD_SAVE_FRM_RED_BUTTON_NORMAL].getData(),
         _loadsaveFrmImages[LOAD_SAVE_FRM_RED_BUTTON_PRESSED].getData(),
         NULL,
-        BUTTON_FLAG_TRANSPARENT);
+        BUTTON_FLAG_TRANSPARENT, 
+        offset);
     if (btn != -1) {
         buttonSetCallbacks(btn, _gsound_red_butt_press, _gsound_red_butt_release);
     }
@@ -2041,7 +2051,8 @@ static void _ShowSlotList(int windowType)
         snprintf(_str, sizeof(_str), "[   %s %.2d:   ]", text, index + 1);
         fontDrawText(gLoadSaveWindowBuffer + LS_WINDOW_WIDTH * y + 55, _str, LS_WINDOW_WIDTH, LS_WINDOW_WIDTH, color);
 
-        y += fontGetLineHeight();
+        y += 10;
+        //fontGetLineHeight();
         switch (_LSstatus[index]) {
         case SLOT_STATE_OCCUPIED:
             strcpy(_str, _LSData[index].description);
@@ -2066,7 +2077,8 @@ static void _ShowSlotList(int windowType)
         }
 
         fontDrawText(gLoadSaveWindowBuffer + LS_WINDOW_WIDTH * y + 55, _str, LS_WINDOW_WIDTH, LS_WINDOW_WIDTH, color);
-        y += 2 * fontGetLineHeight() + 4;
+        //y += 2 * fontGetLineHeight() + 4;
+        y += 2 * 10 + 4;
     }
 }
 
@@ -2093,7 +2105,8 @@ static void _DrawInfoBox(int slot)
                 ptr->gameYear,
                 100 * ((ptr->gameTime / 600) / 60 % 24) + (ptr->gameTime / 600) % 60);
 
-            int v2 = fontGetLineHeight();
+            int v2 = 10;
+            //fontGetLineHeight();
             fontDrawText(gLoadSaveWindowBuffer + LS_WINDOW_WIDTH * (256 + v2) + 397, _str, LS_WINDOW_WIDTH, LS_WINDOW_WIDTH, color);
 
             snprintf(_str,
@@ -2237,6 +2250,12 @@ static int _GetComment(int slot)
     int btn;
 
     // DONE
+    Rect offset;
+    offset.top = -5;
+    offset.bottom = 5;
+    offset.left = -15;
+    offset.right = 87;
+
     btn = buttonCreate(window,
         34,
         58,
@@ -2249,7 +2268,8 @@ static int _GetComment(int slot)
         _loadsaveFrmImages[LOAD_SAVE_FRM_RED_BUTTON_NORMAL].getData(),
         _loadsaveFrmImages[LOAD_SAVE_FRM_RED_BUTTON_PRESSED].getData(),
         NULL,
-        BUTTON_FLAG_TRANSPARENT);
+        BUTTON_FLAG_TRANSPARENT, 
+        offset);
     if (btn == -1) {
         buttonSetCallbacks(btn, _gsound_red_butt_press, _gsound_red_butt_release);
     }
@@ -2267,7 +2287,8 @@ static int _GetComment(int slot)
         _loadsaveFrmImages[LOAD_SAVE_FRM_RED_BUTTON_NORMAL].getData(),
         _loadsaveFrmImages[LOAD_SAVE_FRM_RED_BUTTON_PRESSED].getData(),
         NULL,
-        BUTTON_FLAG_TRANSPARENT);
+        BUTTON_FLAG_TRANSPARENT,
+        offset);
     if (btn == -1) {
         buttonSetCallbacks(btn, _gsound_red_butt_press, _gsound_red_butt_release);
     }
@@ -2302,7 +2323,8 @@ static int _get_input_str2(int win, int doneKeyCode, int cancelKeyCode, char* de
 {
     int cursorWidth = fontGetStringWidth("_") - 4;
     int windowWidth = windowGetWidth(win);
-    int lineHeight = fontGetLineHeight();
+    int lineHeight = 10;
+    //fontGetLineHeight();
     unsigned char* windowBuffer = windowGetBuffer(win);
     if (maxLength > 255) {
         maxLength = 255;
@@ -2387,8 +2409,7 @@ static int _get_input_str2(int win, int doneKeyCode, int cancelKeyCode, char* de
             windowRefresh(win);
         }
 
-        while (getTicksSince(tick) < 1000 / 24) {
-        }
+        delay_ms(1000 / 24 - (getTicks() - tick));
 
         renderPresent();
         sharedFpsLimiter.throttle();

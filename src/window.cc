@@ -21,6 +21,7 @@
 #include "text_font.h"
 #include "widget.h"
 #include "window_manager.h"
+#include "word_wrap.h"
 
 namespace fallout {
 
@@ -985,6 +986,7 @@ int _popWindow()
 // 0x4B8414
 void _windowPrintBuf(int win, char* string, int stringLength, int width, int maxY, int x, int y, int flags, int textAlignment)
 {
+    fontSetCurrent(101);
     if (y + fontGetLineHeight() > maxY) {
         return;
     }
@@ -1147,15 +1149,24 @@ void _windowWrapLineWithSpacing(int win, char* string, int width, int height, in
         return;
     }
 
-    int substringListLength;
-    char** substringList = _windowWordWrap(string, width, 0, &substringListLength);
-
-    for (int index = 0; index < substringListLength; index++) {
-        int v1 = y + index * (a9 + fontGetLineHeight());
-        _windowPrintBuf(win, substringList[index], strlen(substringList[index]), width, height + y, x, v1, flags, textAlignment);
+    short beginnings[WORD_WRAP_MAX_COUNT] = {
+        -1,
+    };
+    short count = -1;
+    if (wordWrap(string, width, beginnings, &count) != 0) {
+        return;
     }
 
-    _windowFreeWordList(substringList, substringListLength);
+    for (int index = 0; index < count; index++) {
+        short beginning = beginnings[index];
+        short ending = beginnings[index + 1];
+        char c = string[ending];
+        string[ending] = '\0';
+
+        int v1 = y + index * (a9 + fontGetLineHeight());
+        _windowPrintBuf(win, string + beginning, strlen(string + beginning), width, height + y, x, v1, flags, textAlignment);
+        string[ending] = c;
+    }
 }
 
 // Renders multiline string in the specified bounding box.

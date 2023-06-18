@@ -13,6 +13,7 @@
 #include "cycle.h"
 #include "dbox.h"
 #include "debug.h"
+#include "delay.h"
 #include "draw.h"
 #include "game.h"
 #include "game_mouse.h"
@@ -396,6 +397,10 @@ static int gPipboyPrevTab;
 
 static FrmImage _pipboyFrmImages[PIPBOY_FRM_COUNT];
 
+static int pipboyLineMax()
+{
+    return PIPBOY_HOLODISK_LINES_MAX * 10 / fontGetLineHeight();
+}
 // 0x497004
 int pipboyOpen(int intent)
 {
@@ -506,7 +511,8 @@ static int pipboyWindowInit(int intent)
     _rest_time = 0;
     gPipboyCurrentLine = 0;
     gPipboyWindowButtonCount = 0;
-    gPipboyLinesCount = PIPBOY_WINDOW_CONTENT_VIEW_HEIGHT / fontGetLineHeight() - 1;
+    //gPipboyLinesCount = PIPBOY_WINDOW_CONTENT_VIEW_HEIGHT / fontGetLineHeight() - 1;
+    gPipboyLinesCount = PIPBOY_WINDOW_CONTENT_VIEW_HEIGHT / 10 - 1;
     gPipboyWindowButtonStart = 0;
     _hot_back_line = 0;
 
@@ -577,6 +583,12 @@ static int pipboyWindowInit(int intent)
         buttonSetCallbacks(alarmButton, _gsound_med_butt_press, _gsound_med_butt_release);
     }
 
+    Rect offset;
+    offset.top = -3;
+    offset.bottom = 3;
+    offset.left = -2;
+    offset.right = 100;
+
     int y = 341;
     int eventCode = 500;
     for (int index = 0; index < 5; index += 1) {
@@ -593,7 +605,8 @@ static int pipboyWindowInit(int intent)
                 _pipboyFrmImages[PIPBOY_FRM_LITTLE_RED_BUTTON_UP].getData(),
                 _pipboyFrmImages[PIPBOY_FRM_LITTLE_RED_BUTTON_DOWN].getData(),
                 NULL,
-                BUTTON_FLAG_TRANSPARENT);
+                BUTTON_FLAG_TRANSPARENT,
+                offset);
             if (btn != -1) {
                 buttonSetCallbacks(btn, _gsound_red_butt_press, _gsound_red_butt_release);
             }
@@ -786,6 +799,43 @@ static void pipboyDrawDate()
 
 // 0x497A40
 static void pipboyDrawText(const char* text, int flags, int color)
+{
+    if ((flags & PIPBOY_TEXT_STYLE_UNDERLINE) != 0) {
+        color |= FONT_UNDERLINE;
+    }
+
+    int left = 8;
+    if ((flags & PIPBOY_TEXT_NO_INDENT) != 0) {
+        left -= 7;
+    }
+
+    int length = fontGetStringWidth(text);
+
+    if ((flags & PIPBOY_TEXT_ALIGNMENT_CENTER) != 0) {
+        left = (350 - length) / 2;
+    } else if ((flags & PIPBOY_TEXT_ALIGNMENT_RIGHT_COLUMN) != 0) {
+        left += 175;
+    } else if ((flags & PIPBOY_TEXT_ALIGNMENT_LEFT_COLUMN_CENTER) != 0) {
+        left += 86 - length + 16;
+    } else if ((flags & PIPBOY_TEXT_ALIGNMENT_RIGHT_COLUMN_CENTER) != 0) {
+        left += 260 - length;
+    }
+
+    //fontDrawText(gPipboyWindowBuffer + PIPBOY_WINDOW_WIDTH * (gPipboyCurrentLine * fontGetLineHeight() + PIPBOY_WINDOW_CONTENT_VIEW_Y) + PIPBOY_WINDOW_CONTENT_VIEW_X + left, text, PIPBOY_WINDOW_WIDTH, PIPBOY_WINDOW_WIDTH, color);
+    fontDrawText(gPipboyWindowBuffer + PIPBOY_WINDOW_WIDTH * (gPipboyCurrentLine * 10 + PIPBOY_WINDOW_CONTENT_VIEW_Y) + PIPBOY_WINDOW_CONTENT_VIEW_X + left, text, PIPBOY_WINDOW_WIDTH, PIPBOY_WINDOW_WIDTH, color);
+
+    if ((flags & PIPBOY_TEXT_STYLE_STRIKE_THROUGH) != 0) {
+        //int top = gPipboyCurrentLine * fontGetLineHeight() + 49;
+        int top = gPipboyCurrentLine * 10 + 49;
+        bufferDrawLine(gPipboyWindowBuffer, PIPBOY_WINDOW_WIDTH, PIPBOY_WINDOW_CONTENT_VIEW_X + left, top, PIPBOY_WINDOW_CONTENT_VIEW_X + left + length, top, color);
+    }
+
+    if (gPipboyCurrentLine < gPipboyLinesCount) {
+        gPipboyCurrentLine += 1;
+    }
+}
+
+static void pipboyDrawTextLegacy(const char* text, int flags, int color)
 {
     if ((flags & PIPBOY_TEXT_STYLE_UNDERLINE) != 0) {
         color |= FONT_UNDERLINE;
@@ -1274,7 +1324,7 @@ static void pipboyRenderHolodiskText()
         }
 
         linesCount += 1;
-        if (linesCount >= PIPBOY_HOLODISK_LINES_MAX) {
+        if (linesCount >= pipboyLineMax()) {
             linesCount = 0;
             gPipboyHolodiskLastPage += 1;
         }
@@ -1297,7 +1347,7 @@ static void pipboyRenderHolodiskText()
             }
 
             numberOfLines += 1;
-            if (numberOfLines >= PIPBOY_HOLODISK_LINES_MAX) {
+            if (numberOfLines >= pipboyLineMax()) {
                 page += 1;
                 if (page >= _view_page) {
                     break;
@@ -1331,7 +1381,7 @@ static void pipboyRenderHolodiskText()
         gPipboyCurrentLine = 3;
     }
 
-    for (int line = 0; line < PIPBOY_HOLODISK_LINES_MAX; line += 1) {
+    for (int line = 0; line < pipboyLineMax(); line += 1) {
         const char* text = getmsg(&gPipboyMessageList, &gPipboyMessageListItem, holodiskTextId);
         if (strcmp(text, "**END-DISK**") == 0) {
             break;
@@ -1340,7 +1390,7 @@ static void pipboyRenderHolodiskText()
         if (strcmp(text, "**END-PAR**") == 0) {
             gPipboyCurrentLine += 1;
         } else {
-            pipboyDrawText(text, PIPBOY_TEXT_NO_INDENT, _colorTable[992]);
+            pipboyDrawTextLegacy(text, PIPBOY_TEXT_NO_INDENT, _colorTable[992]);
         }
 
         holodiskTextId += 1;
@@ -1896,7 +1946,8 @@ static void pipboyWindowCreateButtons(int start, int count, bool a3)
 {
     fontSetCurrent(101);
 
-    int height = fontGetLineHeight();
+    //int height = fontGetLineHeight();
+    int height = 10;
 
     gPipboyWindowButtonStart = start;
     gPipboyWindowButtonCount = count;
@@ -2001,8 +2052,7 @@ static bool pipboyRest(int hours, int minutes, int duration)
                     pipboyDrawDate();
                     windowRefresh(gPipboyWindow);
 
-                    while (getTicksSince(start) < 50) {
-                    }
+                    delay_ms(50 - (getTicks() - start));
                 }
 
                 renderPresent();
@@ -2072,8 +2122,7 @@ static bool pipboyRest(int hours, int minutes, int duration)
                     pipboyDrawHitPoints();
                     windowRefresh(gPipboyWindow);
 
-                    while (getTicksSince(start) < 50) {
-                    }
+                    delay_ms(50 - (getTicks() - start));
                 }
 
                 renderPresent();
@@ -2366,8 +2415,7 @@ static int pipboyRenderScreensaver()
             v31 -= 1;
         } else {
             windowRefreshRect(gPipboyWindow, &gPipboyWindowContentRect);
-            while (getTicksSince(time) < 50) {
-            }
+            delay_ms(50 - (getTicks() - time));
         }
 
         renderPresent();

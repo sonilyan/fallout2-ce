@@ -5,7 +5,7 @@ namespace fallout {
 
 class FpsLimiter {
 public:
-    FpsLimiter(unsigned int fps = 60);
+    FpsLimiter(unsigned int fps = 120);
     void mark();
     void throttle() const;
 

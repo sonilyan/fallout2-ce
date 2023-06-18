@@ -4,6 +4,7 @@
 
 #include "audio_engine.h"
 #include "color.h"
+#include "delay.h"
 #include "dinput.h"
 #include "draw.h"
 #include "kb.h"
@@ -641,12 +642,7 @@ void inputPauseForTocks(unsigned int delay)
 // 0x4C93B8
 void inputBlockForTocks(unsigned int ms)
 {
-    unsigned int start = SDL_GetTicks();
-    unsigned int diff;
-    do {
-        // NOTE: Uninline
-        diff = getTicksSince(start);
-    } while (diff < ms);
+    delay_ms(ms);
 }
 
 // 0x4C93E0
@@ -1092,13 +1088,9 @@ void _GNW95_process_message()
             handleMouseEvent(&e);
             break;
         case SDL_FINGERDOWN:
-            touch_handle_start(&(e.tfinger));
-            break;
         case SDL_FINGERMOTION:
-            touch_handle_move(&(e.tfinger));
-            break;
         case SDL_FINGERUP:
-            touch_handle_end(&(e.tfinger));
+            handleTouchEvent(&e);
             break;
         case SDL_KEYDOWN:
         case SDL_KEYUP:
@@ -1133,7 +1125,7 @@ void _GNW95_process_message()
         }
     }
 
-    touch_process_gesture();
+    //touch_process_gesture();
 
     if (gProgramIsActive && !keyboardIsDisabled()) {
         // NOTE: Uninline

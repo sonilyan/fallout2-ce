@@ -21,6 +21,8 @@
 #include "win32.h"
 #include "window_manager_private.h"
 
+#include "dinput.h"
+
 namespace fallout {
 
 #define MAX_WINDOW_COUNT (50)
@@ -1405,6 +1407,39 @@ bool showMesageBox(const char* text)
     return true;
 }
 
+int buttonCreate(int win, int x, int y, int width, int height, int mouseEnterEventCode, int mouseExitEventCode, int mouseDownEventCode, int mouseUpEventCode, unsigned char* up, unsigned char* dn, unsigned char* hover, int flags,Rect offset)
+{
+    Window* window = windowGetWindow(win);
+
+    if (!gWindowSystemInitialized) {
+        return -1;
+    }
+
+    if (window == NULL) {
+        return -1;
+    }
+
+    if (up == NULL && (dn != NULL || hover != NULL)) {
+        return -1;
+    }
+
+    Button* button = buttonCreateInternal(win, x, y, width, height, mouseEnterEventCode, mouseExitEventCode, mouseDownEventCode, mouseUpEventCode, flags | BUTTON_FLAG_GRAPHIC, up, dn, hover);
+    if (button == NULL) {
+        return -1;
+    }
+
+    button->clickRect.left += offset.left;
+    button->clickRect.right += offset.right;
+    button->clickRect.top += offset.top;
+    button->clickRect.bottom += offset.bottom;
+
+    button->ignoreMask = true;
+
+    _button_draw(button, window, button->normalImage, 0, NULL, 0);
+
+    return button->id;
+}
+
 // 0x4D8260
 int buttonCreate(int win, int x, int y, int width, int height, int mouseEnterEventCode, int mouseExitEventCode, int mouseDownEventCode, int mouseUpEventCode, unsigned char* up, unsigned char* dn, unsigned char* hover, int flags)
 {
@@ -1427,6 +1462,7 @@ int buttonCreate(int win, int x, int y, int width, int height, int mouseEnterEve
         return -1;
     }
 
+    button->ignoreMask = false;
     _button_draw(button, window, button->normalImage, false, NULL, false);
 
     return button->id;
@@ -1707,10 +1743,17 @@ Button* buttonCreateInternal(int win, int x, int y, int width, int height, int m
 
     button->id = buttonId;
     button->flags = flags;
+
     button->rect.left = x;
     button->rect.top = y;
     button->rect.right = x + width - 1;
     button->rect.bottom = y + height - 1;
+
+    button->clickRect.left = x;
+    button->clickRect.top = y;
+    button->clickRect.right = x + width - 1;
+    button->clickRect.bottom = y + height - 1;
+
     button->mouseEnterEventCode = mouseEnterEventCode;
     button->mouseExitEventCode = mouseExitEventCode;
     button->lefMouseDownEventCode = mouseDownEventCode;
@@ -1781,14 +1824,30 @@ int _GNW_check_buttons(Window* window, int* keyCodePtr)
     prevClickedButton = window->clickedButton;
 
     if (prevHoveredButton != NULL) {
-        rectCopy(&v58, &(prevHoveredButton->rect));
+        rectCopy(&v58, &(prevHoveredButton->clickRect));
         rectOffset(&v58, window->rect.left, window->rect.top);
     } else if (prevClickedButton != NULL) {
-        rectCopy(&v58, &(prevClickedButton->rect));
+        rectCopy(&v58, &(prevClickedButton->clickRect));
         rectOffset(&v58, window->rect.left, window->rect.top);
     }
 
     *keyCodePtr = -1;
+
+    if (gTouch == true && gTouchX > window->rect.left && gTouchX < window->rect.right && gTouchY > window->rect.top && gTouchY < window->rect.bottom) {
+        int xx = gTouchX - window->rect.left;
+        int yy = gTouchY - window->rect.top;
+
+        Button* touchButton = window->buttonListHead;
+        while (touchButton != NULL && gTouch) {
+            if (!(touchButton->flags & BUTTON_FLAG_DISABLED)) {
+                if (xx > touchButton->clickRect.left && xx < touchButton->clickRect.right && yy > touchButton->clickRect.top && yy < touchButton->clickRect.bottom) {
+
+                    _win_button_press_and_release(touchButton->id);
+                }
+            }
+            touchButton = touchButton->next;
+        }
+    }
 
     if (_mouse_click_in(window->rect.left, window->rect.top, window->rect.right, window->rect.bottom)) {
         int mouseEvent = mouseGetEvent();
@@ -1893,7 +1952,8 @@ int _GNW_check_buttons(Window* window, int* keyCodePtr)
 
         while (button != NULL) {
             if (!(button->flags & BUTTON_FLAG_DISABLED)) {
-                rectCopy(&v58, &(button->rect));
+                button->mask = NULL;
+                rectCopy(&v58, &(button->clickRect));
                 rectOffset(&v58, window->rect.left, window->rect.top);
                 if (_button_under_mouse(button, &v58)) {
                     if (!(button->flags & BUTTON_FLAG_DISABLED)) {
@@ -2121,7 +2181,7 @@ bool _button_under_mouse(Button* button, Rect* rect)
         return false;
     }
 
-    if (button->mask == NULL) {
+    if (button->mask == NULL || button->ignoreMask) {
         return true;
     }
 

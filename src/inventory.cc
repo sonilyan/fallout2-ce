@@ -1001,6 +1001,12 @@ static bool _setup_inventory(int inventoryWindowType)
     fid = buildFid(OBJ_TYPE_INTERFACE, 9, 0, 0, 0);
     _inventoryFrmImages[1].lock(fid);
 
+    Rect offset;
+    offset.top = -7;
+    offset.bottom= 7;
+    offset.left = -95;
+    offset.right = 20;
+
     if (_inventoryFrmImages[0].isLocked() && _inventoryFrmImages[1].isLocked()) {
         btn = -1;
         switch (inventoryWindowType) {
@@ -1018,7 +1024,8 @@ static bool _setup_inventory(int inventoryWindowType)
                 _inventoryFrmImages[0].getData(),
                 _inventoryFrmImages[1].getData(),
                 NULL,
-                BUTTON_FLAG_TRANSPARENT);
+                BUTTON_FLAG_TRANSPARENT,
+                offset);
             break;
         case INVENTORY_WINDOW_TYPE_USE_ITEM_ON:
             // Cancel button
@@ -1034,7 +1041,8 @@ static bool _setup_inventory(int inventoryWindowType)
                 _inventoryFrmImages[0].getData(),
                 _inventoryFrmImages[1].getData(),
                 NULL,
-                BUTTON_FLAG_TRANSPARENT);
+                BUTTON_FLAG_TRANSPARENT,
+                offset);
             break;
         case INVENTORY_WINDOW_TYPE_LOOT:
             // Done button
@@ -1050,7 +1058,8 @@ static bool _setup_inventory(int inventoryWindowType)
                 _inventoryFrmImages[0].getData(),
                 _inventoryFrmImages[1].getData(),
                 NULL,
-                BUTTON_FLAG_TRANSPARENT);
+                BUTTON_FLAG_TRANSPARENT,
+                offset);
             break;
         }
 
@@ -2894,14 +2903,14 @@ static void inventoryRenderSummary()
     bufferDrawLine(windowBuffer,
         INVENTORY_WINDOW_WIDTH,
         INVENTORY_SUMMARY_X,
-        3 * fontGetLineHeight() / 2 + INVENTORY_SUMMARY_Y,
+        3 * 10 / 2 + INVENTORY_SUMMARY_Y,
         INVENTORY_SUMMARY_MAX_X,
-        3 * fontGetLineHeight() / 2 + INVENTORY_SUMMARY_Y,
+        3 * 10 / 2 + INVENTORY_SUMMARY_Y,
         _colorTable[992]);
 
     MessageListItem messageListItem;
 
-    int offset = INVENTORY_WINDOW_WIDTH * 2 * fontGetLineHeight() + INVENTORY_WINDOW_WIDTH * INVENTORY_SUMMARY_Y + INVENTORY_SUMMARY_X;
+    int offset = INVENTORY_WINDOW_WIDTH * 2 * 10 + INVENTORY_WINDOW_WIDTH * INVENTORY_SUMMARY_Y + INVENTORY_SUMMARY_X;
     for (int stat = 0; stat < 7; stat++) {
         messageListItem.num = stat;
         if (messageListGetItem(&gInventoryMessageList, &messageListItem)) {
@@ -2912,10 +2921,10 @@ static void inventoryRenderSummary()
         snprintf(formattedText, sizeof(formattedText), "%d", value);
         fontDrawText(windowBuffer + offset + 24, formattedText, 80, INVENTORY_WINDOW_WIDTH, _colorTable[992]);
 
-        offset += INVENTORY_WINDOW_WIDTH * fontGetLineHeight();
+        offset += INVENTORY_WINDOW_WIDTH * 10;
     }
 
-    offset -= INVENTORY_WINDOW_WIDTH * 7 * fontGetLineHeight();
+    offset -= INVENTORY_WINDOW_WIDTH * 7 * 10;
 
     for (int index = 0; index < 7; index += 1) {
         messageListItem.num = 7 + index;
@@ -2935,11 +2944,11 @@ static void inventoryRenderSummary()
 
         fontDrawText(windowBuffer + offset + 104, formattedText, 80, INVENTORY_WINDOW_WIDTH, _colorTable[992]);
 
-        offset += INVENTORY_WINDOW_WIDTH * fontGetLineHeight();
+        offset += INVENTORY_WINDOW_WIDTH * 10;
     }
 
-    bufferDrawLine(windowBuffer, INVENTORY_WINDOW_WIDTH, INVENTORY_SUMMARY_X, 18 * fontGetLineHeight() / 2 + 48, INVENTORY_SUMMARY_MAX_X, 18 * fontGetLineHeight() / 2 + 48, _colorTable[992]);
-    bufferDrawLine(windowBuffer, INVENTORY_WINDOW_WIDTH, INVENTORY_SUMMARY_X, 26 * fontGetLineHeight() / 2 + 48, INVENTORY_SUMMARY_MAX_X, 26 * fontGetLineHeight() / 2 + 48, _colorTable[992]);
+    bufferDrawLine(windowBuffer, INVENTORY_WINDOW_WIDTH, INVENTORY_SUMMARY_X, 18 * 10 / 2 + 48, INVENTORY_SUMMARY_MAX_X, 18 * 10 / 2 + 48, _colorTable[992]);
+    bufferDrawLine(windowBuffer, INVENTORY_WINDOW_WIDTH, INVENTORY_SUMMARY_X, 26 * 10 / 2 + 48, INVENTORY_SUMMARY_MAX_X, 26 * 10 / 2 + 48, _colorTable[992]);
 
     Object* itemsInHands[2] = {
         gInventoryLeftHandItem,
@@ -2961,7 +2970,7 @@ static void inventoryRenderSummary()
         HIT_MODE_KICK,
     };
 
-    offset += INVENTORY_WINDOW_WIDTH * fontGetLineHeight();
+    offset += INVENTORY_WINDOW_WIDTH * 10;
 
     for (int index = 0; index < 2; index += 1) {
         Object* item = itemsInHands[index];
@@ -2974,7 +2983,7 @@ static void inventoryRenderSummary()
                 fontDrawText(windowBuffer + offset, messageListItem.text, 120, INVENTORY_WINDOW_WIDTH, _colorTable[992]);
             }
 
-            offset += INVENTORY_WINDOW_WIDTH * fontGetLineHeight();
+            offset += INVENTORY_WINDOW_WIDTH * 10;
 
             // Unarmed dmg:
             messageListItem.num = 24;
@@ -3010,14 +3019,14 @@ static void inventoryRenderSummary()
 
             fontDrawText(windowBuffer + offset, formattedText, 120, INVENTORY_WINDOW_WIDTH, _colorTable[992]);
 
-            offset += 3 * INVENTORY_WINDOW_WIDTH * fontGetLineHeight();
+            offset += 3 * INVENTORY_WINDOW_WIDTH * 10;
             continue;
         }
 
         const char* itemName = itemGetName(item);
         fontDrawText(windowBuffer + offset, itemName, 140, INVENTORY_WINDOW_WIDTH, _colorTable[992]);
 
-        offset += INVENTORY_WINDOW_WIDTH * fontGetLineHeight();
+        offset += INVENTORY_WINDOW_WIDTH * 10;
 
         int itemType = itemGetType(item);
         if (itemType != ITEM_TYPE_WEAPON) {
@@ -3029,7 +3038,7 @@ static void inventoryRenderSummary()
                 }
             }
 
-            offset += 3 * INVENTORY_WINDOW_WIDTH * fontGetLineHeight();
+            offset += 3 * INVENTORY_WINDOW_WIDTH * 10;
             continue;
         }
 
@@ -3108,7 +3117,7 @@ static void inventoryRenderSummary()
             fontDrawText(windowBuffer + offset, formattedText, 140, INVENTORY_WINDOW_WIDTH, _colorTable[992]);
         }
 
-        offset += INVENTORY_WINDOW_WIDTH * fontGetLineHeight();
+        offset += INVENTORY_WINDOW_WIDTH * 10;
 
         if (ammoGetCapacity(item) > 0) {
             int ammoTypePid = weaponGetAmmoTypePid(item);
@@ -3138,7 +3147,7 @@ static void inventoryRenderSummary()
             fontDrawText(windowBuffer + offset, formattedText, 140, INVENTORY_WINDOW_WIDTH, _colorTable[992]);
         }
 
-        offset += 2 * INVENTORY_WINDOW_WIDTH * fontGetLineHeight();
+        offset += 2 * INVENTORY_WINDOW_WIDTH * 10;
     }
 
     // Total wt:
@@ -3637,7 +3646,7 @@ static void inventoryExamineItem(Object* critter, Object* item)
     if (backgroundFrmImage.lock(backgroundFid)) {
         blitBufferToBuffer(backgroundFrmImage.getData() + INVENTORY_WINDOW_WIDTH * INVENTORY_SUMMARY_Y + INVENTORY_SUMMARY_X,
             152,
-            188,
+            200,
             INVENTORY_WINDOW_WIDTH,
             windowBuffer + INVENTORY_WINDOW_WIDTH * INVENTORY_SUMMARY_Y + INVENTORY_SUMMARY_X,
             INVENTORY_WINDOW_WIDTH);
@@ -5864,7 +5873,13 @@ static int inventoryQuantityWindowInit(int inventoryWindowType, Object* item)
     fid = buildFid(OBJ_TYPE_INTERFACE, 9, 0, 0, 0);
     _moveFrmImages[5].lock(fid);
 
+    Rect offset;
+
     if (_moveFrmImages[4].isLocked() && _moveFrmImages[5].isLocked()) {
+        offset.top = -1;
+        offset.bottom = 1;
+        offset.left = -80;
+        offset.right = 10;
         // Done
         btn = buttonCreate(_mt_wid,
             98,
@@ -5878,11 +5893,16 @@ static int inventoryQuantityWindowInit(int inventoryWindowType, Object* item)
             _moveFrmImages[4].getData(),
             _moveFrmImages[5].getData(),
             NULL,
-            BUTTON_FLAG_TRANSPARENT);
+            BUTTON_FLAG_TRANSPARENT,
+            offset);
         if (btn != -1) {
             buttonSetCallbacks(btn, _gsound_red_butt_press, _gsound_red_butt_release);
         }
-
+    
+        offset.top = -1;
+        offset.bottom = 1;
+        offset.left = -10;
+        offset.right = 80;
         // Cancel
         btn = buttonCreate(_mt_wid,
             148,
@@ -5896,7 +5916,8 @@ static int inventoryQuantityWindowInit(int inventoryWindowType, Object* item)
             _moveFrmImages[4].getData(),
             _moveFrmImages[5].getData(),
             NULL,
-            BUTTON_FLAG_TRANSPARENT);
+            BUTTON_FLAG_TRANSPARENT,
+            offset);
         if (btn != -1) {
             buttonSetCallbacks(btn, _gsound_red_butt_press, _gsound_red_butt_release);
         }

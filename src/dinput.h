@@ -35,6 +35,10 @@ void keyboardDeviceFree();
 void handleMouseEvent(SDL_Event* event);
 void handleTouchEvent(SDL_Event* event);
 
+extern bool gTouch;
+extern int gTouchX;
+extern int gTouchY;
+
 } // namespace fallout
 
 #endif /* DINPUT_H */
