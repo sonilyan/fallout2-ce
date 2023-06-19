@@ -4822,7 +4822,15 @@ static void _barter_move_inventory(Object* a1, int quantity, int a3, int a4, Obj
 
     if (a7) {
         if (mouseHitTestInWindow(gInventoryWindow, INVENTORY_TRADE_INNER_LEFT_SCROLLER_TRACKING_X, INVENTORY_TRADE_INNER_LEFT_SCROLLER_TRACKING_Y, INVENTORY_TRADE_INNER_LEFT_SCROLLER_TRACKING_MAX_X, INVENTORY_SLOT_HEIGHT * gInventorySlotsCount + INVENTORY_TRADE_INNER_LEFT_SCROLLER_TRACKING_Y)) {
-            int quantityToMove = quantity > 1 ? inventoryQuantitySelect(INVENTORY_WINDOW_TYPE_MOVE_ITEMS, a1, quantity) : 1;
+            int quantityToMove = -1;
+            if (a1->pid == PROTO_ID_MONEY) {
+                int cost_player = objectGetCost(a6);
+                int cost_npc = _barter_compute_value(gDude, _target_stack[0]);
+                quantityToMove = std::min(cost_npc - cost_player, quantity);
+            }
+            if (0 >= quantityToMove) {
+                quantityToMove = quantity > 1 ? inventoryQuantitySelect(INVENTORY_WINDOW_TYPE_MOVE_ITEMS, a1, quantity) : 1;
+            }
             if (quantityToMove != -1) {
                 if (itemMoveForce(_inven_dude, a6, a1, quantityToMove) == -1) {
                     // There is no space left for that item.
@@ -4835,7 +4843,15 @@ static void _barter_move_inventory(Object* a1, int quantity, int a3, int a4, Obj
         }
     } else {
         if (mouseHitTestInWindow(gInventoryWindow, INVENTORY_TRADE_INNER_RIGHT_SCROLLER_TRACKING_X, INVENTORY_TRADE_INNER_RIGHT_SCROLLER_TRACKING_Y, INVENTORY_TRADE_INNER_RIGHT_SCROLLER_TRACKING_MAX_X, INVENTORY_SLOT_HEIGHT * gInventorySlotsCount + INVENTORY_TRADE_INNER_RIGHT_SCROLLER_TRACKING_Y)) {
-            int quantityToMove = quantity > 1 ? inventoryQuantitySelect(INVENTORY_WINDOW_TYPE_MOVE_ITEMS, a1, quantity) : 1;
+            int quantityToMove = -1;
+            if (a1->pid == PROTO_ID_MONEY) {
+                int cost_player = objectGetCost(_ptable); // TODO: fix this. Currenlyt it's needed to avoid chnages in the interface.
+                int cost_npc = _barter_compute_value(gDude, _target_stack[0]);
+                quantityToMove = std::min(cost_player - cost_npc, quantity);
+            }
+            if (0 >= quantityToMove) {
+                quantityToMove = quantity > 1 ? inventoryQuantitySelect(INVENTORY_WINDOW_TYPE_MOVE_ITEMS, a1, quantity) : 1;
+            }
             if (quantityToMove != -1) {
                 if (itemMoveForce(a5, a6, a1, quantityToMove) == -1) {
                     // You cannot pick that up. You are at your maximum weight capacity.
