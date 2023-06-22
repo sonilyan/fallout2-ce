@@ -369,10 +369,12 @@ static bool createRenderer(int width, int height)
         return false;
     }
 
-    gSdlTexture = SDL_CreateTexture(gSdlRenderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_STREAMING, width, height);
+    gSdlTexture = SDL_CreateTexture(gSdlRenderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, width, height);
     if (gSdlTexture == NULL) {
         return false;
     }
+
+    SDL_SetTextureScaleMode(gSdlTexture, SDL_ScaleModeBest);
 
     Uint32 format;
     if (SDL_QueryTexture(gSdlTexture, &format, NULL, NULL, NULL) != 0) {
