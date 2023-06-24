@@ -45,6 +45,7 @@
 #include "text_font.h"
 #include "tile.h"
 #include "window_manager.h"
+#include "word_wrap.h"
 
 namespace fallout {
 
@@ -3549,83 +3550,27 @@ static int _inven_from_button(int keyCode, Object** a2, Object*** a3, Object** a
 // 0x472D24
 static void inventoryRenderItemDescription(char* string)
 {
+    short beginnings[WORD_WRAP_MAX_COUNT];
+    short beginningsCount;
+
     int oldFont = fontGetCurrent();
     fontSetCurrent(101);
+
+    if (wordWrap(string, 152, beginnings, &beginningsCount) != 0) {
+        return;
+    }
 
     unsigned char* windowBuffer = windowGetBuffer(gInventoryWindow);
     windowBuffer += INVENTORY_WINDOW_WIDTH * INVENTORY_SUMMARY_Y + INVENTORY_SUMMARY_X;
 
-    char* c = string;
-    while (c != NULL && *c != '\0') {
+    for (short i = 0; i < beginningsCount-1; i++) {
         _inven_display_msg_line += 1;
-        if (_inven_display_msg_line > 17) {
-            debugPrint("\nError: inven_display_msg: out of bounds!");
-            return;
-        }
-
-        char* space = NULL;
-        if (fontGetStringWidth(c) > 152) {
-            // Look for next space.
-            space = c + 1;
-            while (*space != '\0' && *space != ' ') {
-                space += 1;
-            }
-
-            if (*space == '\0') {
-                // This was the last line containing very long word. Text
-                // drawing routine will silently truncate it after reaching
-                // desired length.
-                fontDrawText(windowBuffer + INVENTORY_WINDOW_WIDTH * _inven_display_msg_line * fontGetLineHeight(), c, 152, INVENTORY_WINDOW_WIDTH, _colorTable[992]);
-                return;
-            }
-
-            char* nextSpace = space + 1;
-            while (true) {
-                while (*nextSpace != '\0' && *nextSpace != ' ') {
-                    nextSpace += 1;
-                }
-
-                if (*nextSpace == '\0') {
-                    break;
-                }
-
-                // Break string and measure it.
-                *nextSpace = '\0';
-                if (fontGetStringWidth(c) >= 152) {
-                    // Next space is too far to fit in one line. Restore next
-                    // space's character and stop.
-                    *nextSpace = ' ';
-                    break;
-                }
-
-                space = nextSpace;
-
-                // Restore next space's character and continue looping from the
-                // next character.
-                *nextSpace = ' ';
-                nextSpace += 1;
-            }
-
-            if (*space == ' ') {
-                *space = '\0';
-            }
-        }
-
-        if (fontGetStringWidth(c) > 152) {
-            debugPrint("\nError: inven_display_msg: word too long!");
-            return;
-        }
-
-        fontDrawText(windowBuffer + INVENTORY_WINDOW_WIDTH * _inven_display_msg_line * fontGetLineHeight(), c, 152, INVENTORY_WINDOW_WIDTH, _colorTable[992]);
-
-        if (space != NULL) {
-            c = space + 1;
-            if (*space == '\0') {
-                *space = ' ';
-            }
-        } else {
-            c = NULL;
-        }
+        short beginning = beginnings[i];
+        short ending = beginnings[i + 1];
+        char c = string[ending];
+        string[ending] = '\0';
+        fontDrawText(windowBuffer + INVENTORY_WINDOW_WIDTH * _inven_display_msg_line * fontGetLineHeight(), string + beginning, 152, INVENTORY_WINDOW_WIDTH, _colorTable[992]);
+        string[ending] = c;
     }
 
     fontSetCurrent(oldFont);
