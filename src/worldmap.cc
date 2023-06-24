@@ -2530,10 +2530,10 @@ static int wmAreaInit()
 
     configFree(&cfg);
 
-    if (wmMaxAreaNum != CITY_COUNT) {
-        showMesageBox("\nwmAreaInit::Error loading Cities!");
-        exit(1);
-    }
+    //if (wmMaxAreaNum != CITY_COUNT) {
+    //    showMesageBox("\nwmAreaInit::Error loading Cities!");
+    //    exit(1);
+    //}
 
     return 0;
 }
