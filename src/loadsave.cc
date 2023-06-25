@@ -724,6 +724,13 @@ int lsgSaveGame(int mode)
         }
 
         if (rc == 1) {
+            int month;
+            int day;
+            int year;
+            gameTimeGetDate(&month, &day, &year);
+
+            sprintf(_LSData[_slot_cursor].description, "%d-%d-%d %s", year, month, day, gameTimeGetTimeString());
+
             int v50 = 1;//_GetComment(_slot_cursor);
             if (v50 == -1) {
                 gameMouseSetCursor(MOUSE_CURSOR_ARROW);
