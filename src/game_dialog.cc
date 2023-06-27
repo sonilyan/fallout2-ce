@@ -2226,9 +2226,9 @@ void _gdProcessUpdate()
     _replyRect.bottom = 58;
 
     _optionRect.left = 5;
-    _optionRect.top = 5;
+    _optionRect.top = 0;
     _optionRect.right = 388;
-    _optionRect.bottom = 112;
+    _optionRect.bottom = 130;
 
     _demo_copy_title(gGameDialogReplyWindow);
     _demo_copy_options(gGameDialogOptionsWindow);
@@ -2331,7 +2331,7 @@ void _gdProcessUpdate()
             }
         }
 
-        int v11 = _text_num_lines(dialogOptionEntry->text, _optionRect.right - _optionRect.left) * fontGetLineHeight() + _optionRect.top + 2;
+        int v11 = _text_num_lines(dialogOptionEntry->text, _optionRect.right - _optionRect.left) * fontGetLineHeight() + _optionRect.top + 1;
         if (v11 < _optionRect.bottom) {
             int y = _optionRect.top;
 
@@ -2351,7 +2351,7 @@ void _gdProcessUpdate()
                 393,
                 color);
 
-            _optionRect.top += 2;
+            _optionRect.top += 1;
 
             dialogOptionEntry->btn = buttonCreate(gGameDialogOptionsWindow, 2, y, width, _optionRect.top - y - 4, 1200 + index, 1300 + index, -1, 49 + index, NULL, NULL, NULL, 0);
             if (dialogOptionEntry->btn != -1) {

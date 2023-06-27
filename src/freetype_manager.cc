@@ -161,18 +161,25 @@ static FtFontGlyph GetFtFontGlyph(uint32_t unicode)
             current->map[unicode].buffer = knobDump;
         } else {
             FT_Load_Glyph(current->face, FT_Get_Char_Index(current->face, unicode), FT_LOAD_DEFAULT | FT_LOAD_NO_BITMAP);
-            FT_Render_Glyph(current->face->glyph, FT_RENDER_MODE_NORMAL);
-
-            current->map[unicode].left = current->face->glyph->bitmap_left;
-            current->map[unicode].top = current->face->glyph->bitmap_top;
-            current->map[unicode].width = current->face->glyph->bitmap.width;
-            current->map[unicode].rows = current->face->glyph->bitmap.rows;
+            FT_Render_Glyph(current->face->glyph, FT_RENDER_MODE_MONO);
 
             int count = current->face->glyph->bitmap.width * current->face->glyph->bitmap.rows;
 
             if (count > 0) {
+                FT_Bitmap tmp;
+                FT_Bitmap_New(&tmp);
+                FT_Bitmap_Convert(current->library, &current->face->glyph->bitmap, &tmp, 1);
+     
+                current->map[unicode].left = current->face->glyph->bitmap_left;
                 current->map[unicode].buffer = (unsigned char*)internal_malloc_safe(count, __FILE__, __LINE__); // FONTMGR.C, 259
-                memcpy(current->map[unicode].buffer, current->face->glyph->bitmap.buffer, count);
+
+                current->map[unicode].top = current->face->glyph->bitmap_top;
+                current->map[unicode].width = current->face->glyph->bitmap.width;
+                current->map[unicode].rows = current->face->glyph->bitmap.rows;
+
+                memcpy(current->map[unicode].buffer, tmp.buffer, count);
+
+                FT_Bitmap_Done(current->library, &tmp);
             } else {
                 current->map[unicode].buffer = NULL;
             }
@@ -477,8 +484,10 @@ static void FtFontDrawImpl(unsigned char* buf, const char* string, int length, i
         for (int y = 0; y < g.rows && y < current->maxHeight; y++) {
             for (int x = 0; x < g.width; x++) {
                 unsigned char byte = *glyphDataPtr++;
-                byte /= 26;
-
+                if (ch == '\x95')
+                    byte /= 26;
+                else
+                    byte *= 9;
                 *ptr++ = palette[(byte << 8) + *ptr];
             }
 

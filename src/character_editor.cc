@@ -6907,7 +6907,7 @@ static void characterEditorFolderViewClear()
 
     v0 = fontGetLineHeight();
 
-    gCharacterEditorFolderViewMaxLines = 9;
+    gCharacterEditorFolderViewMaxLines = 9 * 11 / v0;
     gCharacterEditorFolderViewOffsetY = v0 + 1;
 
     if (characterEditorSelectedItem < 10 || characterEditorSelectedItem >= 43)
