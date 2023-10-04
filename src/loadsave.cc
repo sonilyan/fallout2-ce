@@ -673,11 +673,12 @@ int lsgSaveGame(int mode)
                     windowRefresh(gLoadSaveWindow);
                 }
 
+                /*
                 if (scrollCounter > 14.4) {
                     delay_ms(1000 / scrollVelocity - (getTicks() - start));
                 } else {
                     delay_ms(1000 / 24 - (getTicks() - start));
-                }
+                }*/
 
                 keyCode = inputGetInput();
 
@@ -720,7 +721,7 @@ int lsgSaveGame(int mode)
                 doubleClickSlot = -1;
             }
 
-            delay_ms(1000 / 24 - (getTicks() - tick));
+            //delay_ms(1000 / 24 - (getTicks() - tick));
         }
 
         if (rc == 1) {
@@ -1183,11 +1184,12 @@ int lsgLoadGame(int mode)
                     windowRefresh(gLoadSaveWindow);
                 }
 
+                /*
                 if (scrollCounter > 14.4) {
                     delay_ms(1000 / scrollVelocity - (getTicks() - start));
                 } else {
                     delay_ms(1000 / 24 - (getTicks() - start));
-                }
+                }*/
 
                 keyCode = inputGetInput();
 
@@ -1236,7 +1238,7 @@ int lsgLoadGame(int mode)
                 doubleClickSlot = -1;
             }
 
-            delay_ms(1000 / 24 - (getTicks() - time));
+            //delay_ms(1000 / 24 - (getTicks() - time));
         }
 
         if (rc == 1) {
