@@ -251,22 +251,22 @@ bool messageListLoad(MessageList* messageList, const char* path)
 
         if (_message_load_field(file_ptr, audio) != 0) {
             debugPrint("\nError loading audio field.\n", localized_path);
-            goto err;
+            continue;
         }
 
         if (_message_load_field(file_ptr, text) != 0) {
             debugPrint("\nError loading text field.\n", localized_path);
-            goto err;
+            continue;
         }
 
         if (!_message_parse_number(&(entry.num), num)) {
             debugPrint("\nError parsing number.\n", localized_path);
-            goto err;
+            continue;
         }
 
         if (!_message_add(messageList, &entry)) {
             debugPrint("\nError adding message.\n", localized_path);
-            goto err;
+            continue;
         }
     }
 
