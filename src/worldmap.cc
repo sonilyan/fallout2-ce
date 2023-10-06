@@ -2983,11 +2983,15 @@ static int wmWorldMapFunc(int a1)
 
     wmMatchWorldPosToArea(wmGenData.worldPosX, wmGenData.worldPosY, &(wmGenData.currentAreaId));
 
-    unsigned int partyHealTime = 0;
+    unsigned int partyHealTime = gameTimeGetTime();
     int map = -1;
     int rc = 0;
 
+    int fps_reduce = (0 + 1) % (120 / 30);
+
     while (true) {
+        fps_reduce = (fps_reduce + 1) % (120 / 30);
+
         sharedFpsLimiter.mark();
 
         int keyCode = inputGetInput();
@@ -2995,7 +2999,7 @@ static int wmWorldMapFunc(int a1)
         // SFALL: WorldmapLoopHook.
         sfall_gl_scr_process_worldmap();
 
-        unsigned int now = getTicks();
+        unsigned int now = gameTimeGetTime();
 
         int mouseX;
         int mouseY;
@@ -3018,22 +3022,25 @@ static int wmWorldMapFunc(int a1)
         int mouseEvent = mouseGetEvent();
 
         if (wmGenData.isWalking) {
-            wmPartyWalkingStep();
+            if (fps_reduce == 0)
+                wmPartyWalkingStep();
 
             if (wmGenData.isInCar) {
-                wmPartyWalkingStep();
-                wmPartyWalkingStep();
-                wmPartyWalkingStep();
-
-                if (gameGetGlobalVar(GVAR_CAR_BLOWER)) {
+                if (fps_reduce == 0) {
+                    wmPartyWalkingStep();
+                    wmPartyWalkingStep();
                     wmPartyWalkingStep();
                 }
 
-                if (gameGetGlobalVar(GVAR_NEW_RENO_CAR_UPGRADE)) {
+                if (gameGetGlobalVar(GVAR_CAR_BLOWER) && (fps_reduce == 0)) {
                     wmPartyWalkingStep();
                 }
 
-                if (gameGetGlobalVar(GVAR_NEW_RENO_SUPER_CAR)) {
+                if (gameGetGlobalVar(GVAR_NEW_RENO_CAR_UPGRADE) && (fps_reduce == 0)) {
+                    wmPartyWalkingStep();
+                }
+
+                if (gameGetGlobalVar(GVAR_NEW_RENO_SUPER_CAR) && (fps_reduce == 0)) {
                     wmPartyWalkingStep();
                     wmPartyWalkingStep();
                     wmPartyWalkingStep();
@@ -3044,7 +3051,9 @@ static int wmWorldMapFunc(int a1)
                     wmGenData.carImageCurrentFrameIndex = 0;
                 }
 
-                wmCarUseGas(100);
+                if (fps_reduce == 0) {
+                    wmCarUseGas(100);
+                }
 
                 if (wmGenData.carFuel <= 0) {
                     wmGenData.walkDestinationX = 0;
@@ -3078,14 +3087,6 @@ static int wmWorldMapFunc(int a1)
             }
 
             wmInterfaceRefresh();
-
-            if (getTicksBetween(now, partyHealTime) > 1000) {
-                if (_partyMemberRestingHeal(3)) {
-                    interfaceRenderHitPoints(false);
-                    partyHealTime = now;
-                }
-            }
-
             wmMarkSubTileRadiusVisited(wmGenData.worldPosX, wmGenData.worldPosY);
 
             if (wmGenData.walkDistance <= 0) {
@@ -3095,9 +3096,27 @@ static int wmWorldMapFunc(int a1)
 
             wmInterfaceRefresh();
 
-            if (wmGameTimeIncrement(18000)) {
-                if (_game_user_wants_to_quit != 0) {
-                    break;
+            if (fps_reduce == 0) {
+                if (wmGameTimeIncrement(18000)) { // half hours
+                    if (_game_user_wants_to_quit != 0) {
+                        break;
+                    }
+                }
+            }
+ 
+            if (wmGenData.isInCar) {
+                if (getTicksBetween(now, partyHealTime) > 60 * 10 * 60 * 15) { 
+                    if (_partyMemberRestingHeal(3)) {
+                        interfaceRenderHitPoints(false);
+                        partyHealTime = now;
+                    }
+                }
+            } else {
+                if (getTicksBetween(now, partyHealTime) > 60 * 10 * 60 * 24) { 
+                    if (_partyMemberRestingHeal(3)) {
+                        interfaceRenderHitPoints(false);
+                        partyHealTime = now;
+                    }
                 }
             }
 
@@ -3316,8 +3335,8 @@ static void wmCheckGameEvents()
 // 0x4C0634
 static int wmRndEncounterOccurred()
 {
-    unsigned int now = getTicks();
-    if (getTicksBetween(now, wmLastRndTime) < 1500) {
+    unsigned int now = gameTimeGetTime();
+    if (getTicksBetween(now, wmLastRndTime) < 10 * 60 * 60 * 36) {
         return 0;
     }
 
