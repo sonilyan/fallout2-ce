@@ -3336,7 +3336,7 @@ static void wmCheckGameEvents()
 static int wmRndEncounterOccurred()
 {
     unsigned int now = gameTimeGetTime();
-    if (getTicksBetween(now, wmLastRndTime) < 10 * 60 * 60 * 36) {
+    if (getTicksBetween(now, wmLastRndTime) < 10 * 60 * 60 * 24) {
         return 0;
     }
 
