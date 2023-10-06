@@ -2220,7 +2220,7 @@ static bool _Check4Health(int a1)
 {
     _rest_time += a1;
 
-    if (_rest_time < 180) {
+    if (_rest_time < 360) {
         return false;
     }
 
