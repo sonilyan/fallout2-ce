@@ -486,7 +486,7 @@ static int _message_load_field(File* file, char* str)
 
         if (ch == '}') {
             debugPrint("\nError reading message file - mismatched delimiters.\n");
-            return 2;
+            continue;//ignore
         }
 
         if (ch == '{') {

@@ -2534,7 +2534,7 @@ static void opRemoveTimerEvent(Program* program)
 
     if (object == NULL) {
         // FIXME: Should be op_rm_timer_event.
-        scriptError("\nScript Error: %s: op_add_timer_event: pobj is NULL!");
+        scriptError("\nScript Error: %s: op_add_timer_event: pobj is NULL!", program->name);
         return;
     }
 
@@ -3017,7 +3017,7 @@ static void opCritterGetInventoryObject(Program* program)
     int type = programStackPopInteger(program);
     Object* critter = static_cast<Object*>(programStackPopPointer(program));
 
-    if (PID_TYPE(critter->pid) == OBJ_TYPE_CRITTER) {
+    if (critter != NULL && PID_TYPE(critter->pid) == OBJ_TYPE_CRITTER) {
         switch (type) {
         case INVEN_TYPE_WORN:
             programStackPushPointer(program, critterGetArmor(critter));
@@ -3452,7 +3452,7 @@ static void opObjectCarryingObjectByPid(Program* program)
     } else {
         scriptPredefinedError(program, "obj_carrying_pid_obj", SCRIPT_ERROR_OBJECT_IS_NULL);
     }
-
+ 
     programStackPushPointer(program, result);
 }
 

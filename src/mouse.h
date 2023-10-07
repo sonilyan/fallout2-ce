@@ -53,7 +53,7 @@ bool mouseHitTestInWindow(int win, int left, int top, int right, int bottom);
 void mouseGetWheel(int* x, int* y);
 void convertMouseWheelToArrowKey(int* keyCodePtr);
 int mouse_get_last_buttons();
-
+void clearMouseGetEvent();
 } // namespace fallout
 
 #endif /* FALLOUT_MOUSE_H_ */

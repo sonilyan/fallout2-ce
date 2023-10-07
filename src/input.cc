@@ -200,6 +200,51 @@ int inputGetInput()
     return -1;
 }
 
+void _process_bk2()
+{
+    int v1;
+
+    if (vcrUpdate() != 3) {
+        _mouse_info();
+    }
+
+    v1 = _win_check_all_buttons();
+    if (v1 != -1) {
+        enqueueInputEvent(v1);
+        return;
+    }
+
+    v1 = _kb_getch();
+    if (v1 != -1) {
+        enqueueInputEvent(v1);
+        return;
+    }
+}
+
+int inputGetInput2()
+{
+    int v3;
+
+    _GNW95_process_message();
+
+    if (!gProgramIsActive) {
+        _GNW95_lost_focus();
+    }
+
+    _process_bk2();
+
+    v3 = dequeueInputEvent();
+    if (v3 == -1 && mouseGetEvent() & 0x33) {
+        mouseGetPosition(&_input_mx, &_input_my);
+        return -2;
+    } else {
+        return _GNW_check_menu_bars(v3);
+    }
+
+    return -1;
+}
+
+
 // 0x4C8BC8
 void get_input_position(int* x, int* y)
 {

@@ -663,6 +663,11 @@ int mouseGetEvent()
     return gMouseEvent;
 }
 
+void clearMouseGetEvent()
+{
+     gMouseEvent = 0;
+}
+
 // 0x4CAAA8
 bool cursorIsHidden()
 {

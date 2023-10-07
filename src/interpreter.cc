@@ -466,9 +466,15 @@ Program* programCreateByPath(const char* path)
     File* stream = fileOpen(path, "rb");
     if (stream == NULL) {
         char err[260];
-        snprintf(err, sizeof(err), "Couldn't open %s for read\n", path);
-        programFatalError(err);
-        return NULL;
+        debugPrint("Couldn't open %s for read, use dummy insteand.\n", path);
+
+        Program* dummy = programCreateByPath("scripts\\dummy.int");
+        if (dummy == NULL) {
+            programFatalError(err);
+            return NULL;
+        }
+
+        return dummy;
     }
 
     int fileSize = fileGetSize(stream);
@@ -706,6 +712,9 @@ static void opPopBase(Program* program)
 // 0x467D94
 static void opPopToBase(Program* program)
 {
+    if (program->stackValues->size() < program->framePointer) {
+        programFatalError("opPopToBase error");
+    }
     while (program->stackValues->size() != program->framePointer) {
         programStackPopValue(program);
     }
@@ -1504,6 +1513,9 @@ static void opAdd(Program* program)
             programStackPushString(program, tempString);
 
             internal_free_safe(tempString, __FILE__, __LINE__);
+            break;
+        case VALUE_TYPE_PTR:
+            programStackPushInteger(program, (value[0].pointerValue != nullptr ? 1 : 0) + (value[1].pointerValue != nullptr ? 1 : 0));
             break;
         }
     }

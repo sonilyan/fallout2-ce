@@ -1841,8 +1841,10 @@ int _GNW_check_buttons(Window* window, int* keyCodePtr)
         while (touchButton != NULL && gTouch) {
             if (!(touchButton->flags & BUTTON_FLAG_DISABLED)) {
                 if (xx > touchButton->clickRect.left && xx < touchButton->clickRect.right && yy > touchButton->clickRect.top && yy < touchButton->clickRect.bottom) {
-
+                    inputEventQueueReset();
+                    clearMouseGetEvent();
                     _win_button_press_and_release(touchButton->id);
+                    break;
                 }
             }
             touchButton = touchButton->next;

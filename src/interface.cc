@@ -2107,7 +2107,7 @@ static void interfaceRenderCounter(int x, int y, int previousValue, int value, i
                 }
 
                 blitBufferToBuffer(upSrc, 9, 17, 360, onesDest, gInterfaceBarWidth);
-                inputGetInput();
+                inputGetInput2();
                 gameMouseRefresh();
                 renderPresent();
                 inputBlockForTocks(delay);
@@ -2117,7 +2117,7 @@ static void interfaceRenderCounter(int x, int y, int previousValue, int value, i
 
                 if (ones > 9 || ones < 0) {
                     blitBufferToBuffer(upSrc, 9, 17, 360, tensDest, gInterfaceBarWidth);
-                    inputGetInput();
+                    inputGetInput2();
                     gameMouseRefresh();
                     renderPresent();
                     inputBlockForTocks(delay);
@@ -2127,7 +2127,7 @@ static void interfaceRenderCounter(int x, int y, int previousValue, int value, i
                     ones -= 10 * v49;
                     if (tens == 10 || tens == -1) {
                         blitBufferToBuffer(upSrc, 9, 17, 360, hundredsDest, gInterfaceBarWidth);
-                        inputGetInput();
+                        inputGetInput2();
                         gameMouseRefresh();
                         renderPresent();
                         inputBlockForTocks(delay);
@@ -2140,7 +2140,7 @@ static void interfaceRenderCounter(int x, int y, int previousValue, int value, i
                         }
 
                         blitBufferToBuffer(downSrc, 9, 17, 360, hundredsDest, gInterfaceBarWidth);
-                        inputGetInput();
+                        inputGetInput2();
 
                         gameMouseRefresh();
                         renderPresent();
@@ -2155,7 +2155,7 @@ static void interfaceRenderCounter(int x, int y, int previousValue, int value, i
                 }
 
                 blitBufferToBuffer(downSrc, 9, 17, 360, onesDest, gInterfaceBarWidth);
-                inputGetInput();
+                inputGetInput2();
                 gameMouseRefresh();
                 renderPresent();
                 inputBlockForTocks(delay);
@@ -2168,7 +2168,7 @@ static void interfaceRenderCounter(int x, int y, int previousValue, int value, i
                 blitBufferToBuffer(numbers + 9 * ones, 9, 17, 360, onesDest, gInterfaceBarWidth);
 
                 blitBufferToBuffer(previousValue >= 0 ? plusSrc : minusSrc, 6, 17, 360, signDest, gInterfaceBarWidth);
-                inputGetInput();
+                inputGetInput2();
                 gameMouseRefresh();
                 renderPresent();
                 inputBlockForTocks(delay);

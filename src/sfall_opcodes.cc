@@ -68,6 +68,24 @@ static void opReadByte(Program* program)
     programStackPushInteger(program, value);
 }
 
+static void opReadInt(Program* program)
+{
+    int addr = programStackPopInteger(program);
+
+    int value = 0;
+    switch (addr) {
+    case 0x56D38C:
+        value = combatGetTargetHighlight();
+        break;
+    default:
+        debugPrint("%s: attempt to 'read_int' at 0x%x", program->name, addr);
+        break;
+    }
+
+    programStackPushInteger(program, value);
+}
+
+
 // set_pc_base_stat
 static void op_set_pc_base_stat(Program* program)
 {
@@ -108,6 +126,53 @@ static void opGetPcBonusStat(Program* program)
     programStackPushInteger(program, value);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////
+static void op_get_perk_owed(Program* program)
+{
+    programStackPushInteger(program, 1);
+}
+
+static void op_set_perk_owed(Program* program)
+{
+    int value = programStackPopInteger(program);
+}
+
+static void set_critter_base_stat(Program* program)
+{
+    int value = programStackPopInteger(program);
+    int stat = programStackPopInteger(program);
+    Object* critter = static_cast<Object*>(programStackPopPointer(program));
+    critterSetBaseStat(critter, stat, value);
+}
+
+static void set_critter_extra_stat(Program* program)
+{
+    int value = programStackPopInteger(program);
+    int stat = programStackPopInteger(program);
+    Object* critter = static_cast<Object*>(programStackPopPointer(program));
+    critterSetBonusStat(critter, stat, value);
+}
+
+static void get_critter_base_stat(Program* program)
+{
+    int stat = programStackPopInteger(program);
+    Object* critter = static_cast<Object*>(programStackPopPointer(program));
+    programStackPushInteger(program, critterGetBaseStat(critter, stat));
+}
+
+static void op_set_perk_value(Program* program)
+{
+    int stat = programStackPopInteger(program);
+    int stat2 = programStackPopInteger(program);
+}
+ 
+static void get_critter_extra_stat(Program* program)
+{
+    int stat = programStackPopInteger(program);
+    Object* critter = static_cast<Object*>(programStackPopPointer(program));
+    programStackPushInteger(program, critterGetBonusStat(critter, stat));
+}
+/////////////////////////////////////////////////////////////////////////////////////////
 // tap_key
 static void op_tap_key(Program* program)
 {
@@ -1040,10 +1105,22 @@ static void op_div(Program* program)
 void sfallOpcodesInit()
 {
     interpreterRegisterOpcode(0x8156, opReadByte);
+    interpreterRegisterOpcode(0x8158, opReadInt);
+
     interpreterRegisterOpcode(0x815A, op_set_pc_base_stat);
     interpreterRegisterOpcode(0x815B, opSetPcBonusStat);
     interpreterRegisterOpcode(0x815C, op_get_pc_base_stat);
     interpreterRegisterOpcode(0x815D, opGetPcBonusStat);
+
+    interpreterRegisterOpcode(0x815E, set_critter_base_stat);
+    interpreterRegisterOpcode(0x815F, set_critter_extra_stat);
+    interpreterRegisterOpcode(0x8160, get_critter_base_stat);
+    interpreterRegisterOpcode(0x8161, get_critter_extra_stat);
+
+    for (int i = 0x178; i < 0x189; i++) {
+        interpreterRegisterOpcode(0x8000 + i, op_set_perk_value);
+    }
+
     interpreterRegisterOpcode(0x8162, op_tap_key);
     interpreterRegisterOpcode(0x8163, op_get_year);
     interpreterRegisterOpcode(0x8164, op_game_loaded);
@@ -1052,6 +1129,10 @@ void sfallOpcodesInit()
     interpreterRegisterOpcode(0x8170, op_in_world_map);
     interpreterRegisterOpcode(0x8171, op_force_encounter);
     interpreterRegisterOpcode(0x8172, op_set_world_map_pos);
+
+    interpreterRegisterOpcode(0x818e, op_get_perk_owed);
+    interpreterRegisterOpcode(0x818f, op_set_perk_owed);
+
     interpreterRegisterOpcode(0x8193, opGetCurrentHand);
     interpreterRegisterOpcode(0x819B, op_set_global_script_type);
     interpreterRegisterOpcode(0x819D, opSetGlobalVar);
