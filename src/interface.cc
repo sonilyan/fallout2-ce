@@ -1988,6 +1988,9 @@ static int endCombatButtonFree()
 // 0x460AA0
 static void interfaceUpdateAmmoBar(int x, int ratio)
 {
+    if (ratio < 0)
+        ratio = 0;
+
     if ((ratio & 1) != 0) {
         ratio -= 1;
     }
