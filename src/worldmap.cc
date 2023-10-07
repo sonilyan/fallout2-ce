@@ -2987,11 +2987,11 @@ static int wmWorldMapFunc(int a1)
     int map = -1;
     int rc = 0;
 
-    int fps_reduce = (0 + 1) % (120 / 30);
+    unsigned int l = 0;
+    unsigned int timeSpend = 0;
+    int walkingStepSpend = 0;
 
     while (true) {
-        fps_reduce = (fps_reduce + 1) % (120 / 30);
-
         sharedFpsLimiter.mark();
 
         int keyCode = inputGetInput();
@@ -3022,67 +3022,88 @@ static int wmWorldMapFunc(int a1)
         int mouseEvent = mouseGetEvent();
 
         if (wmGenData.isWalking) {
-            if (fps_reduce == 0)
-                wmPartyWalkingStep();
+            int walkingStep = 1;
+            if (l == 0) {
+                l = getTicks();
+                timeSpend = 0;
+            }
+
+            // 18000 * 30 = 540000 
+            unsigned int n = getTicks();
+            timeSpend += ((n - l) * 540000 / 1000);
+            l = n;
 
             if (wmGenData.isInCar) {
-                if (fps_reduce == 0) {
-                    wmPartyWalkingStep();
-                    wmPartyWalkingStep();
-                    wmPartyWalkingStep();
+                walkingStep += 3;
+
+                if (gameGetGlobalVar(GVAR_CAR_BLOWER)) {
+                    walkingStep += 1;
                 }
 
-                if (gameGetGlobalVar(GVAR_CAR_BLOWER) && (fps_reduce == 0)) {
-                    wmPartyWalkingStep();
+                if (gameGetGlobalVar(GVAR_NEW_RENO_CAR_UPGRADE)) {
+                    walkingStep += 1;
                 }
 
-                if (gameGetGlobalVar(GVAR_NEW_RENO_CAR_UPGRADE) && (fps_reduce == 0)) {
-                    wmPartyWalkingStep();
-                }
-
-                if (gameGetGlobalVar(GVAR_NEW_RENO_SUPER_CAR) && (fps_reduce == 0)) {
-                    wmPartyWalkingStep();
-                    wmPartyWalkingStep();
-                    wmPartyWalkingStep();
+                if (gameGetGlobalVar(GVAR_NEW_RENO_SUPER_CAR)) {
+                    walkingStep += 3;
                 }
 
                 wmGenData.carImageCurrentFrameIndex++;
                 if (wmGenData.carImageCurrentFrameIndex >= artGetFrameCount(wmGenData.carImageFrm)) {
                     wmGenData.carImageCurrentFrameIndex = 0;
                 }
+            }
 
-                if (fps_reduce == 0) {
-                    wmCarUseGas(100);
+            int walkingStepCost = 18000 / walkingStep;
+
+            while (timeSpend > walkingStepCost) {
+                wmPartyWalkingStep();
+                timeSpend -= walkingStepCost;
+                walkingStepSpend += 1;
+
+                if (wmGameTimeIncrement(walkingStepCost)) {
+                    if (_game_user_wants_to_quit != 0) {
+                        break;
+                    }
                 }
 
-                if (wmGenData.carFuel <= 0) {
-                    wmGenData.walkDestinationX = 0;
-                    wmGenData.walkDestinationY = 0;
-                    wmGenData.isWalking = false;
+                if (walkingStepSpend >= walkingStep) {
+                    walkingStepSpend = 0;
 
-                    wmMatchWorldPosToArea(worldX, worldY, &(wmGenData.currentAreaId));
+                    if (wmGenData.isInCar) {
+                        wmCarUseGas(100);
 
-                    wmGenData.isInCar = false;
+                        if (wmGenData.carFuel <= 0) {
+                            wmGenData.walkDestinationX = 0;
+                            wmGenData.walkDestinationY = 0;
+                            wmGenData.isWalking = false;
 
-                    if (wmGenData.currentAreaId == -1) {
-                        wmGenData.currentCarAreaId = CITY_CAR_OUT_OF_GAS;
+                            wmMatchWorldPosToArea(worldX, worldY, &(wmGenData.currentAreaId));
 
-                        CityInfo* city = &(wmAreaInfoList[CITY_CAR_OUT_OF_GAS]);
+                            wmGenData.isInCar = false;
 
-                        CitySizeDescription* citySizeDescription = &(wmSphereData[city->size]);
-                        int worldmapX = wmGenData.worldPosX + wmGenData.hotspotNormalFrmImage.getWidth() / 2 + citySizeDescription->frmImage.getWidth() / 2;
-                        int worldmapY = wmGenData.worldPosY + wmGenData.hotspotNormalFrmImage.getHeight() / 2 + citySizeDescription->frmImage.getHeight() / 2;
-                        wmAreaSetWorldPos(CITY_CAR_OUT_OF_GAS, worldmapX, worldmapY);
+                            if (wmGenData.currentAreaId == -1) {
+                                wmGenData.currentCarAreaId = CITY_CAR_OUT_OF_GAS;
 
-                        city->state = CITY_STATE_KNOWN;
-                        city->visitedState = 1;
+                                CityInfo* city = &(wmAreaInfoList[CITY_CAR_OUT_OF_GAS]);
 
-                        wmGenData.currentAreaId = CITY_CAR_OUT_OF_GAS;
-                    } else {
-                        wmGenData.currentCarAreaId = wmGenData.currentAreaId;
+                                CitySizeDescription* citySizeDescription = &(wmSphereData[city->size]);
+                                int worldmapX = wmGenData.worldPosX + wmGenData.hotspotNormalFrmImage.getWidth() / 2 + citySizeDescription->frmImage.getWidth() / 2;
+                                int worldmapY = wmGenData.worldPosY + wmGenData.hotspotNormalFrmImage.getHeight() / 2 + citySizeDescription->frmImage.getHeight() / 2;
+                                wmAreaSetWorldPos(CITY_CAR_OUT_OF_GAS, worldmapX, worldmapY);
+
+                                city->state = CITY_STATE_KNOWN;
+                                city->visitedState = 1;
+
+                                wmGenData.currentAreaId = CITY_CAR_OUT_OF_GAS;
+                            } else {
+                                wmGenData.currentCarAreaId = wmGenData.currentAreaId;
+                            }
+
+                            debugPrint("\nRan outta gas!");
+                        }
                     }
-
-                    debugPrint("\nRan outta gas!");
+                    break;
                 }
             }
 
@@ -3096,23 +3117,15 @@ static int wmWorldMapFunc(int a1)
 
             wmInterfaceRefresh();
 
-            if (fps_reduce == 0) {
-                if (wmGameTimeIncrement(18000)) { // half hours
-                    if (_game_user_wants_to_quit != 0) {
-                        break;
-                    }
-                }
-            }
- 
             if (wmGenData.isInCar) {
-                if (getTicksBetween(now, partyHealTime) > 60 * 10 * 60 * 15) { 
+                if (getTicksBetween(now, partyHealTime) > 60 * 10 * 60 * 15) {
                     if (_partyMemberRestingHeal(3)) {
                         interfaceRenderHitPoints(false);
                         partyHealTime = now;
                     }
                 }
             } else {
-                if (getTicksBetween(now, partyHealTime) > 60 * 10 * 60 * 24) { 
+                if (getTicksBetween(now, partyHealTime) > 60 * 10 * 60 * 24) {
                     if (_partyMemberRestingHeal(3)) {
                         interfaceRenderHitPoints(false);
                         partyHealTime = now;
@@ -3121,7 +3134,9 @@ static int wmWorldMapFunc(int a1)
             }
 
             if (wmGenData.isWalking) {
-                if (wmRndEncounterOccurred()) {
+                int retval = wmRndEncounterOccurred();
+                if (retval == 1) {
+                    l = 0;
                     if (wmGenData.encounterMapId != -1) {
                         if (wmGenData.isInCar) {
                             wmMatchAreaContainingMapIdx(wmGenData.encounterMapId, &(wmGenData.currentCarAreaId));
@@ -3132,7 +3147,12 @@ static int wmWorldMapFunc(int a1)
                     }
                     break;
                 }
+                else if (retval == 2) {
+                    l = 0;
+                }
             }
+        } else {
+            l = 0;
         }
 
         if ((mouseEvent & MOUSE_EVENT_LEFT_BUTTON_DOWN) != 0 && (mouseEvent & MOUSE_EVENT_LEFT_BUTTON_REPEAT) == 0) {
@@ -3528,7 +3548,7 @@ static int wmRndEncounterOccurred()
             wmGenData.encounterMapId = -1;
             wmGenData.encounterTableId = -1;
             wmGenData.encounterEntryId = -1;
-            return 0;
+            return 2;
         }
     }
 
