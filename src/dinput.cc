@@ -1,6 +1,7 @@
 #include "dinput.h"
 #include "display_monitor.h"
 #include "game_mouse.h"
+#include "settings.h"
 
 namespace fallout {
 
@@ -247,11 +248,11 @@ void handleTouchEvent(SDL_Event* event)
             gTouchMouseLastX = (int)(event->tfinger.x * windowWidth);
             gTouchMouseLastY = (int)(event->tfinger.y * windowHeight);
             if(event->tfinger.x < 0.5){
-                gTouchMouseDeltaX += (gTouchMouseLastX - prevX) * 2;
-                gTouchMouseDeltaY += (gTouchMouseLastY - prevY) * 2;
+                gTouchMouseDeltaX += (gTouchMouseLastX - prevX) * 2 * settings.preferences.mouse_sensitivity;
+                gTouchMouseDeltaY += (gTouchMouseLastY - prevY) * 2 * settings.preferences.mouse_sensitivity;
             } else {
-                gTouchMouseDeltaX += gTouchMouseLastX - prevX;
-                gTouchMouseDeltaY += gTouchMouseLastY - prevY;
+                gTouchMouseDeltaX += (gTouchMouseLastX - prevX) * settings.preferences.mouse_sensitivity;
+                gTouchMouseDeltaY += (gTouchMouseLastY - prevY) * settings.preferences.mouse_sensitivity;
             }
             gTouchGestureLastTouchUpTimestamp = -1;
 
