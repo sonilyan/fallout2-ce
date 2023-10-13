@@ -647,6 +647,8 @@ static int wmMaxTileNum = 0;
 // 0x51DDF4
 static int wmNumHorizontalTiles = 0;
 
+static int disable_horrigan = 0;
+
 // 0x51DDF8
 static CityInfo* wmAreaInfoList = NULL;
 
@@ -879,6 +881,8 @@ int wmWorldMap_init()
     }
 
     messageListRepositorySetStandardMessageList(STANDARD_MESSAGE_LIST_WORLDMAP, &wmMsgFile);
+
+    configGetInt(&gSfallConfig, SFALL_CONFIG_MISC_KEY, SFALL_CONFIG_DISABLE_HORRIGAN, &disable_horrigan);
 
     return 0;
 }
@@ -3376,7 +3380,7 @@ static int wmRndEncounterOccurred()
         return 0;
     }
 
-    if (!wmGenData.didMeetFrankHorrigan) {
+    if (!wmGenData.didMeetFrankHorrigan && disable_horrigan != 0) {
         unsigned int gameTime = gameTimeGetTime();
         if (gameTime / GAME_TIME_TICKS_PER_DAY > 35) {
             // SFALL: Add a flashing icon to the Horrigan encounter.
