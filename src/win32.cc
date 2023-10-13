@@ -59,7 +59,13 @@ int main(int argc, char* argv[])
 #if __ANDROID__
     SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS, "0");
     SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
-    chdir(SDL_AndroidGetExternalStoragePath());
+    if (argc < 2 || strlen(argv[1]) <= 0) {
+        exit(0);
+    } else {
+        char tmp[2048];
+        sprintf(tmp, "%s/%s", SDL_AndroidGetExternalStoragePath(), argv[1]);
+        chdir(tmp);
+    }
 #endif
 
     SDL_ShowCursor(SDL_DISABLE);
