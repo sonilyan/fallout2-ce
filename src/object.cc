@@ -2846,7 +2846,7 @@ int objectSetOutline(Object* obj, int outlineType, Rect* rect)
     }
 
     if ((obj->flags & OBJECT_NO_HIGHLIGHT) != 0) {
-        return -1;
+        //return -1;
     }
 
     obj->outline = outlineType;

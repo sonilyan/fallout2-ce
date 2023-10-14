@@ -51,6 +51,10 @@ bool _combat_to_hit(Object* target, int* accuracy);
 void _combat_attack_this(Object* a1);
 void _combat_outline_on();
 void _combat_outline_off();
+
+void _item_outline_on();
+void _item_outline_off();
+
 void _combat_highlight_change();
 bool _combat_is_shot_blocked(Object* sourceObj, int from, int to, Object* targetObj, int* numCrittersOnLof);
 int _combat_player_knocked_out_by();

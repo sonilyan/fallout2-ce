@@ -5837,6 +5837,57 @@ void _combat_outline_on()
     tileWindowRefresh();
 }
 
+void _item_outline_on()
+{
+    Object** list;
+    int length = objectListCreate(-1, gElevation, OBJ_TYPE_ITEM, &list);
+
+    if (length != 0) {
+        for (int index = 0; index < length; index++) {
+            Object* obj = list[index];
+            Rect tmp;
+
+            if (itemGetType(obj) == ITEM_TYPE_CONTAINER) {
+                if (obj->data.inventory.length > 0) {
+                    if (objectSetOutline(obj, OUTLINE_TYPE_ITEM, &tmp) == 0) {
+                        tileWindowRefreshRect(&tmp, gElevation);
+                    }
+                } else {
+                    if (objectSetOutline(obj, OUTLINE_TYPE_4, &tmp) == 0) {
+                        tileWindowRefreshRect(&tmp, gElevation);
+                    }
+                }
+            } else {
+                if (objectSetOutline(obj, OUTLINE_TYPE_ITEM, &tmp) == 0) {
+                    tileWindowRefreshRect(&tmp, gElevation);
+                }
+            }
+        }
+        objectListFree(list);
+    }
+
+    tileWindowRefresh();
+}
+
+void _item_outline_off()
+{
+    Object** list;
+    int length = objectListCreate(-1, gElevation, OBJ_TYPE_ITEM, &list);
+
+    if (length != 0) {
+        for (int index = 0; index < length; index++) {
+            Object* obj = list[index];
+            Rect tmp;
+            if (objectClearOutline(obj, &tmp) == 0) {
+                tileWindowRefreshRect(&tmp, gElevation);
+            }
+        }
+        objectListFree(list);
+    }
+
+    tileWindowRefresh();
+}
+
 // 0x426BC0
 void _combat_outline_off()
 {
