@@ -1410,14 +1410,6 @@ void gameMouseSetMode(int mode)
         _combat_outline_off();
         break;
     }
-
-    if (isInCombat()) {
-        if (gGameMouseMode == GAME_MOUSE_MODE_CROSSHAIR)
-            _item_outline_off();
-        else if (gGameMouseMode == GAME_MOUSE_MODE_ARROW || GAME_MOUSE_MODE_MOVE) {
-            _item_outline_on();
-        }
-    }
 }
 
 // 0x44CB6C

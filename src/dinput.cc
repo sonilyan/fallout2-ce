@@ -2,6 +2,7 @@
 #include "display_monitor.h"
 #include "game_mouse.h"
 #include "settings.h"
+#include "combat.h"
 
 namespace fallout {
 
@@ -250,6 +251,7 @@ void handleTouchEvent(SDL_Event* event)
             if(event->tfinger.x < 0.5){
                 gTouchMouseDeltaX += (gTouchMouseLastX - prevX) * 2 * settings.preferences.mouse_sensitivity;
                 gTouchMouseDeltaY += (gTouchMouseLastY - prevY) * 2 * settings.preferences.mouse_sensitivity;
+                _item_outline_on();
             } else {
                 gTouchMouseDeltaX += (gTouchMouseLastX - prevX) * settings.preferences.mouse_sensitivity;
                 gTouchMouseDeltaY += (gTouchMouseLastY - prevY) * settings.preferences.mouse_sensitivity;
@@ -260,6 +262,7 @@ void handleTouchEvent(SDL_Event* event)
             clicked = false;
         }
     } else if (type == SDL_FINGERUP) {
+        _item_outline_off();
         if (id != lastTouchId) {
             em_mode = false;
         } else {

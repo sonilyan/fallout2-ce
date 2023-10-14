@@ -5837,8 +5837,14 @@ void _combat_outline_on()
     tileWindowRefresh();
 }
 
+bool item_outline_on = false;
+
 void _item_outline_on()
 {
+    if (item_outline_on)
+        return;
+    item_outline_on = true;
+
     Object** list;
     int length = objectListCreate(-1, gElevation, OBJ_TYPE_ITEM, &list);
 
@@ -5871,6 +5877,10 @@ void _item_outline_on()
 
 void _item_outline_off()
 {
+    if (!item_outline_on)
+        return;
+    item_outline_on = false;
+
     Object** list;
     int length = objectListCreate(-1, gElevation, OBJ_TYPE_ITEM, &list);
 
