@@ -2995,7 +2995,12 @@ static int wmWorldMapFunc(int a1)
     unsigned int timeSpend = 0;
     int walkingStepSpend = 0;
 
+    int jitter = 0;
+    int jitterData[] = { 123, -181, -221, -834, 134, 167, 593, 452, -131, -167, 221, -593, -303, 181, 834, -452, -123, 303 }; 
+
+
     while (true) {
+        jitter = (jitter + 1) % 18;
         sharedFpsLimiter.mark();
 
         int keyCode = inputGetInput();
@@ -3034,7 +3039,7 @@ static int wmWorldMapFunc(int a1)
 
             // 18000 * 30 = 540000 
             unsigned int n = getTicks();
-            timeSpend += ((n - l) * 540000 / 1000);
+            timeSpend += ((n - l) * 270000 / 1000);
             l = n;
 
             if (wmGenData.isInCar) {
@@ -3058,7 +3063,7 @@ static int wmWorldMapFunc(int a1)
                 }
             }
 
-            int walkingStepCost = 18000 / walkingStep;
+            int walkingStepCost = (18000 / walkingStep) + jitterData[jitter];
 
             while (timeSpend > walkingStepCost) {
                 wmPartyWalkingStep();
