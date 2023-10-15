@@ -738,7 +738,7 @@ static bool _setup_inventory(int inventoryWindowType)
             ? (screenGetWidth() - windowDescription->width) / 2
             : INVENTORY_WINDOW_X;
         int inventoryWindowY = screenGetHeight() != 480
-            ? (screenGetHeight() - windowDescription->height) / 2
+            ? (screenGetHeight() -100 - windowDescription->height) / 2
             : INVENTORY_WINDOW_Y;
         gInventoryWindow = windowCreate(inventoryWindowX,
             inventoryWindowY,
