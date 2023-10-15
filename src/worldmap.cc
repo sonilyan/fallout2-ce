@@ -2995,12 +2995,7 @@ static int wmWorldMapFunc(int a1)
     unsigned int timeSpend = 0;
     int walkingStepSpend = 0;
 
-    int jitter = 0;
-    int jitterData[] = { 123, -181, -221, -834, 134, 167, 593, 452, -131, -167, 221, -593, -303, 181, 834, -452, -123, 303 }; 
-
-
     while (true) {
-        jitter = (jitter + 1) % 18;
         sharedFpsLimiter.mark();
 
         int keyCode = inputGetInput();
@@ -3039,7 +3034,8 @@ static int wmWorldMapFunc(int a1)
 
             // 18000 * 30 = 540000 
             unsigned int n = getTicks();
-            timeSpend += ((n - l) * 270000 / 1000);
+            int time_pass = ((n - l) * 270000 / 1000);
+            timeSpend += time_pass;
             l = n;
 
             if (wmGenData.isInCar) {
@@ -3063,18 +3059,17 @@ static int wmWorldMapFunc(int a1)
                 }
             }
 
-            int walkingStepCost = (18000 / walkingStep) + jitterData[jitter];
+            int walkingStepCost = (18000 / walkingStep);
+            if (wmGameTimeIncrement(time_pass)) {
+                if (_game_user_wants_to_quit != 0) {
+                    break;
+                }
+            }
 
             while (timeSpend > walkingStepCost) {
                 wmPartyWalkingStep();
                 timeSpend -= walkingStepCost;
                 walkingStepSpend += 1;
-
-                if (wmGameTimeIncrement(walkingStepCost)) {
-                    if (_game_user_wants_to_quit != 0) {
-                        break;
-                    }
-                }
 
                 if (walkingStepSpend >= walkingStep) {
                     walkingStepSpend = 0;
