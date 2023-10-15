@@ -366,6 +366,11 @@ static int skilldexWindowInit()
         _skilldexFrmImages[SKILLDEX_FRM_BACKGROUND].getWidth(),
         _colorTable[18979]);
 
+    Rect offset;
+    offset.left = -15;
+    offset.right = 90;
+    offset.top = -5;
+    offset.bottom = 5;
     int cancelBtn = buttonCreate(gSkilldexWindow,
         48,
         338,
@@ -378,7 +383,8 @@ static int skilldexWindowInit()
         _skilldexFrmImages[SKILLDEX_FRM_LITTLE_RED_BUTTON_UP].getData(),
         _skilldexFrmImages[SKILLDEX_FRM_LITTLE_RED_BUTTON_DOWN].getData(),
         NULL,
-        BUTTON_FLAG_TRANSPARENT);
+        BUTTON_FLAG_TRANSPARENT,
+        offset);
     if (cancelBtn != -1) {
         buttonSetCallbacks(cancelBtn, _gsound_red_butt_press, _gsound_red_butt_release);
     }
