@@ -30,6 +30,7 @@
 #include "svga.h"
 #include "text_font.h"
 #include "tile.h"
+#include "perk.h"
 #include "window_manager.h"
 
 namespace fallout {
@@ -945,7 +946,12 @@ void _gmouse_handle_event(int mouseX, int mouseY, int mouseState)
                 }
             }
 
-            _dude_run(actionPoints);
+            if (dudeHasState(DUDE_STATE_SNEAKING) && !perkGetRank(gDude, PERK_SILENT_RUNNING)) {
+                _dude_move(actionPoints);
+            } else {
+                _dude_run(actionPoints);
+            }
+
             return;
         }
 
