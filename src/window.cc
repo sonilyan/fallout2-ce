@@ -986,7 +986,6 @@ int _popWindow()
 // 0x4B8414
 void _windowPrintBuf(int win, char* string, int stringLength, int width, int maxY, int x, int y, int flags, int textAlignment)
 {
-    fontSetCurrent(101);
     if (y + fontGetLineHeight() > maxY) {
         return;
     }
@@ -1157,13 +1156,15 @@ void _windowWrapLineWithSpacing(int win, char* string, int width, int height, in
         return;
     }
 
-    for (int index = 0; index < count; index++) {
+    for (int index = 0; index < count-1; index++) {
         short beginning = beginnings[index];
         short ending = beginnings[index + 1];
         char c = string[ending];
         string[ending] = '\0';
 
         int v1 = y + index * (a9 + fontGetLineHeight());
+        //void _windowPrintBuf(int win, char* string, int stringLength, int width, int maxY, int x, int y, int flags, int textAlignment)
+
         _windowPrintBuf(win, string + beginning, strlen(string + beginning), width, height + y, x, v1, flags, textAlignment);
         string[ending] = c;
     }

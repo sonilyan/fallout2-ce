@@ -55,7 +55,7 @@ static int _stepMovie();
 static int gMovieWindow = -1;
 
 // 0x5195BC
-static int gMovieSubtitlesFont = -1;
+static int gMovieSubtitlesFont = 103;
 
 // 0x5195C0
 static MovieBlitFunc* gMovieBlitFuncs[2][2][2] = {
@@ -763,14 +763,7 @@ static void movieRenderSubtitles()
     if ((gMovieFlags & MOVIE_EXTENDED_FLAG_0x10) == 0) {
         return;
     }
-
-    int v1 = fontGetLineHeight();
-    int v2 = (480 - _lastMovieH - _lastMovieY - v1) / 2 + _lastMovieH + _lastMovieY;
-
-    if (_subtitleH + v2 > _windowGetYres()) {
-        _subtitleH = _windowGetYres() - v2;
-    }
-
+ 
     int frame;
     int dropped;
     _MVE_rmFrameCounts(&frame, &dropped);
@@ -780,23 +773,30 @@ static void movieRenderSubtitles()
             break;
         }
 
-        MovieSubtitleListNode* next = gMovieSubtitleHead->next;
-
-        windowFill(gMovieWindow, 0, v2, _subtitleW, _subtitleH, 0);
-
         int oldFont;
         if (gMovieSubtitlesFont != -1) {
             oldFont = fontGetCurrent();
             fontSetCurrent(gMovieSubtitlesFont);
         }
 
+        int fontLineHeight = fontGetLineHeight();
+        int _subtitle_y = (480 + _lastMovieH + _lastMovieY - 2 * fontLineHeight) / 2;
+
+        if (_subtitleH + _subtitle_y > 480) {
+            _subtitleH = 480 - _subtitle_y;
+        }
+
+        MovieSubtitleListNode* next = gMovieSubtitleHead->next;
+
+        windowFill(gMovieWindow, 0, _subtitle_y, _subtitleW, _subtitleH, 256);
+
         int colorIndex = (gMovieSubtitlesColorR << 10) | (gMovieSubtitlesColorG << 5) | gMovieSubtitlesColorB;
-        _windowWrapLine(gMovieWindow, gMovieSubtitleHead->text, _subtitleW, _subtitleH, 0, v2, _colorTable[colorIndex] | 0x2000000, TEXT_ALIGNMENT_CENTER);
+        _windowWrapLine(gMovieWindow, gMovieSubtitleHead->text, _subtitleW, _subtitleH, 0, _subtitle_y, _colorTable[colorIndex] | 0x2000000, TEXT_ALIGNMENT_CENTER);
 
         Rect rect;
         rect.right = _subtitleW;
-        rect.top = v2;
-        rect.bottom = v2 + _subtitleH;
+        rect.top = _subtitle_y;
+        rect.bottom = _subtitle_y + _subtitleH;
         rect.left = 0;
         windowRefreshRect(gMovieWindow, &rect);
 
