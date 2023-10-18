@@ -271,8 +271,7 @@ int fontGetCurrent()
     return gCurrentFont;
 }
 
-// 0x4D58DC
-void fontSetCurrent(int font)
+int fontSetCurrentInternal(int font)
 {
     FontManager* fontManager;
 
@@ -290,7 +289,22 @@ void fontSetCurrent(int font)
         gCurrentFont = font;
 
         fontManager->setCurrentProc(font);
+        return 0;
     }
+
+    return -1;
+}
+
+
+// 0x4D58DC
+void fontSetCurrent(int font)
+{
+    if (font < 100) {
+        if (fontSetCurrentInternal(100 + font) == 0)
+            return;
+    }
+ 
+    fontSetCurrentInternal(font);
 }
 
 // 0x4D595C
