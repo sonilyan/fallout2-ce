@@ -3,6 +3,15 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef _WIN32
+#include <io.h>
+#include <iostream>
+#endif
+
+#ifdef __ANDROID__
+#include <dirent.h>
+#endif
+
 #include "actions.h"
 #include "animation.h"
 #include "art.h"
@@ -1380,6 +1389,65 @@ static int gameDbInit()
 
     if (compat_access("f2_res.dat", 0) == 0) {
         dbOpen("f2_res.dat", 0, NULL, 1);
+    }
+
+#ifdef _WIN32
+    _finddata64i32_t fileInfo;
+    intptr_t hFile = _findfirst(".\\mods\\*.dat", &fileInfo);
+    if (hFile != -1) {
+        do {
+            char tmp[128];
+            sprintf(tmp, "./mods/%s", fileInfo.name);
+            if (compat_access(tmp, 0) == 0) {
+                dbOpen(tmp, 0, NULL, 1);
+            }
+
+        } while (_findnext(hFile, &fileInfo) == 0);
+    }
+#endif
+
+#ifdef __ANDROID__
+    {
+        DIR* dir = opendir("./mods");
+
+        if (NULL != dir) {
+            struct dirent* file;
+            // read all the files in dir
+            while ((file = readdir(dir)) != NULL) {
+                if (strcmp(file->d_name, ".") == 0 || strcmp(file->d_name, "..") == 0) {
+                    continue;
+                }
+                if (file->d_type == DT_DIR)
+                    continue;
+                char tmp[128];
+                sprintf(tmp, "./mods/%s", file->d_name);
+                if (compat_access(tmp, 0) == 0) {
+                    dbOpen(tmp, 0, NULL, 1);
+                }
+            }
+        }
+    }
+#endif
+
+    Config config;
+    if (configInit(&config)) {
+        if (configRead(&config, "ddraw.ini", false)) {
+            for (int i = 0; i < 99; i++) {
+                char* path;
+                char key[128];
+                if (i <= 0)
+                    sprintf(key, "PatchFile");
+                else
+                    sprintf(key, "PatchFile%d", i);
+                if (configGetString(&config, "ExtraPatches", key, &path)) {
+                    if (compat_access(path, 0) == 0) {
+                        dbOpen(path, 0, NULL, 1);
+                    }
+                } 
+            }
+        }
+
+        configFree(&config);
     }
 
     return 0;
