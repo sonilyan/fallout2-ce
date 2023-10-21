@@ -560,7 +560,7 @@ static int endgameEndingSlideshowWindowInit()
     }
 
     gEndgameEndingSlideshowOldFont = fontGetCurrent();
-    fontSetCurrent(101);
+    fontSetCurrent(103);
 
     paletteFadeTo(gPaletteBlack);
 

@@ -553,6 +553,8 @@ static void showDeath()
             const char* deathFileName = endgameDeathEndingGetFileName();
 
             if (settings.preferences.subtitles) {
+                int old = fontGetCurrent();
+                fontSetCurrent(103);
                 char text[512];
                 if (_mainDeathGrabTextFile(deathFileName, text) == 0) {
                     debugPrint("\n((ShowDeath)): %s\n", text);
@@ -569,6 +571,7 @@ static void showDeath()
                         }
                     }
                 }
+                fontSetCurrent(old);
             }
 
             windowRefresh(win);
