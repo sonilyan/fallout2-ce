@@ -534,7 +534,7 @@ void tileWindowRefresh()
 }
 
 // 0x4B12F8
-int tileSetCenter(int tile, int flags)
+int tileSetCenterTestBlock(int tile,int block, int flags)
 {
     if (!tileIsValid(tile)) {
         return -1;
@@ -561,8 +561,8 @@ int tileSetCenter(int tile, int flags)
             }
         }
 
-        if (gTileScrollBlockingEnabled) {
-            if (_obj_scroll_blocking_at(tile, gElevation) == 0) {
+        if (gTileScrollBlockingEnabled && tileIsValid(block)) {
+            if (_obj_scroll_blocking_at(block, gElevation) == 0) {
                 return -1;
             }
         }
@@ -571,7 +571,7 @@ int tileSetCenter(int tile, int flags)
     int tile_x = gHexGridWidth - 1 - tile % gHexGridWidth;
     int tile_y = tile / gHexGridWidth;
 
-    if (gTileBorderInitialized) {
+    if (gTileBorderInitialized && !(flags & TILE_SET_CENTER_FLAG_IGNORE_SCROLL_RESTRICTIONS)) {
         if (tile_x <= gTileBorderMinX || tile_x >= gTileBorderMaxX || tile_y <= gTileBorderMinY || tile_y >= gTileBorderMaxY) {
             return -1;
         }
@@ -580,7 +580,7 @@ int tileSetCenter(int tile, int flags)
     _tile_y = tile_y;
     _tile_offx = (gTileWindowWidth - 32) / 2;
     _tile_x = tile_x;
-    _tile_offy = (gTileWindowHeight - 16) / 2;
+    _tile_offy = (gTileWindowHeight - 100 - 16) / 2;
 
     if (tile_x & 1) {
         _tile_x -= 1;
@@ -607,7 +607,12 @@ int tileSetCenter(int tile, int flags)
     return 0;
 }
 
-// 0x4B1554
+int tileSetCenter(int tile, int flags)
+{
+    return tileSetCenterTestBlock(tile, tile, flags);
+}
+
+    // 0x4B1554
 static void tileRefreshMapper(Rect* rect, int elevation)
 {
     Rect rectToUpdate;

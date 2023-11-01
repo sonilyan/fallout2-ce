@@ -2,10 +2,15 @@
 
 #include <assert.h>
 #include <limits.h>
+#include <map>
+#include <set>
 #include <stdarg.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
+#include <filesystem>
 
 #include "db.h"
 #include "debug.h"
@@ -2518,6 +2523,100 @@ static void opLookupStringProc(Program* program)
     programFatalError(err);
 }
 
+#ifdef _WIN32
+void checkScriptsOpcodes()
+{
+    debugPrint("Checking scripts opcodes\n");
+
+    std::map<opcode_t, std::set<std::string>> unknown_opcodes;
+
+    // char path[COMPAT_MAX_PATH] = { 0 };
+    // strcpy(path, _cd_path_base);
+    // strcat(path, gScriptsBasePath);
+    // strcat(path, filename);
+    // strcat(path, ".int");
+
+    auto check_file = [&unknown_opcodes](std::string fName) {
+        File* stream = fileOpen(fName.c_str(), "rb");
+        if (stream == NULL) {
+            debugPrint("Error opening %s\n", fName.c_str());
+            exit(1);
+        }
+
+        int fileSize = fileGetSize(stream);
+        // TODO: Use smart ptr
+        auto data = (unsigned char*)malloc(fileSize);
+
+        fileRead(data, 1, fileSize, stream);
+        fileClose(stream);
+
+        {
+            auto check_data = [&fName, &unknown_opcodes](unsigned char* data, size_t len) {
+                size_t i = 0;
+                while (i < len) {
+                    opcode_t opcode = stackReadInt16(data, i);
+                    if (!((opcode >> 8) & 0x80)) {
+                        debugPrint("ERROR\n");
+                        return;
+                    };
+                    unsigned int opcodeIndex = opcode & 0x3FF;
+                    OpcodeHandler* handler = gInterpreterOpcodeHandlers[opcodeIndex];
+                    if (handler == NULL) {
+                        auto& set = unknown_opcodes[opcode];
+                        set.insert(fName);
+                    };
+
+                    i += 2;
+
+                    if (opcodeIndex == (OPCODE_PUSH & 0x3FF)) {
+                        i += 4;
+                    }
+                }
+            };
+
+            check_data(data, 0);
+
+            auto identifiers = data + 24 * stackReadInt32(data, 42) + 42 + 4;
+            auto static_strings = identifiers + stackReadInt32(identifiers, 0) + 4 + 4;
+            auto code_pos = static_strings + stackReadInt32(static_strings, 0) + 4 + 4;
+
+            check_data(code_pos, fileSize - (code_pos - data));
+        }
+
+        free(data);
+    };
+
+    for (auto dirEntry : std::filesystem::directory_iterator("data/scripts")) {
+        if (!dirEntry.is_regular_file()) {
+            continue;
+        };
+        auto file = dirEntry.path();
+        auto ext = file.extension().string();
+        for (char& ch : ext) {
+            ch = std::tolower(ch);
+        };
+        if (ext != ".int") {
+            continue;
+        };
+
+        check_file(file.string());
+    };
+
+    if (unknown_opcodes.size() == 0) {
+        debugPrint("Everything is ok, all opcodes are known\n");
+    } else {
+        debugPrint("Unknown opcodes:\n");
+        for (auto iter : unknown_opcodes) {
+            debugPrint("%x:\n", iter.first);
+            for (auto fName : iter.second) {
+                debugPrint("  - %s\n", fName.c_str());
+            }
+        }
+    }
+    debugPrint("Done\n");
+}
+#endif
+
 // 0x46C7DC
 void interpreterRegisterOpcodeHandlers()
 {
@@ -2603,6 +2702,9 @@ void interpreterRegisterOpcodeHandlers()
 
     intLibInit();
     _initExport();
+#ifdef _WIN32
+    //checkScriptsOpcodes();
+#endif
 }
 
 // 0x46CC68

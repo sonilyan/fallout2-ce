@@ -615,20 +615,27 @@ int mapScroll(int dx, int dy)
         return -1;
     }
 
+    int offsetw = ((screenGetWidth() - 640) / 2 + 32) * dx;
+    int offseth = ((screenGetHeight() - 480) / 2 + 24) * dy;
+
     gameMouseObjectsHide();
 
     int centerScreenX;
     int centerScreenY;
     tileToScreenXY(gCenterTile, &centerScreenX, &centerScreenY, gElevation);
-    centerScreenX += screenDx + 16;
-    centerScreenY += screenDy + 8;
+ 
+    int blockTestTile = tileFromScreenXY(centerScreenX + offsetw + 16, centerScreenY + offseth + 8, gElevation);
+    if (blockTestTile == -1) {
+        return -1;
+    }
 
-    int newCenterTile = tileFromScreenXY(centerScreenX, centerScreenY, gElevation);
+    int newCenterTile = tileFromScreenXY(centerScreenX + screenDx + 16, centerScreenY + screenDy + 8, gElevation);
     if (newCenterTile == -1) {
         return -1;
     }
 
-    if (tileSetCenter(newCenterTile, 0) == -1) {
+    //if (tileSetCenterTestBlock(newCenterTile, blockTestTile, 0) == -1) {
+    if (tileSetCenterTestBlock(newCenterTile, newCenterTile, 0) == -1) {
         return -1;
     }
 
