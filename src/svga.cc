@@ -350,12 +350,7 @@ int screenGetHeight()
 
 int screenGetVisibleHeight()
 {
-    int windowBottomMargin = 0;
-
-    if (!gInterfaceBarMode) {
-        windowBottomMargin = INTERFACE_BAR_HEIGHT;
-    }
-    return screenGetHeight() - windowBottomMargin;
+    return screenGetHeight() - INTERFACE_BAR_HEIGHT;
 }
 
 static bool createRenderer(int width, int height)

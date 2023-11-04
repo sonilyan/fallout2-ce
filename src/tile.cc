@@ -580,7 +580,7 @@ int tileSetCenterTestBlock(int tile,int block, int flags)
     _tile_y = tile_y;
     _tile_offx = (gTileWindowWidth - 32) / 2;
     _tile_x = tile_x;
-    _tile_offy = (gTileWindowHeight - 100 - 16) / 2;
+    _tile_offy = (gTileWindowHeight - 16) / 2;
 
     if (tile_x & 1) {
         _tile_x -= 1;
