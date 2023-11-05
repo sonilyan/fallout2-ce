@@ -250,6 +250,8 @@ target_sources(${EXECUTABLE_NAME} PUBLIC
     "src/worldmap.h"
     "src/xfile.cc"
     "src/xfile.h"
+    "src/edge_border.h"
+    "src/edge_border.cc"
 )
 
 target_sources(${EXECUTABLE_NAME} PUBLIC

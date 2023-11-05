@@ -43,6 +43,8 @@
 #include "window_manager_private.h"
 #include "worldmap.h"
 
+#include "edge_border.h"
+
 namespace fallout {
 
 static char* mapBuildPath(char* name);
@@ -598,8 +600,6 @@ int mapGetCurrentMap()
 {
     return gMapHeader.field_34;
 }
-
-// 0x4826C0
 int mapScroll(int dx, int dy)
 {
     if (getTicksSince(gIsoWindowScrollTimestamp) < 33) {
@@ -615,27 +615,20 @@ int mapScroll(int dx, int dy)
         return -1;
     }
 
-    int offsetw = ((screenGetWidth() - 640) / 2 + 32) * dx;
-    int offseth = ((screenGetHeight() - 480) / 2 + 24) * dy;
-
     gameMouseObjectsHide();
 
     int centerScreenX;
     int centerScreenY;
     tileToScreenXY(gCenterTile, &centerScreenX, &centerScreenY, gElevation);
- 
-    int blockTestTile = tileFromScreenXY(centerScreenX + offsetw + 16, centerScreenY + offseth + 8, gElevation);
-    if (blockTestTile == -1) {
-        return -1;
-    }
+    centerScreenX += screenDx + 16;
+    centerScreenY += screenDy + 8;
 
-    int newCenterTile = tileFromScreenXY(centerScreenX + screenDx + 16, centerScreenY + screenDy + 8, gElevation);
+    int newCenterTile = tileFromScreenXY(centerScreenX, centerScreenY, gElevation);
     if (newCenterTile == -1) {
         return -1;
     }
 
-    //if (tileSetCenterTestBlock(newCenterTile, blockTestTile, 0) == -1) {
-    if (tileSetCenterTestBlock(newCenterTile, newCenterTile, 0) == -1) {
+    if (tileSetCenter(newCenterTile, 0) == -1) {
         return -1;
     }
 
@@ -794,6 +787,27 @@ int mapLoadByName(char* fileName)
         if (rc == 0) {
             strcpy(gMapHeader.name, fileName);
             gDude->data.critter.combat.whoHitMe = NULL;
+        }
+    }
+
+    if (rc == 0) {
+        char fname[64];
+        sprintf(fname, "%s", fileName);
+
+        char* tmp = strstr(fname, ".MAP");
+        if(tmp == NULL)
+            tmp = strstr(fname, ".SAV");
+        if (tmp == NULL)
+            return rc;
+
+        strcpy(tmp, ".EDG");
+        char* filePath = mapBuildPath(fname);
+
+        int r = EdgeBorder::LoadMapEdgeFileSub(filePath);
+        if (r) {
+            EdgeBorderEnabled = false;
+        } else {
+            EdgeBorderEnabled = true;
         }
     }
 

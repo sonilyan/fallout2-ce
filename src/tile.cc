@@ -19,6 +19,7 @@
 #include "platform_compat.h"
 #include "settings.h"
 #include "svga.h"
+#include "edge_border.h"
 
 namespace fallout {
 
@@ -534,7 +535,83 @@ void tileWindowRefresh()
 }
 
 // 0x4B12F8
-int tileSetCenterTestBlock(int tile,int block, int flags)
+int tileSetCenterHRP(int tile,int flags)
+{
+    if (!tileIsValid(tile)) {
+        return -1;
+    }
+
+    if (flags) {
+        tile = EdgeBorder::GetCenterTile(tile, gElevation);
+    }
+
+    if ((flags & TILE_SET_CENTER_FLAG_IGNORE_SCROLL_RESTRICTIONS) == 0) {
+        if (gTileScrollLimitingEnabled) {
+            int tileScreenX;
+            int tileScreenY;
+            tileToScreenXY(tile, &tileScreenX, &tileScreenY, gElevation);
+
+            int dudeScreenX;
+            int dudeScreenY;
+            tileToScreenXY(gDude->tile, &dudeScreenX, &dudeScreenY, gElevation);
+
+            int dx = abs(dudeScreenX - tileScreenX);
+            int dy = abs(dudeScreenY - tileScreenY);
+
+            if (dx > abs(dudeScreenX - _tile_offx)
+                || dy > abs(dudeScreenY - _tile_offy)) {
+                if (dx >= 480 || dy >= 400) {
+                    return -1;
+                }
+            }
+        }
+    }
+
+    if (gTileBorderInitialized && !(flags & TILE_SET_CENTER_FLAG_IGNORE_SCROLL_RESTRICTIONS)) {
+        long result = EdgeBorder::CheckBorder(tile);
+        if (result == 0)
+            return -1; // scroll block
+        if (result == 1)
+            flags |= 1; // redraw
+        if (result == -1)
+            flags = flags;
+    }
+
+    int tile_x = gHexGridWidth - 1 - tile % gHexGridWidth;
+    int tile_y = tile / gHexGridWidth;
+
+    _tile_y = tile_y;
+    _tile_x = tile_x;
+    _tile_offx = mapModWidth + (gTileWindowWidth - 32) / 2;
+    _tile_offy = mapModHeight + (gTileWindowHeight - 16) / 2;
+
+    gCenterTile = tile;
+
+    if (tile_x & 1) {
+        _tile_x -= 1;
+        _tile_offx -= 32;
+    }
+
+    _square_x = _tile_x / 2;
+    _square_y = _tile_y / 2;
+    _square_offx = _tile_offx - 16;
+    _square_offy = _tile_offy - 2;
+
+    if (_tile_y & 1) {
+        _square_offy -= 12;
+        _square_offx -= 16;
+    }
+
+    if ((flags & TILE_SET_CENTER_REFRESH_WINDOW) != 0) {
+        // NOTE: Uninline.
+        tileWindowRefresh();
+        return -1;
+    }
+
+    return 0;
+}
+
+int tileSetCenterVanilla(int tile, int flags)
 {
     if (!tileIsValid(tile)) {
         return -1;
@@ -561,8 +638,8 @@ int tileSetCenterTestBlock(int tile,int block, int flags)
             }
         }
 
-        if (gTileScrollBlockingEnabled && tileIsValid(block)) {
-            if (_obj_scroll_blocking_at(block, gElevation) == 0) {
+        if (gTileScrollBlockingEnabled) {
+            if (_obj_scroll_blocking_at(tile, gElevation) == 0) {
                 return -1;
             }
         }
@@ -578,9 +655,11 @@ int tileSetCenterTestBlock(int tile,int block, int flags)
     }
 
     _tile_y = tile_y;
-    _tile_offx = (gTileWindowWidth - 32) / 2;
     _tile_x = tile_x;
+    _tile_offx = (gTileWindowWidth - 32) / 2;
     _tile_offy = (gTileWindowHeight - 16) / 2;
+
+    gCenterTile = tile;
 
     if (tile_x & 1) {
         _tile_x -= 1;
@@ -597,10 +676,7 @@ int tileSetCenterTestBlock(int tile,int block, int flags)
         _square_offx -= 16;
     }
 
-    gCenterTile = tile;
-
     if ((flags & TILE_SET_CENTER_REFRESH_WINDOW) != 0) {
-        // NOTE: Uninline.
         tileWindowRefresh();
     }
 
@@ -609,7 +685,10 @@ int tileSetCenterTestBlock(int tile,int block, int flags)
 
 int tileSetCenter(int tile, int flags)
 {
-    return tileSetCenterTestBlock(tile, tile, flags);
+    if (EdgeBorderEnabled = true)
+        return tileSetCenterHRP(tile, flags);
+    else
+        return tileSetCenterVanilla(tile, flags);
 }
 
     // 0x4B1554
