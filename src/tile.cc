@@ -685,7 +685,7 @@ int tileSetCenterVanilla(int tile, int flags)
 
 int tileSetCenter(int tile, int flags)
 {
-    if (EdgeBorderEnabled = true)
+    if (EdgeBorderEnabled == true)
         return tileSetCenterHRP(tile, flags);
     else
         return tileSetCenterVanilla(tile, flags);

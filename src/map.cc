@@ -754,10 +754,28 @@ void mapNewMap()
 int mapLoadByName(char* fileName)
 {
     int rc;
-
     compat_strupr(fileName);
-
     rc = -1;
+
+    if (true) {
+        char fname[64];
+        sprintf(fname, "%s", fileName);
+
+        char* tmp = strstr(fname, ".MAP");
+        if(tmp == NULL)
+            tmp = strstr(fname, ".SAV");
+        if (tmp != NULL) {
+            strcpy(tmp, ".EDG");
+            char* filePath = mapBuildPath(fname);
+
+            int r = EdgeBorder::LoadMapEdgeFileSub(filePath);
+            if (r == 0) {
+                EdgeBorderEnabled = true;
+            } else {
+                EdgeBorderEnabled = false;
+            }
+        }
+    }
 
     char* extension = strstr(fileName, ".MAP");
     if (extension != NULL) {
@@ -787,27 +805,6 @@ int mapLoadByName(char* fileName)
         if (rc == 0) {
             strcpy(gMapHeader.name, fileName);
             gDude->data.critter.combat.whoHitMe = NULL;
-        }
-    }
-
-    if (rc == 0) {
-        char fname[64];
-        sprintf(fname, "%s", fileName);
-
-        char* tmp = strstr(fname, ".MAP");
-        if(tmp == NULL)
-            tmp = strstr(fname, ".SAV");
-        if (tmp == NULL)
-            return rc;
-
-        strcpy(tmp, ".EDG");
-        char* filePath = mapBuildPath(fname);
-
-        int r = EdgeBorder::LoadMapEdgeFileSub(filePath);
-        if (r) {
-            EdgeBorderEnabled = false;
-        } else {
-            EdgeBorderEnabled = true;
         }
     }
 

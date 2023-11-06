@@ -37,7 +37,7 @@ int mapHeightModSize;
 int mapModWidth;
 int mapModHeight;
 
-bool EdgeBorderEnabled;
+bool EdgeBorderEnabled = true;
 
 void GetWinMapHalfSize(int& outW, int& outH)
 {
@@ -186,15 +186,15 @@ int EdgeBorder::CheckBorder(int tile)
     mapModHeight = 0;
     mapModWidth = 0;
 
-    if (x == currentMapEdge->borderRect.left) {
+    if (x <= currentMapEdge->borderRect.left) {
         mapModWidth = -mapWidthModSize;
-    } else if (x == currentMapEdge->borderRect.right) {
+    } else if (x >= currentMapEdge->borderRect.right) {
         mapModWidth = mapWidthModSize;
     }
 
-    if (y == currentMapEdge->borderRect.top) {
+    if (y <= currentMapEdge->borderRect.top) {
         mapModHeight = -mapHeightModSize;
-    } else if (y == currentMapEdge->borderRect.bottom) {
+    } else if (y >= currentMapEdge->borderRect.bottom) {
         mapModHeight = mapHeightModSize;
     }
 
@@ -257,15 +257,15 @@ int EdgeBorder::GetCenterTile(int tile, int mapLevel)
     mapModHeight = 0;
     mapModWidth = 0;
 
-    if (edgeData->center.x == edgeData->borderRect.left) {
+    if (edgeData->center.x <= edgeData->borderRect.left) {
         mapModWidth = -mapWidthModSize;
-    } else if (edgeData->center.x == edgeData->borderRect.right) {
+    } else if (edgeData->center.x >= edgeData->borderRect.right) {
         mapModWidth = mapWidthModSize;
     }
 
-    if (edgeData->center.y == edgeData->borderRect.top) {
+    if (edgeData->center.y <= edgeData->borderRect.top) {
         mapModHeight = -mapHeightModSize;
-    } else if (edgeData->center.y == edgeData->borderRect.bottom) {
+    } else if (edgeData->center.y >= edgeData->borderRect.bottom) {
         mapModHeight = mapHeightModSize;
     }
 
