@@ -2,7 +2,7 @@
 
 namespace fallout {
 
-static void settingsFromConfig();
+static void settingsFromConfig(bool firstLoad = false);
 static void settingsToConfig();
 static void settingsRead(const char* section, const char* key, std::string& value);
 static void settingsRead(const char* section, const char* key, int& value);
@@ -15,13 +15,19 @@ static void settingsWrite(const char* section, const char* key, double& value);
 
 Settings settings;
 
+bool disable_night;
+bool mobile;
+
 bool settingsInit(bool isMapper, int argc, char** argv)
 {
     if (!gameConfigInit(isMapper, argc, argv)) {
         return false;
     }
 
-    settingsFromConfig();
+    settingsFromConfig(true);
+
+    disable_night = settings.preferences.disable_night;
+    mobile = settings.preferences.mobile;
 
     return true;
 }
@@ -41,7 +47,7 @@ bool settingsExit(bool shouldSave)
     return gameConfigExit(shouldSave);
 }
 
-static void settingsFromConfig()
+static void settingsFromConfig(bool firstLoad)
 {
     settingsRead(GAME_CONFIG_SYSTEM_KEY, GAME_CONFIG_EXECUTABLE_KEY, settings.system.executable);
     settingsRead(GAME_CONFIG_SYSTEM_KEY, GAME_CONFIG_MASTER_DAT_KEY, settings.system.master_dat_path);
@@ -77,8 +83,13 @@ static void settingsFromConfig()
     settingsRead(GAME_CONFIG_PREFERENCES_KEY, GAME_CONFIG_MOUSE_SENSITIVITY_KEY, settings.preferences.mouse_sensitivity);
     settingsRead(GAME_CONFIG_PREFERENCES_KEY, GAME_CONFIG_RUNNING_BURNING_GUY_KEY, settings.preferences.running_burning_guy);
     
-    settingsRead(GAME_CONFIG_PREFERENCES_KEY, "disable_night", settings.preferences.disable_night);
-    settingsRead(GAME_CONFIG_PREFERENCES_KEY, "mobile", settings.preferences.mobile);
+    if (firstLoad) {
+        settingsRead(GAME_CONFIG_PREFERENCES_KEY, "disable_night", settings.preferences.disable_night);
+        settingsRead(GAME_CONFIG_PREFERENCES_KEY, "mobile", settings.preferences.mobile);
+    } else {
+        settings.preferences.disable_night = disable_night;
+        settings.preferences.mobile = mobile;
+    }
 
     settingsRead(GAME_CONFIG_SOUND_KEY, GAME_CONFIG_INITIALIZE_KEY, settings.sound.initialize);
     settingsRead(GAME_CONFIG_SOUND_KEY, GAME_CONFIG_DEBUG_KEY, settings.sound.debug);
@@ -154,8 +165,8 @@ static void settingsToConfig()
     settingsWrite(GAME_CONFIG_PREFERENCES_KEY, GAME_CONFIG_MOUSE_SENSITIVITY_KEY, settings.preferences.mouse_sensitivity);
     settingsWrite(GAME_CONFIG_PREFERENCES_KEY, GAME_CONFIG_RUNNING_BURNING_GUY_KEY, settings.preferences.running_burning_guy);
     
-    settingsWrite(GAME_CONFIG_PREFERENCES_KEY, "disable_night", settings.preferences.disable_night);
-    settingsWrite(GAME_CONFIG_PREFERENCES_KEY, "mobile", settings.preferences.mobile);
+    settingsWrite(GAME_CONFIG_PREFERENCES_KEY, "disable_night", disable_night);
+    settingsWrite(GAME_CONFIG_PREFERENCES_KEY, "mobile", mobile);
 
     settingsWrite(GAME_CONFIG_SOUND_KEY, GAME_CONFIG_INITIALIZE_KEY, settings.sound.initialize);
     settingsWrite(GAME_CONFIG_SOUND_KEY, GAME_CONFIG_DEBUG_KEY, settings.sound.debug);
