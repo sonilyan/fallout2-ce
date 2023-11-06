@@ -1102,6 +1102,83 @@ static void op_div(Program* program)
     }
 }
 
+static void set_fake_perk(Program* program)
+{
+    char* value1 = programStackPopString(program);
+    int value2 = programStackPopInteger(program);
+    int value3 = programStackPopInteger(program);
+    char* value4 = programStackPopString(program);
+}
+
+static void show_iface_tag(Program* program)
+{
+    int value = programStackPopInteger(program);
+}
+
+static void hide_iface_tag(Program* program)
+{
+    int value = programStackPopInteger(program);
+}
+
+static void is_iface_tag_active(Program* program)
+{
+    int value = programStackPopInteger(program);
+    programStackPushInteger(program, 0);
+}
+
+
+static void get_sfall_arg(Program* program)
+{
+    programStackPushInteger(program, 0);
+}
+
+static void set_sfall_return(Program* program)
+{
+    programStackPopValue(program);
+}
+
+static void fs_copy(Program* program)
+{
+    char* value1 = programStackPopString(program);
+    char* value2 = programStackPopString(program);
+    programStackPushInteger(program, 0);
+}
+
+static void fs_write_short(Program* program)
+{
+    int value1 = programStackPopInteger(program);
+    int value2 = programStackPopInteger(program);
+}
+
+static void fs_seek(Program* program)
+{
+    int value1 = programStackPopInteger(program);
+    int value2 = programStackPopInteger(program);
+}
+
+static void op_set_hero_race(Program* program)
+{
+    int value = programStackPopInteger(program);
+    debugPrint("op_set_hero_race");
+}
+
+static void op_set_hero_style(Program* program)
+{
+    int value = programStackPopInteger(program);
+    debugPrint("op_set_hero_style");
+}
+
+static void op_refresh_pc_art(Program* program)
+{
+    debugPrint("op_refresh_pc_art");
+}
+
+static void register_hook_proc(Program* program)
+{
+    int value1 = programStackPopInteger(program);
+    int value2 = programStackPopInteger(program);
+}
+
 void sfallOpcodesInit()
 {
     interpreterRegisterOpcode(0x8156, opReadByte);
@@ -1203,10 +1280,37 @@ void sfallOpcodesInit()
     interpreterRegisterOpcode(0x827B, op_sfall_func5);
     interpreterRegisterOpcode(0x827C, op_sfall_func6);
     interpreterRegisterOpcode(0x827F, op_div);
+
+    interpreterRegisterOpcode(0x81BB, set_fake_perk);
+    interpreterRegisterOpcode(0x81DC, show_iface_tag);
+    interpreterRegisterOpcode(0x81DD, hide_iface_tag);
+    interpreterRegisterOpcode(0x81DE, is_iface_tag_active);
+    interpreterRegisterOpcode(0x81E4, get_sfall_arg);
+    interpreterRegisterOpcode(0x81E5, set_sfall_return);
+
+    interpreterRegisterOpcode(0x81F8, fs_copy);
+    interpreterRegisterOpcode(0x81FB, fs_write_short);
+    interpreterRegisterOpcode(0x8202, fs_seek);
+
+    interpreterRegisterOpcode(0x8214, op_set_hero_race);
+    interpreterRegisterOpcode(0x8215, op_set_hero_style);
+    interpreterRegisterOpcode(0x8227, op_refresh_pc_art);
+    
+    interpreterRegisterOpcode(0x8262, register_hook_proc);
 }
 
 void sfallOpcodesExit()
 {
 }
+/*
+* Unknown opcodes:
+INFO: 81f8:
+INFO:   - data/scripts\gl_k_goris_derobing.int
+INFO: 81fb:
+INFO:   - data/scripts\gl_k_goris_derobing.int
+INFO: 8202:
+INFO:   - data/scripts\gl_k_goris_derobing.int
+INFO: Done
+*/
 
 } // namespace fallout
