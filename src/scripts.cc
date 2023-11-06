@@ -1349,9 +1349,6 @@ static int scriptLocateProcs(Script* script)
 {
     for (int proc = 0; proc < SCRIPT_PROC_COUNT; proc++) {
         int index = programFindProcedure(script->program, gScriptProcNames[proc]);
-        if (index == -1) {
-            index = SCRIPT_PROC_NO_PROC;
-        }
         script->procs[proc] = index;
     }
 
