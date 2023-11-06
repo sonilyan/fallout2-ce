@@ -3,7 +3,7 @@
 
 namespace fallout {
 
-#define LIGHT_INTENSITY_MIN (65536)
+#define LIGHT_INTENSITY_MIN (GetMinLightIntensity())
 #define LIGHT_INTENSITY_MAX 65536
 
 typedef void AdjustLightIntensityProc(int elevation, int tile, int intensity);
@@ -19,6 +19,7 @@ void lightSetTileIntensity(int elevation, int tile, int intensity);
 void lightIncreaseTileIntensity(int elevation, int tile, int intensity);
 void lightDecreaseTileIntensity(int elevation, int tile, int intensity);
 void lightResetTileIntensity();
+int GetMinLightIntensity();
 
 } // namespace fallout
 

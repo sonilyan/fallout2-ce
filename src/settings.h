@@ -44,6 +44,8 @@ struct PreferencesSettings {
     double brightness = 1.0;
     double mouse_sensitivity = 1.0;
     bool running_burning_guy = true;
+    bool disable_night = false;
+    bool mobile = false;
 };
 
 struct SoundSettings {

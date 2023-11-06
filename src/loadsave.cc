@@ -725,14 +725,19 @@ int lsgSaveGame(int mode)
         }
 
         if (rc == 1) {
-            int month;
-            int day;
-            int year;
-            gameTimeGetDate(&month, &day, &year);
+            int v50 = 1;
+            if (settings.preferences.mobile) {
+                int month;
+                int day;
+                int year;
+                gameTimeGetDate(&month, &day, &year);
 
-            sprintf(_LSData[_slot_cursor].description, "%d-%d-%d %s", year, month, day, gameTimeGetTimeString());
+                sprintf(_LSData[_slot_cursor].description, "%d-%d-%d %s", year, month, day, gameTimeGetTimeString());
 
-            int v50 = 1;//_GetComment(_slot_cursor);
+            } else {
+                v50 = _GetComment(_slot_cursor);
+            }
+
             if (v50 == -1) {
                 gameMouseSetCursor(MOUSE_CURSOR_ARROW);
                 soundPlayFile("iisxxxx1");

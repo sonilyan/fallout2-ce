@@ -6,6 +6,7 @@
 #include "object.h"
 #include "perk.h"
 #include "tile.h"
+#include "settings.h"
 
 namespace fallout {
 
@@ -140,4 +141,11 @@ void lightResetTileIntensity()
     }
 }
 
+int GetMinLightIntensity()
+{
+    if (settings.preferences.disable_night)
+        return 65536;
+    else
+        return 65536 / 4;
+}
 } // namespace fallout

@@ -76,6 +76,9 @@ static void settingsFromConfig()
     settingsRead(GAME_CONFIG_PREFERENCES_KEY, GAME_CONFIG_BRIGHTNESS_KEY, settings.preferences.brightness);
     settingsRead(GAME_CONFIG_PREFERENCES_KEY, GAME_CONFIG_MOUSE_SENSITIVITY_KEY, settings.preferences.mouse_sensitivity);
     settingsRead(GAME_CONFIG_PREFERENCES_KEY, GAME_CONFIG_RUNNING_BURNING_GUY_KEY, settings.preferences.running_burning_guy);
+    
+    settingsRead(GAME_CONFIG_PREFERENCES_KEY, "disable_night", settings.preferences.disable_night);
+    settingsRead(GAME_CONFIG_PREFERENCES_KEY, "mobile", settings.preferences.mobile);
 
     settingsRead(GAME_CONFIG_SOUND_KEY, GAME_CONFIG_INITIALIZE_KEY, settings.sound.initialize);
     settingsRead(GAME_CONFIG_SOUND_KEY, GAME_CONFIG_DEBUG_KEY, settings.sound.debug);
@@ -150,6 +153,9 @@ static void settingsToConfig()
     settingsWrite(GAME_CONFIG_PREFERENCES_KEY, GAME_CONFIG_BRIGHTNESS_KEY, settings.preferences.brightness);
     settingsWrite(GAME_CONFIG_PREFERENCES_KEY, GAME_CONFIG_MOUSE_SENSITIVITY_KEY, settings.preferences.mouse_sensitivity);
     settingsWrite(GAME_CONFIG_PREFERENCES_KEY, GAME_CONFIG_RUNNING_BURNING_GUY_KEY, settings.preferences.running_burning_guy);
+    
+    settingsWrite(GAME_CONFIG_PREFERENCES_KEY, "disable_night", settings.preferences.disable_night);
+    settingsWrite(GAME_CONFIG_PREFERENCES_KEY, "mobile", settings.preferences.mobile);
 
     settingsWrite(GAME_CONFIG_SOUND_KEY, GAME_CONFIG_INITIALIZE_KEY, settings.sound.initialize);
     settingsWrite(GAME_CONFIG_SOUND_KEY, GAME_CONFIG_DEBUG_KEY, settings.sound.debug);
