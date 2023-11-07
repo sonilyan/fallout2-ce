@@ -71,6 +71,10 @@ bool indicatorBarShow();
 bool indicatorBarHide();
 bool interface_get_current_attack_mode(int* hit_mode);
 
+bool indicatorBarAdd(int indicator);
+bool isIndicatorBarActive(int indicator);
+
+
 unsigned char* customInterfaceBarGetBackgroundImageData();
 
 } // namespace fallout

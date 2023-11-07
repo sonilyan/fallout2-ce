@@ -125,7 +125,6 @@ static void interfaceBarFree();
 static void indicatorBarReset();
 static int indicatorBoxCompareByPosition(const void* a, const void* b);
 static void indicatorBarRender(int count);
-static bool indicatorBarAdd(int indicator);
 
 static void customInterfaceBarInit();
 static void customInterfaceBarExit();
@@ -2454,7 +2453,7 @@ static void indicatorBarRender(int count)
 // space in the indicator bar.
 //
 // 0x4616F0
-static bool indicatorBarAdd(int indicator)
+bool indicatorBarAdd(int indicator)
 {
     for (int index = 0; index < INDICATOR_SLOTS_COUNT; index++) {
         if (gIndicatorSlots[index] == -1) {
@@ -2467,6 +2466,18 @@ static bool indicatorBarAdd(int indicator)
 
     return false;
 }
+
+bool isIndicatorBarActive(int indicator)
+{
+    for (int index = 0; index < INDICATOR_SLOTS_COUNT; index++) {
+        if (gIndicatorSlots[index] == indicator) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 
 // 0x461740
 bool indicatorBarShow()

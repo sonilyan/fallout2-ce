@@ -31,6 +31,8 @@
 #include "svga.h"
 #include "tile.h"
 #include "worldmap.h"
+#include "interface.h"
+#include "critter.h"
 
 namespace fallout {
 
@@ -1113,17 +1115,28 @@ static void set_fake_perk(Program* program)
 static void show_iface_tag(Program* program)
 {
     int value = programStackPopInteger(program);
+    if (value == 3 || value == 4) {
+        dudeEnableState(value);
+        indicatorBarRefresh();
+    }
 }
 
 static void hide_iface_tag(Program* program)
 {
     int value = programStackPopInteger(program);
+    if (value == 3 || value == 4) {
+        dudeDisableState(value);
+        indicatorBarRefresh();
+    }
 }
 
 static void is_iface_tag_active(Program* program)
 {
     int value = programStackPopInteger(program);
-    programStackPushInteger(program, 0);
+    if (value == 3 || value == 4) {
+        bool r = dudeHasState(value);
+        programStackPushInteger(program, r == true ? 1 : 0);
+    }
 }
 
 
