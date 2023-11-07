@@ -1858,7 +1858,7 @@ static void opAttackComplex(Program* program)
 
     if (_gdialogActive()) {
         // TODO: Might be an error, program flag is not removed.
-        return;
+        //return;
     }
 
     if (isInCombat()) {
