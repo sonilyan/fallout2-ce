@@ -1326,6 +1326,10 @@ int scriptExecProc(int sid, int proc)
         if (v9 == 0) {
             v9 = 1;
         }
+        if (v9 == -1) {
+            return -1;
+        }
+
 
         script->action = 0;
         // NOTE: Uninline.
