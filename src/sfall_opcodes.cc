@@ -1169,6 +1169,18 @@ static void fs_seek(Program* program)
     int value2 = programStackPopInteger(program);
 }
 
+static void fs_read_short(Program* program)
+{
+    int value = programStackPopInteger(program);
+    programStackPushInteger(program, 0);
+}
+
+static void op_reg_anim_combat_check(Program* program)
+{
+    int value = programStackPopInteger(program);
+    debugPrint("op_reg_anim_combat_check");
+}
+
 static void op_set_hero_race(Program* program)
 {
     int value = programStackPopInteger(program);
@@ -1304,6 +1316,8 @@ void sfallOpcodesInit()
     interpreterRegisterOpcode(0x81F8, fs_copy);
     interpreterRegisterOpcode(0x81FB, fs_write_short);
     interpreterRegisterOpcode(0x8202, fs_seek);
+    interpreterRegisterOpcode(0x820A, fs_read_short);
+    interpreterRegisterOpcode(0x825C, op_reg_anim_combat_check);
 
     interpreterRegisterOpcode(0x8214, op_set_hero_race);
     interpreterRegisterOpcode(0x8215, op_set_hero_style);
