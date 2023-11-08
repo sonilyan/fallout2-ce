@@ -1246,6 +1246,9 @@ bool dudeIsSneaking()
 // 0x42E424
 int knockoutEventProcess(Object* obj, void* data)
 {
+    if (obj == nullptr)
+        return 0;
+
     if ((obj->data.critter.combat.results & DAM_DEAD) != 0) {
         return 0;
     }

@@ -498,7 +498,7 @@ static int wmMatchAreaFromMap(int mapIdx, int* areaIdxPtr);
 static int wmWorldMapFunc(int a1);
 static int wmInterfaceCenterOnParty();
 static void wmCheckGameEvents();
-static int wmRndEncounterOccurred();
+static int wmRndEncounterOccurred(int walkingStep = 1);
 static int wmPartyFindCurSubTile();
 static int wmFindCurSubTileFromPos(int x, int y, SubtileInfo** subtilePtr);
 static int wmFindCurTileFromPos(int x, int y, TileInfo** tilePtr);
@@ -3034,9 +3034,12 @@ static int wmWorldMapFunc(int a1)
 
             // 18000 * 30 = 540000 
             unsigned int n = getTicks();
+
+            if ((n - l) > 33) {
+                l = n;
+            }
+
             int time_pass = ((n - l) * 270000 / 1000);
-            timeSpend += time_pass;
-            l = n;
 
             if (wmGenData.isInCar) {
                 walkingStep += 3;
@@ -3057,7 +3060,12 @@ static int wmWorldMapFunc(int a1)
                 if (wmGenData.carImageCurrentFrameIndex >= artGetFrameCount(wmGenData.carImageFrm)) {
                     wmGenData.carImageCurrentFrameIndex = 0;
                 }
+
+                time_pass /= 2;
             }
+
+            timeSpend += time_pass;
+            l = n;
 
             int walkingStepCost = (18000 / walkingStep);
             if (wmGameTimeIncrement(time_pass)) {
@@ -3138,7 +3146,7 @@ static int wmWorldMapFunc(int a1)
             }
 
             if (wmGenData.isWalking) {
-                int retval = wmRndEncounterOccurred();
+                int retval = wmRndEncounterOccurred(walkingStep);
                 if (retval == 1) {
                     l = 0;
                     if (wmGenData.encounterMapId != -1) {
@@ -3357,10 +3365,10 @@ static void wmCheckGameEvents()
 }
 
 // 0x4C0634
-static int wmRndEncounterOccurred()
+static int wmRndEncounterOccurred(int walkingStep)
 {
     unsigned int now = gameTimeGetTime();
-    if (getTicksBetween(now, wmLastRndTime) < 10 * 60 * 60 * 24) {
+    if (getTicksBetween(now, wmLastRndTime) < 10 * 60 * 60 * 24 / walkingStep) {
         return 0;
     }
 
