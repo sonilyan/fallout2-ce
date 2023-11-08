@@ -1304,15 +1304,6 @@ int scriptExecProc(int sid, int proc)
         return 0;
     }
 
-    int v9 = script->procs[proc];
-    if (v9 == 0) {
-        v9 = 1;
-    }
-
-    if (v9 == -1) {
-        return -1;
-    }
-
     if (script->target == NULL) {
         script->target = script->owner;
     }
@@ -1322,19 +1313,20 @@ int scriptExecProc(int sid, int proc)
     if (programLoaded) {
         scriptLocateProcs(script);
 
-        v9 = script->procs[proc];
-        if (v9 == 0) {
-            v9 = 1;
-        }
+        int v9 = script->procs[proc];
         if (v9 == -1) {
             return -1;
         }
-
 
         script->action = 0;
         // NOTE: Uninline.
         runProgram(program);
         _interpret(program, -1);
+    }
+ 
+    int v9 = script->procs[proc];
+    if (v9 == -1) {
+        return -1;
     }
 
     script->action = proc;
@@ -1368,7 +1360,7 @@ bool scriptHasProc(int sid, int proc)
         return 0;
     }
 
-    return scr->procs[proc] != SCRIPT_PROC_NO_PROC;
+    return scr->procs[proc] != -1;
 }
 
 // 0x4A4D50
@@ -1992,7 +1984,7 @@ static int scriptRead(Script* scr, File* stream)
     scr->target = NULL;
 
     for (int index = 0; index < SCRIPT_PROC_COUNT; index++) {
-        scr->procs[index] = 0;
+        scr->procs[index] = -1;
     }
 
     if (!(gMapHeader.flags & 1)) {
@@ -2214,7 +2206,7 @@ int scriptAdd(int* sidPtr, int scriptType)
     scr->field_50 = 0;
 
     for (int index = 0; index < SCRIPT_PROC_COUNT; index++) {
-        scr->procs[index] = SCRIPT_PROC_NO_PROC;
+        scr->procs[index] = -1;
     }
 
     scr->overriddenSelf = nullptr;
