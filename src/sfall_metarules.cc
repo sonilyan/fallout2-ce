@@ -129,8 +129,8 @@ void mf_get_flags(Program* program, int args)
 
 void mf_get_object_data(Program* program, int args)
 {
-    size_t offset = static_cast<size_t>(programStackPopInteger(program));
     void* ptr = programStackPopPointer(program);
+    size_t offset = static_cast<size_t>(programStackPopInteger(program));
 
     if (offset % 4 != 0) {
         programFatalError("mf_get_object_data: bad offset %d", offset);
