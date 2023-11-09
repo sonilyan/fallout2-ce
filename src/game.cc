@@ -1340,24 +1340,26 @@ int showQuitConfirmationDialog()
 static int gameDbInit()
 {
     const char* main_file_name;
-    const char* patch_file_name;
+    const char* master_patch_file_name;
+    const char* critter_patch_file_name;
     int patch_index;
     char filename[COMPAT_MAX_PATH];
 
     main_file_name = NULL;
-    patch_file_name = NULL;
+    master_patch_file_name = NULL;
+    critter_patch_file_name = NULL;
 
     main_file_name = settings.system.master_dat_path.c_str();
     if (*main_file_name == '\0') {
         main_file_name = NULL;
     }
 
-    patch_file_name = settings.system.master_patches_path.c_str();
-    if (*patch_file_name == '\0') {
-        patch_file_name = NULL;
+    master_patch_file_name = settings.system.master_patches_path.c_str();
+    if (*master_patch_file_name == '\0') {
+        master_patch_file_name = NULL;
     }
 
-    int master_db_handle = dbOpen(main_file_name, 0, patch_file_name, 1);
+    int master_db_handle = dbOpen(main_file_name, 0, master_patch_file_name, 1);
     if (master_db_handle == -1) {
         showMesageBox("Could not find the master datafile. Please make sure the FALLOUT CD is in the drive and that you are running FALLOUT from the directory you installed it to.");
         return -1;
@@ -1368,12 +1370,12 @@ static int gameDbInit()
         main_file_name = NULL;
     }
 
-    patch_file_name = settings.system.critter_patches_path.c_str();
-    if (*patch_file_name == '\0') {
-        patch_file_name = NULL;
+    critter_patch_file_name = settings.system.critter_patches_path.c_str();
+    if (*critter_patch_file_name == '\0') {
+        critter_patch_file_name = NULL;
     }
 
-    int critter_db_handle = dbOpen(main_file_name, 0, patch_file_name, 1);
+    int critter_db_handle = dbOpen(main_file_name, 0, critter_patch_file_name, 1);
     if (critter_db_handle == -1) {
         showMesageBox("Could not find the critter datafile. Please make sure the FALLOUT CD is in the drive and that you are running FALLOUT from the directory you installed it to.");
         return -1;
@@ -1383,12 +1385,12 @@ static int gameDbInit()
         snprintf(filename, sizeof(filename), "patch%03d.dat", patch_index);
 
         if (compat_access(filename, 0) == 0) {
-            dbOpen(filename, 0, NULL, 1);
+            dbOpen(filename, 0, master_patch_file_name, 1);
         }
     }
 
     if (compat_access("f2_res.dat", 0) == 0) {
-        dbOpen("f2_res.dat", 0, NULL, 1);
+        dbOpen("f2_res.dat", 0, master_patch_file_name, 1);
     }
 
 #ifdef _WIN32
@@ -1399,7 +1401,7 @@ static int gameDbInit()
             char tmp[128];
             sprintf(tmp, "./mods/%s", fileInfo.name);
             if (compat_access(tmp, 0) == 0) {
-                dbOpen(tmp, 0, NULL, 1);
+                dbOpen(tmp, 0, master_patch_file_name, 1);
             }
 
         } while (_findnext(hFile, &fileInfo) == 0);
@@ -1422,7 +1424,7 @@ static int gameDbInit()
                 char tmp[128];
                 sprintf(tmp, "./mods/%s", file->d_name);
                 if (compat_access(tmp, 0) == 0) {
-                    dbOpen(tmp, 0, NULL, 1);
+                    dbOpen(tmp, 0, master_patch_file_name, 1);
                 }
             }
         }
@@ -1441,7 +1443,7 @@ static int gameDbInit()
                     sprintf(key, "PatchFile%d", i);
                 if (configGetString(&config, "ExtraPatches", key, &path)) {
                     if (compat_access(path, 0) == 0) {
-                        dbOpen(path, 0, NULL, 1);
+                        dbOpen(path, 0, master_patch_file_name, 1);
                     }
                 } 
             }
