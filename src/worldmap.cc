@@ -4491,7 +4491,10 @@ static int wmInterfaceInit()
 {
     int fid;
 
-    wmLastRndTime = getTicks();
+    if(wmGenData.isInCar)
+        wmLastRndTime = gameTimeGetTime() + 10 * 60 * 60 * 4;
+    else
+        wmLastRndTime = gameTimeGetTime() + 10 * 60 * 60 * 12;
 
     // SFALL: Fix default worldmap font.
     // CE: This setting affects only city names. In Sfall it's configurable via
