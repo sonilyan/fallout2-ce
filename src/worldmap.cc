@@ -4496,7 +4496,7 @@ static int wmInterfaceInit()
     int fid;
 
     if(wmGenData.isInCar)
-        wmLastRndTime = gameTimeGetTime() + 10 * 60 * 60 * 4;
+        wmLastRndTime = gameTimeGetTime() + 10 * 60 * 60 * 8;
     else
         wmLastRndTime = gameTimeGetTime() + 10 * 60 * 60 * 12;
 
