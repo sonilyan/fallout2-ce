@@ -3368,6 +3368,10 @@ static void wmCheckGameEvents()
 static int wmRndEncounterOccurred(int walkingStep)
 {
     unsigned int now = gameTimeGetTime();
+
+    if (wmLastRndTime > now)
+        return 0;
+
     if (getTicksBetween(now, wmLastRndTime) < 10 * 60 * 60 * 24 / walkingStep) {
         return 0;
     }
