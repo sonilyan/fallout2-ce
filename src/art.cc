@@ -1241,7 +1241,7 @@ static int artGetDataSize(Art* art)
         if (index == 0 || art->dataOffsets[index - 1] != art->dataOffsets[index]) {
             // Assume worst case - every frame is unaligned and need
             // max padding.
-            dataSize += art->dataSize * art->frameCount;
+            dataSize += art->dataSize + paddingForSize(art->dataSize);
         }
     }
 
