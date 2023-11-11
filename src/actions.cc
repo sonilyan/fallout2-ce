@@ -1030,7 +1030,7 @@ int _action_climb_ladder(Object* a1, Object* a2)
     reg_anim_begin(animationRequestOptions);
 
     int tile = tileGetTileInDirection(a2->tile, ROTATION_SE, 1);
-    if (actionPoints != -1 || objectGetDistanceBetween(a1, a2) < 5) {
+    if (actionPoints != -1 || objectGetDistanceBetween(a1, a2) < 1) {
         animationRegisterMoveToTile(a1, tile, a2->elevation, actionPoints, 0);
     } else {
         animationRegisterRunToTile(a1, tile, a2->elevation, actionPoints, 0);
@@ -1097,7 +1097,7 @@ int _action_use_an_item_on_object(Object* a1, Object* a2, Object* a3)
 
         reg_anim_begin(animationRequestOptions);
 
-        if (actionPoints != -1 || objectGetDistanceBetween(a1, a2) < 5) {
+        if (actionPoints != -1 || objectGetDistanceBetween(a1, a2) <= 1) {
             animationRegisterMoveToObject(a1, a2, actionPoints, 0);
         } else {
             animationRegisterRunToObject(a1, a2, -1, 0);
@@ -1113,7 +1113,7 @@ int _action_use_an_item_on_object(Object* a1, Object* a2, Object* a3)
         if (a2a != 0) {
             const char* sfx = sfxBuildCharName(a1, ANIM_PUT_AWAY, CHARACTER_SOUND_EFFECT_UNUSED);
             animationRegisterPlaySoundEffect(a1, sfx, -1);
-            animationRegisterAnimate(a1, ANIM_PUT_AWAY, 0);
+            //animationRegisterAnimate(a1, ANIM_PUT_AWAY, 0);
         }
 
         int anim;
@@ -1138,7 +1138,7 @@ int _action_use_an_item_on_object(Object* a1, Object* a2, Object* a3)
         }
 
         if (a2a != 0) {
-            animationRegisterTakeOutWeapon(a1, a2a, -1);
+            //animationRegisterTakeOutWeapon(a1, a2a, -1);
         }
 
         return reg_anim_end();
@@ -1172,7 +1172,7 @@ int actionPickUp(Object* critter, Object* item)
         animationRegisterMoveToObject(critter, item, critter->data.critter.combat.ap, 0);
     } else {
         reg_anim_begin(critter == gDude ? ANIMATION_REQUEST_RESERVED : ANIMATION_REQUEST_UNRESERVED);
-        if (objectGetDistanceBetween(critter, item) >= 5) {
+        if (objectGetDistanceBetween(critter, item) > 1) {
             animationRegisterRunToObject(critter, item, -1, 0);
         } else {
             animationRegisterMoveToObject(critter, item, -1, 0);
@@ -1237,7 +1237,7 @@ int actionPickUp(Object* critter, Object* item)
         }
 
         if (weaponAnimationCode != 0) {
-            animationRegisterTakeOutWeapon(critter, weaponAnimationCode, -1);
+            //animationRegisterTakeOutWeapon(critter, weaponAnimationCode, -1);
         }
 
         if (item->frame == 0 || item->frame == 1) {
@@ -1278,7 +1278,7 @@ int _action_loot_container(Object* critter, Object* container)
     } else {
         reg_anim_begin(critter == gDude ? ANIMATION_REQUEST_RESERVED : ANIMATION_REQUEST_UNRESERVED);
 
-        if (objectGetDistanceBetween(critter, container) < 5) {
+        if (objectGetDistanceBetween(critter, container) <= 1) {
             animationRegisterMoveToObject(critter, container, -1, 0);
         } else {
             animationRegisterRunToObject(critter, container, -1, 0);
@@ -1482,7 +1482,7 @@ int actionUseSkill(Object* a1, Object* a2, int skill)
     } else {
         reg_anim_begin(a1 == gDude ? ANIMATION_REQUEST_RESERVED : ANIMATION_REQUEST_UNRESERVED);
         if (a2 != gDude) {
-            if (objectGetDistanceBetween(performer, a2) >= 5) {
+            if (objectGetDistanceBetween(performer, a2) > 1) {
                 animationRegisterRunToObject(performer, a2, -1, 0);
             } else {
                 animationRegisterMoveToObject(performer, a2, -1, 0);
