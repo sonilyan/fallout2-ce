@@ -179,8 +179,12 @@ bool mouseDeviceGetData(MouseData* mouseState)
         gTouchMouseDeltaX = 0;
         gTouchMouseDeltaY = 0;
 
-        if (lastType == SDL_FINGERDOWN && SDL_GetTicks() - gTouchGestureLastTouchUpTimestamp > 250 && gTouchMouseLastX > screenGetWidth() / 4) {
-            longPressed = true;
+        if (lastType == SDL_FINGERDOWN && SDL_GetTicks() - gTouchGestureLastTouchUpTimestamp > 250) {
+            if (gTouchMouseLastX > screenGetWidth() / 4) {
+                longPressed = true;
+            } else {
+                _item_outline_on();
+            }
         }
 
         if (longPressed) {
@@ -251,7 +255,6 @@ void handleTouchEvent(SDL_Event* event)
             if(event->tfinger.x < 0.5){
                 gTouchMouseDeltaX += (gTouchMouseLastX - prevX) * 2 * settings.preferences.mouse_sensitivity;
                 gTouchMouseDeltaY += (gTouchMouseLastY - prevY) * 2 * settings.preferences.mouse_sensitivity;
-                _item_outline_on();
             } else {
                 gTouchMouseDeltaX += (gTouchMouseLastX - prevX) * settings.preferences.mouse_sensitivity;
                 gTouchMouseDeltaY += (gTouchMouseLastY - prevY) * settings.preferences.mouse_sensitivity;
