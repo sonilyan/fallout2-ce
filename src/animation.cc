@@ -304,8 +304,9 @@ static bool _anim_in_bk = false;
 // 0x530014
 static AnimationSad gAnimationSads[ANIMATION_SAD_LIST_CAPACITY];
 
+#define PL 4000
 // 0x542FD4
-static PathNode gClosedPathNodeList[2000];
+static PathNode gClosedPathNodeList[PL];
 
 // 0x54CC14
 static AnimationSequence gAnimationSequences[32];
@@ -314,7 +315,7 @@ static AnimationSequence gAnimationSequences[32];
 static unsigned char gPathfinderProcessedTiles[5000];
 
 // 0x562B9C
-static PathNode gOpenPathNodeList[2000];
+static PathNode gOpenPathNodeList[PL];
 
 // 0x56C7DC
 static int gAnimationDescriptionCurrentIndex;
@@ -1740,7 +1741,7 @@ int pathfinderFindPath(Object* object, int from, int to, unsigned char* rotation
     gOpenPathNodeList[0].estimate = _tile_idistance(from, to);
     gOpenPathNodeList[0].cost = 0;
 
-    for (int index = 1; index < 2000; index += 1) {
+    for (int index = 1; index < PL; index += 1) {
         gOpenPathNodeList[index].tile = -1;
     }
 
@@ -1788,7 +1789,7 @@ int pathfinderFindPath(Object* object, int from, int to, unsigned char* rotation
 
         closedPathNodeListLength += 1;
 
-        if (closedPathNodeListLength == 2000) {
+        if (closedPathNodeListLength == PL) {
             return 0;
         }
 
@@ -1809,7 +1810,7 @@ int pathfinderFindPath(Object* object, int from, int to, unsigned char* rotation
             }
 
             int v25 = 0;
-            for (; v25 < 2000; v25++) {
+            for (; v25 < PL; v25++) {
                 if (gOpenPathNodeList[v25].tile == -1) {
                     break;
                 }
@@ -1817,7 +1818,7 @@ int pathfinderFindPath(Object* object, int from, int to, unsigned char* rotation
 
             openPathNodeListLength += 1;
 
-            if (openPathNodeListLength == 2000) {
+            if (openPathNodeListLength == PL) {
                 return 0;
             }
 
