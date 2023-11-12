@@ -62,6 +62,8 @@ static void opReadByte(Program* program)
     case 0x56D38C:
         value = combatGetTargetHighlight();
         break;
+    case 0x410003:
+        break;
     default:
         debugPrint("%s: attempt to 'read_byte' at 0x%x", program->name, addr);
         break;
@@ -1204,6 +1206,25 @@ static void register_hook_proc(Program* program)
     int value2 = programStackPopInteger(program);
 }
 
+static void op_write_byte(Program* program)
+{
+    int value = programStackPopInteger(program);
+    int addr = programStackPopInteger(program);
+
+    switch (addr) {
+    default:
+        debugPrint("%s: attempt to 'op_write_byte' at 0x%x = 0x%x ", program->name, addr, value);
+        break;
+    }
+}
+
+static void op_set_skill_max(Program* program)
+{
+    int value1 = programStackPopInteger(program);
+    int value2 = programStackPopInteger(program);
+}
+
+
 void sfallOpcodesInit()
 {
     interpreterRegisterOpcode(0x8156, opReadByte);
@@ -1324,6 +1345,9 @@ void sfallOpcodesInit()
     interpreterRegisterOpcode(0x8227, op_refresh_pc_art);
     
     interpreterRegisterOpcode(0x8262, register_hook_proc);
+    
+    interpreterRegisterOpcode(0x81cf, op_write_byte);
+    interpreterRegisterOpcode(0x81a2, op_set_skill_max);
 }
 
 void sfallOpcodesExit()
