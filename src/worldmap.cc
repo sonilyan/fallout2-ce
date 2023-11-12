@@ -892,8 +892,8 @@ static int wmGenDataInit()
 {
     wmGenData.didMeetFrankHorrigan = false;
     wmGenData.currentAreaId = -1;
-    wmGenData.worldPosX = 173;
-    wmGenData.worldPosY = 122;
+    wmGenData.worldPosX = 823;//    173;
+    wmGenData.worldPosY = 72;//122;
     wmGenData.currentSubtile = NULL;
     wmGenData.dword_672E18 = 0;
     wmGenData.isWalking = false;
@@ -911,7 +911,7 @@ static int wmGenDataInit()
     wmGenData.encounterTableId = -1;
     wmGenData.encounterEntryId = -1;
     wmGenData.encounterCursorId = -1;
-    wmGenData.oldWorldPosX = 0;
+    wmGenData.oldWorldPosX = 600;
     wmGenData.oldWorldPosY = 0;
     wmGenData.isInCar = false;
     wmGenData.currentCarAreaId = -1;
@@ -958,8 +958,8 @@ static int wmGenDataReset()
     wmGenData.encounterIconIsVisible = false;
     wmGenData.mousePressed = false;
     wmGenData.currentAreaId = -1;
-    wmGenData.worldPosX = 173;
-    wmGenData.worldPosY = 122;
+    wmGenData.worldPosX = 823;//    173;
+    wmGenData.worldPosY = 72; //122;
     wmGenData.walkDestinationX = -1;
     wmGenData.walkDestinationY = -1;
     wmGenData.encounterMapId = -1;
