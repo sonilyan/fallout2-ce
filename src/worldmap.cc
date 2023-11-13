@@ -649,6 +649,11 @@ static int wmNumHorizontalTiles = 0;
 
 static int disable_horrigan = 0;
 
+static int gStartXpos = 173;
+static int gStartYpos = 122;
+static int gStartVx = 0;
+static int gStartVy = 0;
+
 // 0x51DDF8
 static CityInfo* wmAreaInfoList = NULL;
 
@@ -842,6 +847,12 @@ int wmWorldMap_init()
 {
     char path[COMPAT_MAX_PATH];
 
+    configGetInt(&gSfallConfig, SFALL_CONFIG_MISC_KEY, SFALL_CONFIG_DISABLE_HORRIGAN, &disable_horrigan);
+    configGetInt(&gSfallConfig, SFALL_CONFIG_MISC_KEY, SFALL_CONFIG_START_XPOS, &gStartXpos);
+    configGetInt(&gSfallConfig, SFALL_CONFIG_MISC_KEY, SFALL_CONFIG_START_YPOS, &gStartYpos);
+    configGetInt(&gSfallConfig, SFALL_CONFIG_MISC_KEY, SFALL_CONFIG_START_VIEWXPOS, &gStartVx);
+    configGetInt(&gSfallConfig, SFALL_CONFIG_MISC_KEY, SFALL_CONFIG_START_VIEWYPOS, &gStartVy);
+
     if (wmGenDataInit() == -1) {
         return -1;
     }
@@ -881,9 +892,7 @@ int wmWorldMap_init()
     }
 
     messageListRepositorySetStandardMessageList(STANDARD_MESSAGE_LIST_WORLDMAP, &wmMsgFile);
-
-    configGetInt(&gSfallConfig, SFALL_CONFIG_MISC_KEY, SFALL_CONFIG_DISABLE_HORRIGAN, &disable_horrigan);
-
+ 
     return 0;
 }
 
@@ -892,8 +901,8 @@ static int wmGenDataInit()
 {
     wmGenData.didMeetFrankHorrigan = false;
     wmGenData.currentAreaId = -1;
-    wmGenData.worldPosX = 823;//    173;
-    wmGenData.worldPosY = 72;//122;
+    wmGenData.worldPosX = gStartXpos;
+    wmGenData.worldPosY = gStartYpos;
     wmGenData.currentSubtile = NULL;
     wmGenData.dword_672E18 = 0;
     wmGenData.isWalking = false;
@@ -911,8 +920,8 @@ static int wmGenDataInit()
     wmGenData.encounterTableId = -1;
     wmGenData.encounterEntryId = -1;
     wmGenData.encounterCursorId = -1;
-    wmGenData.oldWorldPosX = 600;
-    wmGenData.oldWorldPosY = 0;
+    wmGenData.oldWorldPosX = gStartVx;
+    wmGenData.oldWorldPosY = gStartVy;
     wmGenData.isInCar = false;
     wmGenData.currentCarAreaId = -1;
     wmGenData.carFuel = CAR_FUEL_MAX;
@@ -958,8 +967,8 @@ static int wmGenDataReset()
     wmGenData.encounterIconIsVisible = false;
     wmGenData.mousePressed = false;
     wmGenData.currentAreaId = -1;
-    wmGenData.worldPosX = 823;//    173;
-    wmGenData.worldPosY = 72; //122;
+    wmGenData.worldPosX = gStartXpos;
+    wmGenData.worldPosY = gStartYpos;
     wmGenData.walkDestinationX = -1;
     wmGenData.walkDestinationY = -1;
     wmGenData.encounterMapId = -1;
@@ -971,8 +980,8 @@ static int wmGenDataReset()
     wmGenData.carImageFrmHandle = INVALID_CACHE_ENTRY;
     wmGenData.dialFrmHandle = INVALID_CACHE_ENTRY;
     wmGenData.walkWorldPosCrossAxisStepX = 0;
-    wmGenData.oldWorldPosX = 0;
-    wmGenData.oldWorldPosY = 0;
+    wmGenData.oldWorldPosX = gStartVx;
+    wmGenData.oldWorldPosY = gStartVy;
     wmGenData.isInCar = false;
     wmGenData.carImageFrmWidth = 0;
     wmGenData.carImageFrmHeight = 0;
