@@ -12,6 +12,7 @@
 #endif
 
 #include "file_find.h"
+#include "debug.h"
 
 namespace fallout {
 
@@ -67,7 +68,15 @@ int xfileClose(XFile* stream)
     return rc;
 }
 
-// 0x4DEE2C
+void printDb()
+{
+    XBase* curr = gXbaseHead;
+    while (curr != NULL) {
+        debugPrint("printDb:%s", curr->path);
+        curr = curr->next;
+    }
+}
+    // 0x4DEE2C
 XFile* xfileOpen(const char* filePath, const char* mode)
 {
     assert(filePath); // "filename", "xfile.c", 162
