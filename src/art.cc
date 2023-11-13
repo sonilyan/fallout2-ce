@@ -1146,7 +1146,7 @@ int artRead(const char* path, unsigned char* data)
     for (int index = 0; index < ROTATION_COUNT; index++) {
         art->padding[index] = currentPadding;
 
-        if (index == 0 || art->dataOffsets[index - 1] != art->dataOffsets[index]) {
+        if (index == 0 || (art->dataOffsets[index - 1] != art->dataOffsets[index] && art->dataOffsets[index] < art->dataSize)) {
             art->padding[index] += previousPadding;
             currentPadding += previousPadding;
             if (artReadFrameData(data + sizeof(Art) + art->dataOffsets[index] + art->padding[index], stream, art->frameCount, &previousPadding) != 0) {
@@ -1241,7 +1241,7 @@ static int artGetDataSize(Art* art)
         if (index == 0 || art->dataOffsets[index - 1] != art->dataOffsets[index]) {
             // Assume worst case - every frame is unaligned and need
             // max padding.
-            dataSize += art->dataSize + paddingForSize(art->dataSize);
+            dataSize += (sizeof(int) - 1) * art->frameCount;
         }
     }
 
