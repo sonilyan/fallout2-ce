@@ -1452,6 +1452,7 @@ static int gameDbInit()
         configFree(&config);
     }
 
+    printDb();
     return 0;
 }
 

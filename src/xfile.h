@@ -67,6 +67,7 @@ bool xbaseReopenAll(char* paths);
 bool xbaseOpen(const char* path);
 bool xlistInit(const char* pattern, XList* xlist);
 void xlistFree(XList* xlist);
+void printDb();
 
 } // namespace fallout
 

@@ -920,8 +920,8 @@ static int wmGenDataInit()
     wmGenData.encounterTableId = -1;
     wmGenData.encounterEntryId = -1;
     wmGenData.encounterCursorId = -1;
-    wmGenData.oldWorldPosX = gStartVx;
-    wmGenData.oldWorldPosY = gStartVy;
+    wmGenData.oldWorldPosX = 0;
+    wmGenData.oldWorldPosY = 0;
     wmGenData.isInCar = false;
     wmGenData.currentCarAreaId = -1;
     wmGenData.carFuel = CAR_FUEL_MAX;
@@ -980,8 +980,8 @@ static int wmGenDataReset()
     wmGenData.carImageFrmHandle = INVALID_CACHE_ENTRY;
     wmGenData.dialFrmHandle = INVALID_CACHE_ENTRY;
     wmGenData.walkWorldPosCrossAxisStepX = 0;
-    wmGenData.oldWorldPosX = gStartVx;
-    wmGenData.oldWorldPosY = gStartVy;
+    wmGenData.oldWorldPosX = 0;
+    wmGenData.oldWorldPosY = 0;
     wmGenData.isInCar = false;
     wmGenData.carImageFrmWidth = 0;
     wmGenData.carImageFrmHeight = 0;
