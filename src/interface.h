@@ -77,6 +77,7 @@ bool isIndicatorBarActive(int indicator);
 
 unsigned char* customInterfaceBarGetBackgroundImageData();
 
+int _intface_item_reload2(Hand hand);
 } // namespace fallout
 
 #endif /* INTERFACE_H */

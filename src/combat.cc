@@ -45,6 +45,7 @@
 #include "tile.h"
 #include "trait.h"
 #include "window_manager.h"
+#include "interface.h"
 
 namespace fallout {
 
@@ -2841,6 +2842,9 @@ static void _combat_over()
         queueRemoveEventsByType(gDude, EVENT_TYPE_KNOCKOUT);
         knockoutEventProcess(gDude, NULL);
     }
+
+    _intface_item_reload2(HAND_LEFT);
+    _intface_item_reload2(HAND_RIGHT);
 }
 
 // 0x422194

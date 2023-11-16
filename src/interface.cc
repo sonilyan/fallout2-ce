@@ -2023,9 +2023,33 @@ static void interfaceUpdateAmmoBar(int x, int ratio)
         windowRefreshRect(gInterfaceBarWindow, &rect);
     }
 }
+ 
+int _intface_item_reload2(Hand hand)
+{
+    if (gInterfaceBarWindow == -1) {
+        return -1;
+    }
+
+    bool v0 = false;
+    while (weaponAttemptReload(gDude, gInterfaceItemStates[hand].item) != -1) {
+        v0 = true;
+    }
+
+    interfaceCycleItemAction();
+    interfaceUpdateItems(false, INTERFACE_ITEM_ACTION_DEFAULT, INTERFACE_ITEM_ACTION_DEFAULT);
+
+    if (!v0) {
+        return -1;
+    }
+
+    const char* sfx = sfxBuildWeaponName(WEAPON_SOUND_EFFECT_READY, gInterfaceItemStates[gInterfaceCurrentHand].item, HIT_MODE_RIGHT_WEAPON_PRIMARY, NULL);
+    soundPlayFile(sfx);
+
+    return 0;
+}
 
 // 0x460B20
-static int _intface_item_reload()
+int _intface_item_reload()
 {
     if (gInterfaceBarWindow == -1) {
         return -1;
