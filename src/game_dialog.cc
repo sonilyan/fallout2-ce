@@ -1310,7 +1310,7 @@ int gameDialogReviewWindowInit(int* win)
     }
 
     int reviewWindowX = (screenGetWidth() - GAME_DIALOG_REVIEW_WINDOW_WIDTH) / 2;
-    int reviewWindowY = (screenGetHeight() - GAME_DIALOG_REVIEW_WINDOW_HEIGHT) / 2;
+    int reviewWindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - GAME_DIALOG_REVIEW_WINDOW_HEIGHT) / 2 : (screenGetHeight() - GAME_DIALOG_REVIEW_WINDOW_HEIGHT) / 2;
     *win = windowCreate(reviewWindowX,
         reviewWindowY,
         GAME_DIALOG_REVIEW_WINDOW_WIDTH,
@@ -1729,7 +1729,7 @@ int _gdProcessInit()
     int optionsWindowY;
 
     int replyWindowX = (screenGetWidth() - GAME_DIALOG_WINDOW_WIDTH) / 2 + GAME_DIALOG_REPLY_WINDOW_X;
-    int replyWindowY = (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_REPLY_WINDOW_Y;
+    int replyWindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_REPLY_WINDOW_Y : (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_REPLY_WINDOW_Y;
     gGameDialogReplyWindow = windowCreate(replyWindowX,
         replyWindowY,
         GAME_DIALOG_REPLY_WINDOW_WIDTH,
@@ -1759,7 +1759,8 @@ int _gdProcessInit()
     buttonSetMouseCallbacks(downBtn, _reply_arrow_down, _reply_arrow_restore, 0, 0);
 
     optionsWindowX = (screenGetWidth() - GAME_DIALOG_WINDOW_WIDTH) / 2 + GAME_DIALOG_OPTIONS_WINDOW_X;
-    optionsWindowY = (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_OPTIONS_WINDOW_Y;
+    optionsWindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_OPTIONS_WINDOW_Y
+                                             : (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_OPTIONS_WINDOW_Y;
     gGameDialogOptionsWindow = windowCreate(optionsWindowX, optionsWindowY, GAME_DIALOG_OPTIONS_WINDOW_WIDTH, GAME_DIALOG_OPTIONS_WINDOW_HEIGHT, 256, WINDOW_MOVE_ON_TOP);
     if (gGameDialogOptionsWindow == -1) {
         goto err_2;
@@ -2726,7 +2727,7 @@ void _demo_copy_options(int win)
     Rect windowRect;
     windowGetRect(gGameDialogWindow, &windowRect);
     windowRect.left -= (screenGetWidth() - GAME_DIALOG_WINDOW_WIDTH) / 2;
-    windowRect.top -= (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2;
+    windowRect.top -= screenGetHeight() > 580 ? (screenGetVisibleHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 : (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2;
 
     unsigned char* src = windowGetBuffer(gGameDialogWindow);
     if (src == NULL) {
@@ -2760,7 +2761,7 @@ void _gDialogRefreshOptionsRect(int win, Rect* drawRect)
     Rect windowRect;
     windowGetRect(gGameDialogWindow, &windowRect);
     windowRect.left -= (screenGetWidth() - GAME_DIALOG_WINDOW_WIDTH) / 2;
-    windowRect.top -= (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2;
+    windowRect.top -= screenGetHeight() > 580 ? (screenGetVisibleHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 : (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2;
 
     unsigned char* src = windowGetBuffer(gGameDialogWindow);
     if (src == NULL) {
@@ -3159,7 +3160,7 @@ int _gdialog_barter_create_win()
     _dialogue_subwin_len = backgroundFrmImage.getHeight();
 
     int barterWindowX = (screenGetWidth() - GAME_DIALOG_WINDOW_WIDTH) / 2;
-    int barterWindowY = (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_WINDOW_HEIGHT - _dialogue_subwin_len;
+    int barterWindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_WINDOW_HEIGHT - _dialogue_subwin_len : (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_WINDOW_HEIGHT - _dialogue_subwin_len;
     gGameDialogWindow = windowCreate(barterWindowX,
         barterWindowY,
         GAME_DIALOG_WINDOW_WIDTH,
@@ -3319,7 +3320,7 @@ int partyMemberControlWindowInit()
 
     _dialogue_subwin_len = backgroundFrmImage.getHeight();
     int controlWindowX = (screenGetWidth() - GAME_DIALOG_WINDOW_WIDTH) / 2;
-    int controlWindowY = (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_WINDOW_HEIGHT - _dialogue_subwin_len;
+    int controlWindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_WINDOW_HEIGHT - _dialogue_subwin_len :(screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_WINDOW_HEIGHT - _dialogue_subwin_len;
     gGameDialogWindow = windowCreate(controlWindowX,
         controlWindowY,
         GAME_DIALOG_WINDOW_WIDTH,
@@ -3759,7 +3760,7 @@ int partyMemberCustomizationWindowInit()
     _dialogue_subwin_len = backgroundFrmImage.getHeight();
 
     int customizationWindowX = (screenGetWidth() - GAME_DIALOG_WINDOW_WIDTH) / 2;
-    int customizationWindowY = (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_WINDOW_HEIGHT - _dialogue_subwin_len;
+    int customizationWindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_WINDOW_HEIGHT - _dialogue_subwin_len : (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_WINDOW_HEIGHT - _dialogue_subwin_len;
     gGameDialogWindow = windowCreate(customizationWindowX,
         customizationWindowY,
         GAME_DIALOG_WINDOW_WIDTH,
@@ -4055,7 +4056,7 @@ int _gdCustomSelect(int a1)
     int backgroundFrmHeight = backgroundFrmImage.getHeight();
 
     int selectWindowX = (screenGetWidth() - backgroundFrmWidth) / 2;
-    int selectWindowY = (screenGetHeight() - backgroundFrmHeight) / 2;
+    int selectWindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - backgroundFrmHeight) / 2 : (screenGetHeight() - backgroundFrmHeight) / 2;
     int win = windowCreate(selectWindowX, selectWindowY, backgroundFrmWidth, backgroundFrmHeight, 256, WINDOW_MODAL | WINDOW_MOVE_ON_TOP);
     if (win == -1) {
         return -1;
@@ -4289,7 +4290,8 @@ int _gdialog_window_create()
         _dialogue_subwin_len = backgroundFrmImage.getHeight();
 
         int dialogSubwindowX = (screenGetWidth() - GAME_DIALOG_WINDOW_WIDTH) / 2;
-        int dialogSubwindowY = (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_WINDOW_HEIGHT - _dialogue_subwin_len;
+        int dialogSubwindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_WINDOW_HEIGHT - _dialogue_subwin_len
+                                                       : (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_WINDOW_HEIGHT - _dialogue_subwin_len;
         gGameDialogWindow = windowCreate(dialogSubwindowX, dialogSubwindowY, screenWidth, _dialogue_subwin_len, 256, WINDOW_DONT_MOVE_TOP);
         if (gGameDialogWindow != -1) {
 
@@ -4411,7 +4413,7 @@ void _gdialog_window_destroy()
 static int talk_to_create_background_window()
 {
     int backgroundWindowX = (screenGetWidth() - GAME_DIALOG_WINDOW_WIDTH) / 2;
-    int backgroundWindowY = (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2;
+    int backgroundWindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 : (screenGetHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2;
     gGameDialogBackgroundWindow = windowCreate(backgroundWindowX,
         backgroundWindowY,
         GAME_DIALOG_WINDOW_WIDTH,

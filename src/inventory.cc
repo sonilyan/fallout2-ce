@@ -738,7 +738,7 @@ static bool _setup_inventory(int inventoryWindowType)
             ? (screenGetWidth() - windowDescription->width) / 2
             : INVENTORY_WINDOW_X;
         int inventoryWindowY = screenGetHeight() != 480
-            ? (screenGetHeight() -100 - windowDescription->height) / 2
+            ? (screenGetVisibleHeight() - windowDescription->height) / 2
             : INVENTORY_WINDOW_Y;
         gInventoryWindow = windowCreate(inventoryWindowX,
             inventoryWindowY,
@@ -767,7 +767,7 @@ static bool _setup_inventory(int inventoryWindowType)
 
         // Trade inventory window is a part of game dialog, which is 640x480.
         int tradeWindowX = (screenGetWidth() - INVENTORY_TRADE_BACKGROUND_WINDOW_WIDTH) / 2 + INVENTORY_TRADE_WINDOW_X;
-        int tradeWindowY = (screenGetHeight() - INVENTORY_TRADE_BACKGROUND_WINDOW_HEIGHT) / 2 + INVENTORY_TRADE_WINDOW_Y;
+        int tradeWindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - INVENTORY_TRADE_BACKGROUND_WINDOW_HEIGHT) / 2 + INVENTORY_TRADE_WINDOW_Y : (screenGetHeight() - INVENTORY_TRADE_BACKGROUND_WINDOW_HEIGHT) / 2 + INVENTORY_TRADE_WINDOW_Y;
         gInventoryWindow = windowCreate(tradeWindowX, tradeWindowY, INVENTORY_TRADE_WINDOW_WIDTH, INVENTORY_TRADE_WINDOW_HEIGHT, 257, 0);
         gInventoryWindowMaxX = tradeWindowX + INVENTORY_TRADE_WINDOW_WIDTH;
         gInventoryWindowMaxY = tradeWindowY + INVENTORY_TRADE_WINDOW_HEIGHT;
@@ -5738,7 +5738,7 @@ static int inventoryQuantityWindowInit(int inventoryWindowType, Object* item)
         ? (screenGetWidth() - windowDescription->width) / 2
         : windowDescription->x;
     int quantityWindowY = screenGetHeight() != 480
-        ? (screenGetHeight() - windowDescription->height) / 2
+        ? (screenGetVisibleHeight() - windowDescription->height) / 2
         : windowDescription->y;
     _mt_wid = windowCreate(quantityWindowX, quantityWindowY, windowDescription->width, windowDescription->height, 257, WINDOW_MODAL | WINDOW_MOVE_ON_TOP);
     unsigned char* windowBuffer = windowGetBuffer(_mt_wid);
