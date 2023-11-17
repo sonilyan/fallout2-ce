@@ -15,6 +15,7 @@
 #include "touch.h"
 #include "vcr.h"
 #include "win32.h"
+#include "game_mouse.h"
 
 namespace fallout {
 
@@ -687,7 +688,15 @@ void inputPauseForTocks(unsigned int delay)
 // 0x4C93B8
 void inputBlockForTocks(unsigned int ms)
 {
-    delay_ms(ms);
+    unsigned int s = getTicks();
+    do
+    {
+        sharedFpsLimiter.mark();
+        inputGetInput2();
+        gameMouseRefresh();
+        renderPresent();
+        sharedFpsLimiter.throttle();
+    } while (getTicks() - s < ms);
 }
 
 // 0x4C93E0
