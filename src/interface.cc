@@ -2029,13 +2029,20 @@ int _intface_item_reload2(Hand hand)
     if (gInterfaceBarWindow == -1) {
         return -1;
     }
+    
+    InterfaceItemState* itemState = &(gInterfaceItemStates[hand]);
+    if (itemState->isWeapon == 0 || itemState->item == NULL)
+        return -1;
 
     bool v0 = false;
-    while (weaponAttemptReload(gDude, gInterfaceItemStates[hand].item) != -1) {
+    while (weaponAttemptReload(gDude, itemState->item) != -1) {
         v0 = true;
     }
 
-    interfaceCycleItemAction();
+    if (itemState->action == INTERFACE_ITEM_ACTION_RELOAD) {
+        interfaceCycleItemAction();
+    }
+        
     interfaceUpdateItems(false, INTERFACE_ITEM_ACTION_DEFAULT, INTERFACE_ITEM_ACTION_DEFAULT);
 
     if (!v0) {

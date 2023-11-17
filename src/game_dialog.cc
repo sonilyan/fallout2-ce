@@ -2948,13 +2948,13 @@ void _gdialog_scroll_subwin(int win, int a2, unsigned char* a3, unsigned char* a
         rect.right = GAME_DIALOG_WINDOW_WIDTH - 1;
         rect.bottom = a6 - 1;
 
-        int v18 = a6 / 10;
+        int v18 = a6 / 5;
         if (a7 == -1) {
-            rect.top = 10;
+            rect.top = 5;
             v18 = 0;
         } else {
-            rect.top = v18 * 10;
-            v7 = a6 % 10;
+            rect.top = v18 * 5;
+            v7 = a6 % 5;
             v9 += GAME_DIALOG_WINDOW_WIDTH * rect.top;
         }
 
@@ -2968,12 +2968,13 @@ void _gdialog_scroll_subwin(int win, int a2, unsigned char* a3, unsigned char* a
                 GAME_DIALOG_WINDOW_WIDTH,
                 v9,
                 GAME_DIALOG_WINDOW_WIDTH);
-            rect.top -= 10;
+            rect.top -= 5;
             windowRefreshRect(win, &rect);
-            v7 += 10;
-            v9 -= 10 * (GAME_DIALOG_WINDOW_WIDTH);
+            v7 += 5;
+            v9 -= 5 * (GAME_DIALOG_WINDOW_WIDTH);
 
-            delay_ms(33);
+            delay_ms(13);
+            inputGetInput2();
 
             renderPresent();
             sharedFpsLimiter.throttle();
@@ -2984,21 +2985,21 @@ void _gdialog_scroll_subwin(int win, int a2, unsigned char* a3, unsigned char* a
         rect.left = 0;
         rect.top = 0;
 
-        for (int index = a6 / 10; index > 0; index--) {
+        for (int index = a6 / 5; index > 0; index--) {
             sharedFpsLimiter.mark();
 
             soundContinueAll();
 
             blitBufferToBuffer(a5,
                 GAME_DIALOG_WINDOW_WIDTH,
-                10,
+                5,
                 GAME_DIALOG_WINDOW_WIDTH,
                 v9,
                 GAME_DIALOG_WINDOW_WIDTH);
 
-            v9 += 10 * (GAME_DIALOG_WINDOW_WIDTH);
-            v7 -= 10;
-            a5 += 10 * (GAME_DIALOG_WINDOW_WIDTH);
+            v9 += 5 * (GAME_DIALOG_WINDOW_WIDTH);
+            v7 -= 5;
+            a5 += 5 * (GAME_DIALOG_WINDOW_WIDTH);
 
             blitBufferToBuffer(a3,
                 GAME_DIALOG_WINDOW_WIDTH,
@@ -3009,9 +3010,10 @@ void _gdialog_scroll_subwin(int win, int a2, unsigned char* a3, unsigned char* a
 
             windowRefreshRect(win, &rect);
 
-            rect.top += 10;
+            rect.top += 5;
 
-            delay_ms(33);
+            delay_ms(13);
+            inputGetInput2();
 
             renderPresent();
             sharedFpsLimiter.throttle();
