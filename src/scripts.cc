@@ -1318,6 +1318,9 @@ int scriptExecProc(int sid, int proc)
         runProgram(program);
         _interpret(program, -1);
     }
+
+    if (script->program != program)
+        return -1;
  
     int v9 = script->procs[proc];
     if (v9 == -1) {
