@@ -1313,11 +1313,6 @@ int scriptExecProc(int sid, int proc)
     if (programLoaded) {
         scriptLocateProcs(script);
 
-        int v9 = script->procs[proc];
-        if (v9 == -1) {
-            return -1;
-        }
-
         script->action = 0;
         // NOTE: Uninline.
         runProgram(program);
