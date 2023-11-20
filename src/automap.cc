@@ -322,7 +322,7 @@ void automapShow(bool isInGame, bool isUsingScanner)
     fontSetCurrent(101);
 
     int automapWindowX = (screenGetWidth() - AUTOMAP_WINDOW_WIDTH) / 2;
-    int automapWindowY = (screenGetHeight() - AUTOMAP_WINDOW_HEIGHT) / 2;
+    int automapWindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - AUTOMAP_WINDOW_HEIGHT) / 2 : (screenGetHeight() - AUTOMAP_WINDOW_HEIGHT) / 2;
     int window = windowCreate(automapWindowX, automapWindowY, AUTOMAP_WINDOW_WIDTH, AUTOMAP_WINDOW_HEIGHT, color, WINDOW_MODAL | WINDOW_MOVE_ON_TOP);
            
     Rect offset;

@@ -1367,7 +1367,12 @@ static int characterEditorWindowInit()
     }
 
     int editorWindowX = (screenGetWidth() - EDITOR_WINDOW_WIDTH) / 2;
-    int editorWindowY = (screenGetHeight() - EDITOR_WINDOW_HEIGHT) / 2;
+    int editorWindowY;
+    if (gCharacterEditorIsCreationMode)
+        editorWindowY = (screenGetHeight() - EDITOR_WINDOW_HEIGHT) / 2;
+    else
+        editorWindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - EDITOR_WINDOW_HEIGHT) / 2 : (screenGetHeight() - EDITOR_WINDOW_HEIGHT) / 2;
+
     gCharacterEditorWindow = windowCreate(editorWindowX,
         editorWindowY,
         EDITOR_WINDOW_WIDTH,
