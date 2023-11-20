@@ -2365,12 +2365,12 @@ static int _get_input_str2(int win, int doneKeyCode, int cancelKeyCode, char* de
     bool blink = false;
 
     int v1 = 0;
-
     int rc = 1;
+     
+    int tick = getTicks();
+
     while (rc == 1) {
         sharedFpsLimiter.mark();
-
-        int tick = getTicks();
 
         int keyCode = inputGetInput();
         if ((keyCode & 0x80000000) == 0) {
@@ -2413,17 +2413,20 @@ static int _get_input_str2(int win, int doneKeyCode, int cancelKeyCode, char* de
             }
         }
 
-        blinkCounter -= 1;
-        if (blinkCounter == 0) {
-            blinkCounter = 3;
-            blink = !blink;
+        if (getTicks() - tick > 1000 / 24) {
+            tick = getTicks();
+            blinkCounter -= 1;
+            if (blinkCounter == 0) {
+                blinkCounter = 3;
+                blink = !blink;
 
-            int color = blink ? backgroundColor : textColor;
-            bufferFill(windowBuffer + windowWidth * y + x + fontGetStringWidth(text) - cursorWidth, cursorWidth, lineHeight - 2, windowWidth, color);
-            windowRefresh(win);
+                int color = blink ? backgroundColor : textColor;
+                bufferFill(windowBuffer + windowWidth * y + x + fontGetStringWidth(text) - cursorWidth, cursorWidth, lineHeight - 2, windowWidth, color);
+                windowRefresh(win);
+            }
         }
 
-        delay_ms(1000 / 24 - (getTicks() - tick));
+        //delay_ms(1000 / 24 - (getTicks() - tick));
 
         renderPresent();
         sharedFpsLimiter.throttle();
