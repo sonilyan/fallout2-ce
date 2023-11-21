@@ -5537,6 +5537,11 @@ static int calledShotSelectHitLocation(Object* critter, int* hitLocation, int hi
         return -1;
     }
 
+    Rect offset;
+    offset.bottom = 5;
+    offset.left = -15;
+    offset.top = -5;
+    offset.right = 80;
     // Cancel button
     int cancelBtn = buttonCreate(gCalledShotWindow,
         210,
@@ -5550,13 +5555,27 @@ static int calledShotSelectHitLocation(Object* critter, int* hitLocation, int hi
         cancelButtonNormalFrmImage.getData(),
         cancelButtonPressedFrmImage.getData(),
         NULL,
-        BUTTON_FLAG_TRANSPARENT);
+        BUTTON_FLAG_TRANSPARENT,
+        offset);
     if (cancelBtn != -1) {
         buttonSetCallbacks(cancelBtn, _gsound_red_butt_press, _gsound_red_butt_release);
     }
 
     int oldFont = fontGetCurrent();
     fontSetCurrent(101);
+
+    Rect offsetLeft;
+    Rect offsetRight;
+
+    offsetLeft.bottom = 25;
+    offsetLeft.left = -30;
+    offsetLeft.top = -25;
+    offsetLeft.right = 20;
+
+    offsetRight.bottom = 25;
+    offsetRight.left = -20;
+    offsetRight.top = -25;
+    offsetRight.right = 30;
 
     for (int index = 0; index < 4; index++) {
         int probability;
@@ -5565,14 +5584,14 @@ static int calledShotSelectHitLocation(Object* critter, int* hitLocation, int hi
         probability = _determine_to_hit(gDude, critter, _hit_loc_left[index], hitMode);
         _print_tohit(windowBuffer + CALLED_SHOT_WINDOW_WIDTH * (_call_ty[index] - 86) + 33, CALLED_SHOT_WINDOW_WIDTH, probability);
 
-        btn = buttonCreate(gCalledShotWindow, 33, _call_ty[index] - 90, 128, 20, index, index, -1, index, NULL, NULL, NULL, 0);
+        btn = buttonCreate(gCalledShotWindow, 33, _call_ty[index] - 90, 128, 20, index, index, -1, index, NULL, NULL, NULL, 0, offsetLeft);
         buttonSetMouseCallbacks(btn, _draw_loc_on_, _draw_loc_off, NULL, NULL);
         _draw_loc_(index, _colorTable[992]);
 
         probability = _determine_to_hit(gDude, critter, _hit_loc_right[index], hitMode);
         _print_tohit(windowBuffer + CALLED_SHOT_WINDOW_WIDTH * (_call_ty[index] - 86) + 453, CALLED_SHOT_WINDOW_WIDTH, probability);
 
-        btn = buttonCreate(gCalledShotWindow, 341, _call_ty[index] - 90, 128, 20, index + 4, index + 4, -1, index + 4, NULL, NULL, NULL, 0);
+        btn = buttonCreate(gCalledShotWindow, 341, _call_ty[index] - 90, 128, 20, index + 4, index + 4, -1, index + 4, NULL, NULL, NULL, 0, offsetRight);
         buttonSetMouseCallbacks(btn, _draw_loc_on_, _draw_loc_off, NULL, NULL);
         _draw_loc_(index + 4, _colorTable[992]);
     }
