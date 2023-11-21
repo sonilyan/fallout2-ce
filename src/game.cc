@@ -1463,11 +1463,7 @@ static void showSplash()
 
     char path[64];
     const char* language = settings.system.language.c_str();
-    if (compat_stricmp(language, ENGLISH) != 0) {
-        snprintf(path, sizeof(path), "art\\%s\\splash\\", language);
-    } else {
-        snprintf(path, sizeof(path), "art\\splash\\");
-    }
+    snprintf(path, sizeof(path), "art\\splash\\");
 
     File* stream;
     for (int index = 0; index < SPLASH_COUNT; index++) {
