@@ -8,6 +8,7 @@ public:
     FpsLimiter(unsigned int fps = 120);
     void mark();
     void throttle() const;
+    unsigned int getFps();
 
 private:
     const unsigned int _fps;

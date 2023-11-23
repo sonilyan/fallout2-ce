@@ -22,4 +22,9 @@ void FpsLimiter::throttle() const
     }
 }
 
+unsigned int FpsLimiter::getFps()
+{
+    return _fps;
+}
+
 } // namespace fallout
