@@ -2943,18 +2943,20 @@ void _gdialog_scroll_subwin(int win, int a2, unsigned char* a3, unsigned char* a
     v7 = a6;
     v9 = a4;
 
+    int time = 1000 / sharedFpsLimiter.getFps() / 2;
+
     if (a2 == 1) {
         rect.left = 0;
         rect.right = GAME_DIALOG_WINDOW_WIDTH - 1;
         rect.bottom = a6 - 1;
 
-        int v18 = a6 / 5;
+        int v18 = a6 / time;
         if (a7 == -1) {
-            rect.top = 5;
+            rect.top = time;
             v18 = 0;
         } else {
-            rect.top = v18 * 5;
-            v7 = a6 % 5;
+            rect.top = v18 * time;
+            v7 = a6 % time;
             v9 += GAME_DIALOG_WINDOW_WIDTH * rect.top;
         }
 
@@ -2968,12 +2970,11 @@ void _gdialog_scroll_subwin(int win, int a2, unsigned char* a3, unsigned char* a
                 GAME_DIALOG_WINDOW_WIDTH,
                 v9,
                 GAME_DIALOG_WINDOW_WIDTH);
-            rect.top -= 5;
+            rect.top -= time;
             windowRefreshRect(win, &rect);
-            v7 += 5;
-            v9 -= 5 * (GAME_DIALOG_WINDOW_WIDTH);
+            v7 += time;
+            v9 -= time * (GAME_DIALOG_WINDOW_WIDTH);
 
-            delay_ms(13);
             inputGetInput2();
 
             renderPresent();
@@ -2985,21 +2986,21 @@ void _gdialog_scroll_subwin(int win, int a2, unsigned char* a3, unsigned char* a
         rect.left = 0;
         rect.top = 0;
 
-        for (int index = a6 / 5; index > 0; index--) {
+        for (int index = a6 / time; index > 0; index--) {
             sharedFpsLimiter.mark();
 
             soundContinueAll();
 
             blitBufferToBuffer(a5,
                 GAME_DIALOG_WINDOW_WIDTH,
-                5,
+                time,
                 GAME_DIALOG_WINDOW_WIDTH,
                 v9,
                 GAME_DIALOG_WINDOW_WIDTH);
 
-            v9 += 5 * (GAME_DIALOG_WINDOW_WIDTH);
-            v7 -= 5;
-            a5 += 5 * (GAME_DIALOG_WINDOW_WIDTH);
+            v9 += time * (GAME_DIALOG_WINDOW_WIDTH);
+            v7 -= time;
+            a5 += time * (GAME_DIALOG_WINDOW_WIDTH);
 
             blitBufferToBuffer(a3,
                 GAME_DIALOG_WINDOW_WIDTH,
@@ -3010,9 +3011,8 @@ void _gdialog_scroll_subwin(int win, int a2, unsigned char* a3, unsigned char* a
 
             windowRefreshRect(win, &rect);
 
-            rect.top += 5;
+            rect.top += time;
 
-            delay_ms(13);
             inputGetInput2();
 
             renderPresent();
