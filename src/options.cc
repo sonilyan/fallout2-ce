@@ -216,11 +216,11 @@ static int optionsWindowInit()
         memcpy(_opbtns[index], _optionsFrmImages[cycle + 1].getData(), _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth() * _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getHeight());
     }
 
-    int optionsWindowX = (screenGetWidth() - _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getWidth()) / 2;
+    int optionsWindowX = (screenGetWidth() - _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getWidth() * 2) / 2;
     int optionsWindowY = (screenGetHeight() - _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getHeight()) / 2 - 60;
     gOptionsWindow = windowCreate(optionsWindowX,
         optionsWindowY,
-        _optionsFrmImages[0].getWidth(),
+        _optionsFrmImages[0].getWidth() * 2,
         _optionsFrmImages[0].getHeight(),
         256,
         WINDOW_MODAL | WINDOW_DONT_MOVE_TOP);
@@ -248,8 +248,12 @@ static int optionsWindowInit()
 
     gameMouseSetCursor(MOUSE_CURSOR_ARROW);
 
+    int width = _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getWidth();
+    int height = _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getHeight();
+
     gOptionsWindowBuffer = windowGetBuffer(gOptionsWindow);
-    memcpy(gOptionsWindowBuffer, _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getData(), _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getWidth() * _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getHeight());
+    blitBufferToBuffer(_optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getData(), width, height, width, gOptionsWindowBuffer, width * 2);
+    blitBufferToBuffer(_optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getData(), width, height, width, gOptionsWindowBuffer + width, width * 2);
 
     fontSetCurrent(103);
 
@@ -289,6 +293,42 @@ static int optionsWindowInit()
 
         buttonY += _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getHeight() + 3;
     }
+
+    buttonY = 17;
+    for (int index = 0; index < 6; index += 2) {
+        char text[128];
+
+        const char* msg = getmsg(&gPreferencesMessageList, &gPreferencesMessageListItem, index / 2);
+        strcpy(text, msg);
+
+        int textX = (_optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth() - fontGetStringWidth(text)) / 2;
+        if (textX < 0) {
+            textX = 0;
+        }
+
+        fontDrawText(_opbtns[index] + _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth() * textY + textX, text, _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth(), _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth(), _colorTable[18979]);
+        fontDrawText(_opbtns[index + 1] + _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth() * textY + textX, text, _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth(), _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth(), _colorTable[14723]);
+
+        int btn = buttonCreate(gOptionsWindow,
+            13+width,
+            buttonY,
+            _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth(),
+            _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getHeight(),
+            -1,
+            -1,
+            -1,
+            index / 2 + 500,
+            _opbtns[index],
+            _opbtns[index + 1],
+            NULL,
+            BUTTON_FLAG_TRANSPARENT);
+        if (btn != -1) {
+            buttonSetCallbacks(btn, _gsound_lrg_butt_press, _gsound_lrg_butt_release);
+        }
+
+        buttonY += _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getHeight() + 3;
+    }
+
 
     fontSetCurrent(101);
 
