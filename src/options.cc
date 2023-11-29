@@ -20,6 +20,7 @@
 #include "text_font.h"
 #include "tile.h"
 #include "window_manager.h"
+#include "display_monitor.h"
 
 namespace fallout {
 
@@ -153,6 +154,39 @@ int showOptions()
             case KEY_F10:
             case 503:
                 showQuitConfirmationDialog();
+                break;
+            case 510:
+                if (1) {
+                    soundPlayFile("ib1p1xx1");
+
+                    int rc = lsgSaveGame(LOAD_SAVE_MODE_QUICK);
+                    if (rc == -1) {
+                        debugPrint("\n ** Error calling SaveGame()! **\n");
+                    } else if (rc == 1) {
+                        MessageListItem messageListItem;
+                        // Quick save game successfully saved.
+                        char* msg = getmsg(&gMiscMessageList, &messageListItem, 5);
+                        displayMonitorAddMessage(msg);
+                    }
+                }
+                break;
+            case 511:
+                if (1) {
+                    soundPlayFile("ib1p1xx1");
+
+                    int rc = lsgLoadGame(LOAD_SAVE_MODE_QUICK);
+                    if (rc == -1) {
+                        debugPrint("\n ** Error calling LoadGame()! **\n");
+                    } else if (rc == 1) {
+                        MessageListItem messageListItem;
+                        // Quick load game successfully loaded.
+                        char* msg = getmsg(&gMiscMessageList, &messageListItem, 4);
+                        displayMonitorAddMessage(msg);
+                    }
+                }
+                break;
+            case 512:
+                doPreferences(false);
                 break;
             }
         }
@@ -295,6 +329,7 @@ static int optionsWindowInit()
     }
 
     buttonY = 17;
+
     for (int index = 0; index < 6; index += 2) {
         char text[128];
 
@@ -317,7 +352,7 @@ static int optionsWindowInit()
             -1,
             -1,
             -1,
-            index / 2 + 500,
+            index / 2 + 510,
             _opbtns[index],
             _opbtns[index + 1],
             NULL,
