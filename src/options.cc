@@ -169,6 +169,7 @@ int showOptions()
                         displayMonitorAddMessage(msg);
                     }
                 }
+                rc = 0;
                 break;
             case 511:
                 if (1) {
@@ -184,6 +185,7 @@ int showOptions()
                         displayMonitorAddMessage(msg);
                     }
                 }
+                rc = 0;
                 break;
             case 512:
                 doPreferences(false);
