@@ -89,6 +89,27 @@ static char gGameMovieSubtitlesFilePath[COMPAT_MAX_PATH];
 // 0x44E5C0
 int gameMoviesInit()
 {
+    Config config;
+    if (configInit(&config)) {
+        if (configRead(&config, "ddraw.ini", false)) {
+            for (int i = 0; i < MOVIE_COUNT; i++) {
+                char* path;
+                char key[128];
+                sprintf(key, "Movie%d", i+1);
+
+                if (configGetString(&config, "Misc", key, &path)) {
+                    if (strlen(path) != 0) {
+                        gMovieFileNames[i] = (char *)malloc(strlen(path) + 1);
+                        strcpy((char *)gMovieFileNames[i], path);
+                    }
+                }
+            }
+        }
+
+        configFree(&config);
+    }
+
+
     int v1 = 0;
     if (backgroundSoundIsEnabled()) {
         v1 = backgroundSoundGetVolume();
