@@ -1224,6 +1224,66 @@ static void op_set_skill_max(Program* program)
     int value2 = programStackPopInteger(program);
 }
 
+static void op_graphics_funcs_available(Program* program)
+{
+}
+static void op_load_shader(Program* program)
+{
+}
+static void op_free_shader(Program* program)
+{
+}
+static void op_activate_shader(Program* program)
+{
+}
+static void op_deactivate_shader(Program* program)
+{
+}
+static void op_set_pipboy_available(Program* program)
+{
+}
+static void op_get_kill_counter(Program* program)
+{
+}
+static void set_selectable_perk(Program* program)
+{
+}
+static void op_set_perkbox_title(Program* program)
+{
+}
+static void op_hide_real_perks(Program* program)
+{
+}
+static void has_fake_perk(Program* program)
+{
+}
+static void op_has_fake_trait(Program* program)
+{
+}
+static void op_perk_add_mode(Program* program)
+{
+}
+static void op_clear_selectable_perks(Program* program)
+{
+}
+static void op_set_critter_hit_chance_mod(Program* program)
+{
+}
+static void op_register_hook(Program* program)
+{
+}
+static void op_play_sfall_sound(Program* program)
+{
+}
+static void op_stop_sfall_sound(Program* program)
+{
+}
+static void op_set_sfall_arg(Program* program)
+{
+}
+static void op_set_perk_freq(Program* program)
+{
+}
 
 void sfallOpcodesInit()
 {
@@ -1348,6 +1408,30 @@ void sfallOpcodesInit()
     
     interpreterRegisterOpcode(0x81cf, op_write_byte);
     interpreterRegisterOpcode(0x81a2, op_set_skill_max);
+
+
+
+    interpreterRegisterOpcode(0x8165, op_graphics_funcs_available);
+    interpreterRegisterOpcode(0x8166, op_load_shader);
+    interpreterRegisterOpcode(0x8167, op_free_shader);
+    interpreterRegisterOpcode(0x8168, op_activate_shader);
+    interpreterRegisterOpcode(0x8169, op_deactivate_shader);
+
+    interpreterRegisterOpcode(0x818b, op_set_pipboy_available);
+    interpreterRegisterOpcode(0x818c, op_get_kill_counter);
+    interpreterRegisterOpcode(0x81bd, set_selectable_perk);
+    interpreterRegisterOpcode(0x81be, op_set_perkbox_title);
+    interpreterRegisterOpcode(0x81bf, op_hide_real_perks);
+    interpreterRegisterOpcode(0x81c1, has_fake_perk);
+    interpreterRegisterOpcode(0x81c2, op_has_fake_trait);
+    interpreterRegisterOpcode(0x81c3, op_perk_add_mode);
+    interpreterRegisterOpcode(0x81c4, op_clear_selectable_perks);
+    interpreterRegisterOpcode(0x81c5, op_set_critter_hit_chance_mod);
+    interpreterRegisterOpcode(0x8207, op_register_hook);
+    interpreterRegisterOpcode(0x822b, op_play_sfall_sound);
+    interpreterRegisterOpcode(0x822c, op_stop_sfall_sound);
+    interpreterRegisterOpcode(0x823d, op_set_sfall_arg);
+    interpreterRegisterOpcode(0x8247, op_set_perk_freq);
 }
 
 void sfallOpcodesExit()
