@@ -1226,6 +1226,7 @@ static void op_set_skill_max(Program* program)
 
 static void op_graphics_funcs_available(Program* program)
 {
+    programStackPushInteger(program, 0);
 }
 static void op_load_shader(Program* program)
 {
@@ -1241,6 +1242,7 @@ static void op_deactivate_shader(Program* program)
 }
 static void op_set_pipboy_available(Program* program)
 {
+    int value1 = programStackPopInteger(program);
 }
 static void op_get_kill_counter(Program* program)
 {
@@ -1274,9 +1276,14 @@ static void op_register_hook(Program* program)
 }
 static void op_play_sfall_sound(Program* program)
 {
+    const char* string = programStackPopString(program);
+    int value = programStackPopInteger(program);
+
+    programStackPushInteger(program, 0);
 }
 static void op_stop_sfall_sound(Program* program)
 {
+    int value = programStackPopInteger(program);
 }
 static void op_set_sfall_arg(Program* program)
 {
