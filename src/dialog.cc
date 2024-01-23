@@ -58,7 +58,7 @@ int _inDialog = 0;
 int _mediaFlag = 2;
 
 // 0x56DAE0
-STRUCT_56DAE0 _dialog[4];
+STRUCT_DIALOG _dialog[4];
 
 // Reply flags.
 //
@@ -165,20 +165,20 @@ char* off_56DBE8;
 char* off_56DBEC;
 
 // 0x42F434
-STRUCT_56DAE0_FIELD_4* _getReply()
+STRUCT_REPLY* _getReply()
 {
-    STRUCT_56DAE0_FIELD_4* v0;
-    STRUCT_56DAE0_FIELD_4_FIELD_C* v1;
+    STRUCT_REPLY* v0;
+    STRUCT_OPTION* v1;
 
-    v0 = &(_dialog[_tods].field_4[_dialog[_tods].field_C]);
-    if (v0->field_C == NULL) {
-        v0->field_14 = 1;
-        v1 = (STRUCT_56DAE0_FIELD_4_FIELD_C*)internal_malloc_safe(sizeof(STRUCT_56DAE0_FIELD_4_FIELD_C), __FILE__, __LINE__); // "..\\int\\DIALOG.C", 789
+    v0 = &(_dialog[_tods].reply[_dialog[_tods].cnt2]);
+    if (v0->option == NULL) {
+        v0->option_count = 1;
+        v1 = (STRUCT_OPTION*)internal_malloc_safe(sizeof(STRUCT_OPTION), __FILE__, __LINE__); // "..\\int\\DIALOG.C", 789
     } else {
-        v0->field_14++;
-        v1 = (STRUCT_56DAE0_FIELD_4_FIELD_C*)internal_realloc_safe(v0->field_C, sizeof(STRUCT_56DAE0_FIELD_4_FIELD_C) * v0->field_14, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 793
+        v0->option_count++;
+        v1 = (STRUCT_OPTION*)internal_realloc_safe(v0->option, sizeof(STRUCT_OPTION) * v0->option_count, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 793
     }
-    v0->field_C = v1;
+    v0->option = v1;
 
     return v0;
 }
@@ -186,65 +186,65 @@ STRUCT_56DAE0_FIELD_4* _getReply()
 // 0x42F4C0
 void _replyAddOption(const char* a1, const char* a2, int a3)
 {
-    STRUCT_56DAE0_FIELD_4* v18;
+    STRUCT_REPLY* v18;
     int v17;
     char* v14;
     char* v15;
 
     v18 = _getReply();
-    v17 = v18->field_14 - 1;
-    v18->field_C[v17].kind = 2;
+    v17 = v18->option_count - 1;
+    v18->option[v17].kind = 2;
 
     if (a1 != NULL) {
         v14 = (char*)internal_malloc_safe(strlen(a1) + 1, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 805
         strcpy(v14, a1);
-        v18->field_C[v17].field_0 = v14;
+        v18->option[v17].field_0 = v14;
     } else {
-        v18->field_C[v17].field_0 = NULL;
+        v18->option[v17].field_0 = NULL;
     }
 
     if (a2 != NULL) {
         v15 = (char*)internal_malloc_safe(strlen(a2) + 1, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 810
         strcpy(v15, a2);
-        v18->field_C[v17].string = v15;
+        v18->option[v17].string = v15;
     } else {
-        v18->field_C[v17].string = NULL;
+        v18->option[v17].string = NULL;
     }
 
-    v18->field_C[v17].field_18 = windowGetFont();
-    v18->field_C[v17].field_1A = word_56DB60;
-    v18->field_C[v17].field_14 = a3;
+    v18->option[v17].font = windowGetFont();
+    v18->option[v17].field_1A = word_56DB60;
+    v18->option[v17].field_14 = a3;
 }
 
 // 0x42F624
 void _replyAddOptionProc(const char* a1, int a2, int a3)
 {
-    STRUCT_56DAE0_FIELD_4* v5;
+    STRUCT_REPLY* v5;
     int v13;
     char* v11;
 
     v5 = _getReply();
-    v13 = v5->field_14 - 1;
+    v13 = v5->option_count - 1;
 
-    v5->field_C[v13].kind = 1;
+    v5->option[v13].kind = 1;
 
     if (a1 != NULL) {
         v11 = (char*)internal_malloc_safe(strlen(a1) + 1, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 830
         strcpy(v11, a1);
-        v5->field_C[v13].field_0 = v11;
+        v5->option[v13].field_0 = v11;
     } else {
-        v5->field_C[v13].field_0 = NULL;
+        v5->option[v13].field_0 = NULL;
     }
 
-    v5->field_C[v13].proc = a2;
+    v5->option[v13].proc = a2;
 
-    v5->field_C[v13].field_18 = windowGetFont();
-    v5->field_C[v13].field_1A = word_56DB60;
-    v5->field_C[v13].field_14 = a3;
+    v5->option[v13].font = windowGetFont();
+    v5->option[v13].field_1A = word_56DB60;
+    v5->option[v13].field_14 = a3;
 }
 
 // 0x42F714
-void _optionFree(STRUCT_56DAE0_FIELD_4_FIELD_C* a1)
+void _optionFree(STRUCT_OPTION* a1)
 {
     if (a1->field_0 != NULL) {
         internal_free_safe(a1->field_0, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 844
@@ -262,36 +262,36 @@ void _replyFree()
 {
     int i;
     int j;
-    STRUCT_56DAE0* ptr;
-    STRUCT_56DAE0_FIELD_4* v6;
+    STRUCT_DIALOG* ptr;
+    STRUCT_REPLY* v6;
 
     ptr = &(_dialog[_tods]);
-    for (i = 0; i < ptr->field_8; i++) {
-        v6 = &(_dialog[_tods].field_4[i]);
+    for (i = 0; i < ptr->reply_count; i++) {
+        v6 = &(_dialog[_tods].reply[i]);
 
-        if (v6->field_C != NULL) {
-            for (j = 0; j < v6->field_14; j++) {
-                _optionFree(&(v6->field_C[j]));
+        if (v6->option != NULL) {
+            for (j = 0; j < v6->option_count; j++) {
+                _optionFree(&(v6->option[j]));
             }
 
-            internal_free_safe(v6->field_C, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 857
+            internal_free_safe(v6->option, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 857
         }
 
-        if (v6->field_8 != NULL) {
-            internal_free_safe(v6->field_8, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 860
+        if (v6->str3 != NULL) {
+            internal_free_safe(v6->str3, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 860
         }
 
-        if (v6->field_4 != NULL) {
-            internal_free_safe(v6->field_4, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 862
+        if (v6->str2 != NULL) {
+            internal_free_safe(v6->str2, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 862
         }
 
-        if (v6->field_0 != NULL) {
-            internal_free_safe(v6->field_0, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 864
+        if (v6->str1 != NULL) {
+            internal_free_safe(v6->str1, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 864
         }
     }
 
-    if (ptr->field_4 != NULL) {
-        internal_free_safe(ptr->field_4, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 867
+    if (ptr->reply != NULL) {
+        internal_free_safe(ptr->reply, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 867
     }
 }
 
@@ -302,7 +302,7 @@ int _endDialog()
         return -1;
     }
 
-    _topDialogReply = _dialog[_tods].field_10;
+    _topDialogReply = _dialog[_tods].cnt3;
     _replyFree();
 
     if (gDialogReplyTitle != NULL) {
@@ -406,22 +406,22 @@ void _drawStr(int win, char* str, int font, int width, int height, int left, int
 // 0x430D40
 int _dialogStart(Program* a1)
 {
-    STRUCT_56DAE0* ptr;
+    STRUCT_DIALOG* ptr;
 
     if (_tods == 3) {
         return 1;
     }
 
-    ptr = &(_dialog[_tods]);
-    ptr->field_0 = a1;
-    ptr->field_4 = 0;
-    ptr->field_8 = 0;
-    ptr->field_C = -1;
-    ptr->field_10 = -1;
-    ptr->field_14 = 1;
-    ptr->field_10 = 1;
-
     _tods++;
+
+    ptr = &(_dialog[_tods]);
+    ptr->program = a1;
+    ptr->reply = 0;
+    ptr->reply_count = 0;
+    ptr->cnt2 = -1;
+    ptr->cnt3 = -1;
+    ptr->field_14 = 1;
+    ptr->field_18 = 1;
 
     return 0;
 }
@@ -433,28 +433,28 @@ int _dialogRestart()
         return 1;
     }
 
-    _dialog[_tods].field_10 = 0;
+    _dialog[_tods].cnt3 = 0;
 
     return 0;
 }
 
 // 0x430DE4
-int _dialogGotoReply(const char* a1)
+int _dialogGotoReply(const char* nodeName)
 {
-    STRUCT_56DAE0* ptr;
-    STRUCT_56DAE0_FIELD_4* v5;
+    STRUCT_DIALOG* ptr;
+    STRUCT_REPLY* v5;
     int i;
 
     if (_tods == -1) {
         return 1;
     }
 
-    if (a1 != NULL) {
+    if (nodeName != NULL) {
         ptr = &(_dialog[_tods]);
-        for (i = 0; i < ptr->field_8; i++) {
-            v5 = &(ptr->field_4[i]);
-            if (v5->field_4 != NULL && compat_stricmp(v5->field_4, a1) == 0) {
-                ptr->field_10 = i;
+        for (i = 0; i < ptr->reply_count; i++) {
+            v5 = &(ptr->reply[i]);
+            if (v5->str2 != NULL && compat_stricmp(v5->str2, nodeName) == 0) {
+                ptr->cnt3 = i;
                 return 0;
             }
         }
@@ -462,21 +462,21 @@ int _dialogGotoReply(const char* a1)
         return 1;
     }
 
-    _dialog[_tods].field_10 = 0;
+    _dialog[_tods].cnt3 = 0;
 
     return 0;
 }
 
 // 0x430E84
-int dialogSetReplyTitle(const char* a1)
+int dialogSetReplyTitle(const char* title)
 {
     if (gDialogReplyTitle != NULL) {
         internal_free_safe(gDialogReplyTitle, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 2561
     }
 
-    if (a1 != NULL) {
-        gDialogReplyTitle = (char*)internal_malloc_safe(strlen(a1) + 1, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 2564
-        strcpy(gDialogReplyTitle, a1);
+    if (title != NULL) {
+        gDialogReplyTitle = (char*)internal_malloc_safe(strlen(title) + 1, __FILE__, __LINE__); // "..\\int\\DIALOG.C", 2564
+        strcpy(gDialogReplyTitle, title);
     } else {
         gDialogReplyTitle = NULL;
     }
@@ -485,21 +485,57 @@ int dialogSetReplyTitle(const char* a1)
 }
 
 // 0x430EFC
-int _dialogReply(const char* a1, const char* a2)
+int _dialogReply(const char* nodeName, const char* text)
 {
-    // TODO: Incomplete.
-    // _replyAddNew(a1, a2);
+    char* s;
+
+    int replycnt = _dialog[_tods].reply_count;
+    _dialog[_tods].cnt2 = replycnt;
+    if (_dialog[_tods].reply) {
+        _dialog[_tods].reply_count++;
+        _dialog[_tods].reply = (STRUCT_REPLY *)internal_realloc_safe(_dialog[_tods].reply, sizeof(STRUCT_REPLY) * (replycnt + 1), __FILE__, __LINE__);
+    } else {
+        _dialog[_tods].reply = (STRUCT_REPLY *)internal_malloc_safe(sizeof(STRUCT_REPLY), __FILE__, __LINE__);
+        _dialog[_tods].reply_count = 1;
+    }
+    if (nodeName) {
+        s = (char *)internal_malloc_safe(strlen(nodeName) + 1,__FILE__, __LINE__);
+        strcpy(s, nodeName);
+        _dialog[_tods].reply[replycnt].str2 = s;
+    } else {
+        _dialog[_tods].reply[replycnt].str2 = NULL;
+        _dialog[_tods].cnt3 = replycnt;
+    }
+    _dialog[_tods].reply[replycnt].str3 = NULL;
+    if (text) {
+        s = (char *)internal_malloc_safe(strlen(text) + 1, __FILE__, __LINE__);
+        strcpy(s, text);
+        _dialog[_tods].reply[replycnt].str3 = s;
+    }
+    _dialog[_tods].reply[replycnt].option = NULL;
+    _dialog[_tods].reply[replycnt].option_count = 0;
+    _dialog[_tods].reply[replycnt].i05 = 0;
+    _dialog[_tods].reply[replycnt].font = windowGetFont();
+    //_dialog[_tods].reply[replycnt].w01 = gSayUnk111;
+    _dialog[_tods].reply[replycnt].str1 = NULL;
+    if (gDialogReplyTitle != NULL) {
+        s = (char *)internal_malloc_safe(strlen(gDialogReplyTitle) + 1, __FILE__, __LINE__);
+        strcpy(s, gDialogReplyTitle);
+        _dialog[_tods].reply[replycnt].str1 = s;
+    }
+
+
     return 0;
 }
 
 // 0x430F04
-int _dialogOption(const char* a1, const char* a2)
+int _dialogOption(const char* label, const char* nodeName)
 {
-    if (_dialog[_tods].field_C == -1) {
+    if (_dialog[_tods].cnt2 == -1) {
         return 0;
     }
 
-    _replyAddOption(a1, a2, 0);
+    _replyAddOption(label, nodeName, 0);
 
     return 0;
 }
@@ -507,7 +543,7 @@ int _dialogOption(const char* a1, const char* a2)
 // 0x430F38
 int _dialogOptionProc(const char* a1, int a2)
 {
-    if (_dialog[_tods].field_C == -1) {
+    if (_dialog[_tods].cnt2 == -1) {
         return 1;
     }
 
@@ -517,7 +553,7 @@ int _dialogOptionProc(const char* a1, int a2)
 }
 
 // 0x430FD4
-int sub_430FD4(const char* a1, const char* a2, int timeout)
+int _dialogMsg(const char* a1, const char* a2, int timeout)
 {
     // TODO: Incomplete.
     return -1;

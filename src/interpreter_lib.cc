@@ -1038,7 +1038,7 @@ void opSayMessage(Program* program)
         v2 = NULL;
     }
 
-    if (sub_430FD4(v1, v2, _TimeOut) != 0) {
+    if (_dialogMsg(v1, v2, _TimeOut) != 0) {
         program->flags &= ~PROGRAM_FLAG_0x20;
         programFatalError("Error setting option.");
     }

@@ -8,7 +8,7 @@ namespace fallout {
 typedef void DialogFunc1(int win);
 typedef void DialogFunc2(int win);
 
-typedef struct STRUCT_56DAE0_FIELD_4_FIELD_C {
+typedef struct STRUCT_OPTION {
     char* field_0;
     union {
         int proc;
@@ -18,29 +18,29 @@ typedef struct STRUCT_56DAE0_FIELD_4_FIELD_C {
     int field_C;
     int field_10;
     int field_14;
-    short field_18;
+    short font;
     short field_1A;
-} STRUCT_56DAE0_FIELD_4_FIELD_C;
+} STRUCT_OPTION;
 
-typedef struct STRUCT_56DAE0_FIELD_4 {
-    void* field_0;
-    char* field_4;
-    void* field_8;
-    STRUCT_56DAE0_FIELD_4_FIELD_C* field_C;
-    int field_10;
-    int field_14;
-    int field_18; // probably font number
-} STRUCT_56DAE0_FIELD_4;
+typedef struct STRUCT_REPLY {
+    void* str1;
+    char* str2;
+    void* str3;
+    STRUCT_OPTION* option;
+    int i05;
+    int option_count;
+    int font; // probably font number
+} STRUCT_REPLY;
 
-typedef struct STRUCT_56DAE0 {
-    Program* field_0;
-    STRUCT_56DAE0_FIELD_4* field_4;
-    int field_8;
-    int field_C;
-    int field_10;
+typedef struct STRUCT_DIALOG {
+    Program* program;
+    STRUCT_REPLY* reply;
+    int reply_count;
+    int cnt2;
+    int cnt3;
     int field_14;
     int field_18;
-} STRUCT_56DAE0;
+} STRUCT_DIALOG;
 
 extern const float flt_501623;
 extern const float flt_501627;
@@ -59,7 +59,7 @@ extern int _exitDialog;
 extern int _inDialog;
 extern int _mediaFlag;
 
-extern STRUCT_56DAE0 _dialog[4];
+extern STRUCT_DIALOG _dialog[4];
 extern short word_56DB60;
 extern int dword_56DB64;
 extern int dword_56DB68;
@@ -95,10 +95,10 @@ extern char* off_56DBE4;
 extern char* off_56DBE8;
 extern char* off_56DBEC;
 
-STRUCT_56DAE0_FIELD_4* _getReply();
+STRUCT_REPLY* _getReply();
 void _replyAddOption(const char* a1, const char* a2, int a3);
 void _replyAddOptionProc(const char* a1, int a2, int a3);
-void _optionFree(STRUCT_56DAE0_FIELD_4_FIELD_C* a1);
+void _optionFree(STRUCT_OPTION* a1);
 void _replyFree();
 int _endDialog();
 void _printLine(int win, char** strings, int strings_num, int a4, int a5, int a6, int a7, int a8, int a9);
@@ -113,7 +113,7 @@ int dialogSetReplyTitle(const char* a1);
 int _dialogReply(const char* a1, const char* a2);
 int _dialogOption(const char* a1, const char* a2);
 int _dialogOptionProc(const char* a1, int a2);
-int sub_430FD4(const char* a1, const char* a2, int timeout);
+int _dialogMsg(const char* a1, const char* a2, int timeout);
 int sub_431088(int a1);
 int _dialogGetExitPoint();
 int _dialogQuit();
