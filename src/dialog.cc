@@ -560,7 +560,7 @@ int _dialogMsg(const char* a1, const char* a2, int timeout)
 }
 
 // 0x431088
-int sub_431088(int a1)
+int _dialogEnd(int a1)
 {
     // TODO: Incomplete.
     return -1;

@@ -959,7 +959,7 @@ int intLibCheckDialog(Program* program)
 void opSayEnd(Program* program)
 {
     program->flags |= PROGRAM_FLAG_0x20;
-    int rc = sub_431088(gIntLibSayStartingPosition);
+    int rc = _dialogEnd(gIntLibSayStartingPosition);
     program->flags &= ~PROGRAM_FLAG_0x20;
 
     if (rc == -2) {
