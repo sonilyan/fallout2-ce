@@ -29,7 +29,7 @@ typedef struct TargetList {
 static char default_target_path_base[] = "\\fallout2\\dev\\proto\\";
 
 // 0x559CC4
-static TargetList targetlist = { NULL, 0, 0 };
+static TargetList targetlist = { nullptr, 0, 0 };
 
 // 0x559CD0
 static char* target_path_base = default_target_path_base;
@@ -45,7 +45,7 @@ void target_override_protection()
     tgt_overriden = true;
 
     name = getenv("MAIL_NAME");
-    if (name != NULL) {
+    if (name != nullptr) {
         // NOTE: Unsafe, backing buffer is 32 byte max.
         strcpy(proto_builder_name, strupr(name));
     } else {
@@ -106,7 +106,7 @@ int target_header_save()
     strcat(path, TARGET_DAT);
 
     stream = fopen(path, "wb");
-    if (stream == NULL) {
+    if (stream == nullptr) {
         return -1;
     }
 
@@ -129,7 +129,7 @@ int target_header_load()
     strcat(path, TARGET_DAT);
 
     stream = fopen(path, "rb");
-    if (stream == NULL) {
+    if (stream == nullptr) {
         return -1;
     }
 
@@ -138,7 +138,7 @@ int target_header_load()
         return -1;
     }
 
-    targetlist.tail = NULL;
+    targetlist.tail = nullptr;
     targetlist.count = 0;
 
     fclose(stream);
@@ -165,18 +165,18 @@ int target_save(int pid)
     _proto_list_str(pid, path + len + 1);
 
     extension = strchr(path + len + 1, '.');
-    if (extension != NULL) {
+    if (extension != nullptr) {
         strcpy(extension + 1, "tgt");
     } else {
         strcat(path, ".tgt");
     }
 
     stream = fopen(path, "wb");
-    if (stream == NULL) {
+    if (stream == nullptr) {
         return -1;
     }
 
-    while (subnode != NULL) {
+    while (subnode != nullptr) {
         fwrite(subnode, sizeof(TargetSubNode), 1, stream);
         subnode = subnode->next;
     }
@@ -202,20 +202,20 @@ int target_load(int pid, TargetSubNode** subnode_ptr)
     _proto_list_str(pid, path + len + 1);
 
     extension = strchr(path + len + 1, '.');
-    if (extension != NULL) {
+    if (extension != nullptr) {
         strcpy(extension + 1, "tgt");
     } else {
         strcat(path, ".tgt");
     }
 
     stream = fopen(path, "rb");
-    if (stream == NULL) {
-        *subnode_ptr = NULL;
+    if (stream == nullptr) {
+        *subnode_ptr = nullptr;
         return -1;
     }
 
     if (target_find_free_subnode(&subnode) == -1) {
-        *subnode_ptr = NULL;
+        *subnode_ptr = nullptr;
         // FIXME: Leaks `stream`.
         return -1;
     }
@@ -224,9 +224,9 @@ int target_load(int pid, TargetSubNode** subnode_ptr)
 
     *subnode_ptr = subnode;
 
-    while (subnode->next != NULL) {
+    while (subnode->next != nullptr) {
         subnode->next = (TargetSubNode*)internal_malloc(sizeof(TargetSubNode));
-        if (subnode->next == NULL) {
+        if (subnode->next == nullptr) {
             // FIXME: Leaks `stream`.
             return -1;
         }
@@ -244,15 +244,15 @@ int target_load(int pid, TargetSubNode** subnode_ptr)
 int target_find_free_subnode(TargetSubNode** subnode_ptr)
 {
     TargetNode* node = (TargetNode*)internal_malloc(sizeof(TargetNode));
-    if (node == NULL) {
-        *subnode_ptr = NULL;
+    if (node == nullptr) {
+        *subnode_ptr = nullptr;
         return -1;
     }
 
     *subnode_ptr = &(node->subnode);
 
     node->subnode.pid = -1;
-    node->subnode.next = NULL;
+    node->subnode.next = nullptr;
     node->next = targetlist.tail;
 
     targetlist.tail = node;
@@ -274,13 +274,13 @@ int target_new(int pid, int* tid_ptr)
     }
 
     new_subnode = (TargetSubNode*)internal_malloc(sizeof(TargetSubNode));
-    if (new_subnode == NULL) {
+    if (new_subnode == nullptr) {
         return -1;
     }
 
-    new_subnode->next = NULL;
+    new_subnode->next = nullptr;
 
-    while (subnode->next != NULL) {
+    while (subnode->next != nullptr) {
         subnode = subnode->next;
     }
 
@@ -305,14 +305,14 @@ int target_remove(int pid)
     TargetSubNode* subnode_next;
 
     node = targetlist.tail;
-    while (node != NULL) {
+    while (node != nullptr) {
         if (node->subnode.pid == pid) {
             break;
         }
         node = node->next;
     }
 
-    if (node == NULL) {
+    if (node == nullptr) {
         return -1;
     }
 
@@ -324,7 +324,7 @@ int target_remove(int pid)
 
     internal_free(node);
 
-    while (subnode != NULL) {
+    while (subnode != nullptr) {
         subnode_next = subnode->next;
         internal_free(subnode);
         subnode = subnode_next;
@@ -341,20 +341,20 @@ int target_remove_tid(int pid, int tid)
     TargetSubNode* subnode_next;
 
     node = targetlist.tail;
-    while (node != NULL) {
+    while (node != nullptr) {
         if (node->subnode.pid == pid) {
             break;
         }
         node = node->next;
     }
 
-    if (node == NULL) {
+    if (node == nullptr) {
         return -1;
     }
 
     if (node->subnode.tid == tid) {
         subnode_next = node->subnode.next;
-        if (subnode_next != NULL) {
+        if (subnode_next != nullptr) {
             memcpy(&(node->subnode), subnode_next, sizeof(TargetSubNode));
             internal_free(subnode_next);
         } else {
@@ -364,7 +364,7 @@ int target_remove_tid(int pid, int tid)
         // FIXME: Should probably return 0 here.
     } else {
         subnode = &(node->subnode);
-        while (subnode != NULL) {
+        while (subnode != nullptr) {
             subnode_next = subnode->next;
             if (subnode_next->tid == tid) {
                 subnode->next = subnode_next->next;
@@ -388,13 +388,13 @@ int target_remove_all()
     TargetSubNode* subnode_next;
 
     node = targetlist.tail;
-    targetlist.tail = NULL;
+    targetlist.tail = nullptr;
 
-    while (node != NULL) {
+    while (node != nullptr) {
         node_next = node->next;
 
         subnode = node->subnode.next;
-        while (subnode != NULL) {
+        while (subnode != nullptr) {
             subnode_next = subnode->next;
             internal_free(subnode);
             subnode = subnode_next;
@@ -411,7 +411,7 @@ int target_remove_all()
 int target_ptr(int pid, TargetSubNode** subnode_ptr)
 {
     TargetNode* node = targetlist.tail;
-    while (node != NULL) {
+    while (node != nullptr) {
         if (node->subnode.pid == pid) {
             *subnode_ptr = &(node->subnode);
             return 0;
@@ -429,7 +429,7 @@ int target_tid_ptr(int pid, int tid, TargetSubNode** subnode_ptr)
         return -1;
     }
 
-    while (subnode != NULL) {
+    while (subnode != nullptr) {
         if (subnode->tid == tid) {
             *subnode_ptr = subnode;
             return 0;

@@ -15,7 +15,7 @@ int map_scr_remove_spatial(int tile, int elevation)
     Rect rect;
 
     scr = scriptGetFirstSpatialScript(elevation);
-    while (scr != NULL) {
+    while (scr != nullptr) {
         if (builtTileGetTile(scr->sp.built_tile) == tile) {
             scriptRemove(scr->sid);
 
@@ -27,7 +27,7 @@ int map_scr_remove_spatial(int tile, int elevation)
     }
 
     obj = objectFindFirstAtElevation(elevation);
-    while (obj != NULL) {
+    while (obj != nullptr) {
         if (obj->tile == tile && buildFid(OBJ_TYPE_INTERFACE, 3, 0, 0, 0) == obj->fid) {
             objectDestroy(obj, &rect);
             tileWindowRefreshRect(&rect, elevation);
@@ -52,16 +52,16 @@ int map_scr_remove_all_spatials()
 
     for (elevation = 0; elevation < ELEVATION_COUNT; elevation++) {
         scr = scriptGetFirstSpatialScript(elevation);
-        while (scr != NULL) {
+        while (scr != nullptr) {
             scriptRemove(scr->sid);
 
             scr = scriptGetFirstSpatialScript(elevation);
         }
 
         obj = objectFindFirstAtElevation(elevation);
-        while (obj != NULL) {
+        while (obj != nullptr) {
             if (buildFid(OBJ_TYPE_INTERFACE, 3, 0, 0, 0) == obj->fid) {
-                objectDestroy(obj, NULL);
+                objectDestroy(obj, nullptr);
 
                 obj = objectFindFirstAtElevation(elevation);
                 continue;
@@ -75,7 +75,7 @@ int map_scr_remove_all_spatials()
 
     for (sid = 0; sid < 15000; sid++) {
         if (scriptGetScript(sid, &scr) != -1) {
-            if (scr->owner != NULL) {
+            if (scr->owner != nullptr) {
                 if (scr->owner->pid == 0x500000C) {
                     scr->owner->sid = -1;
                     scriptRemove(sid);

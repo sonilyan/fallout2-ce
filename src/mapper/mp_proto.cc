@@ -311,7 +311,7 @@ int proto_subdata_setup_fid_button(const char* title, int key, int fid, int* y, 
 
     if (art_list_str(fid, text) != -1) {
         pch = strchr(text, '.');
-        if (pch != NULL) {
+        if (pch != nullptr) {
             *pch = '\0';
         }
 
@@ -560,7 +560,7 @@ int mp_pick_kill_type()
     return _win_list_select("Kill Type",
         names,
         KILL_TYPE_COUNT,
-        NULL,
+        nullptr,
         50,
         100,
         _colorTable[15855]);
@@ -588,7 +588,7 @@ int proto_pick_ai_packet(int* value)
     rc = _win_list_select("AI Packet",
         names,
         count,
-        NULL,
+        nullptr,
         50,
         100,
         _colorTable[15855]);

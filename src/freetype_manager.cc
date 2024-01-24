@@ -181,7 +181,7 @@ static FtFontGlyph GetFtFontGlyph(uint32_t unicode)
 
                 FT_Bitmap_Done(current->library, &tmp);
             } else {
-                current->map[unicode].buffer = NULL;
+                current->map[unicode].buffer = nullptr;
             }
         }
 
@@ -197,7 +197,7 @@ int FtFontsInit()
     for (int font = 0; font < FT_FONT_MAX; font++) {
         if (FtFontLoad(font) == -1) {
             gFtFontDescriptors[font].maxHeight = 0;
-            gFtFontDescriptors[font].filebuffer = NULL;
+            gFtFontDescriptors[font].filebuffer = nullptr;
         } else {
             ++gFtFontsLength;
 
@@ -224,7 +224,7 @@ int FtFontsInit()
 void FtFontsExit()
 {
     for (int font = 0; font < FT_FONT_MAX; font++) {
-        if (gFtFontDescriptors[font].filebuffer != NULL) {
+        if (gFtFontDescriptors[font].filebuffer != nullptr) {
             internal_free_safe(gFtFontDescriptors[font].filebuffer, __FILE__, __LINE__); // FONTMGR.C, 124
         }
     }
@@ -270,13 +270,13 @@ static int FtFontLoad(int font_index)
     if (!configGetInt(&config, string, "warpMode", &desc->warpMode)) {
         return -1;
     }
-    char* encoding = NULL;
+    char* encoding = nullptr;
     if (!configGetString(&config, string, "encoding", &encoding)) {
         return -1;
     }
     strcpy(desc->encoding, encoding);
     
-    char *fontFileName = NULL;
+    char *fontFileName = nullptr;
     if (!configGetString(&config, string, "fileName", &fontFileName)) {
         return -1;
     }
@@ -284,7 +284,7 @@ static int FtFontLoad(int font_index)
     sprintf(string, "fonts/%s/%s", settings.system.language.c_str(), fontFileName);
 
     File* stream = fileOpen(string, "rb");
-    if (stream == NULL) {
+    if (stream == nullptr) {
         return -1;
     }
 
@@ -328,7 +328,7 @@ static void FtFontSetCurrentImpl(int font)
 
     font -= 100;
 
-    if (gFtFontDescriptors[font].filebuffer != NULL) {
+    if (gFtFontDescriptors[font].filebuffer != nullptr) {
         gCurrentFtFont = font;
         current = &(gFtFontDescriptors[font]);
     }

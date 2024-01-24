@@ -54,12 +54,12 @@ typedef struct DFile {
 
     // The inflate stream used to decompress data.
     //
-    // This value is NULL if entry is not compressed.
+    // This value is nullptr if entry is not compressed.
     z_streamp decompressionStream;
 
     // The decompression buffer of size [DFILE_DECOMPRESSION_BUFFER_SIZE].
     //
-    // This value is NULL if entry is not compressed.
+    // This value is nullptr if entry is not compressed.
     unsigned char* decompressionBuffer;
 
     // The last ungot character.

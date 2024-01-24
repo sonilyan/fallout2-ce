@@ -283,7 +283,7 @@ void handleTouchEvent(SDL_Event* event)
 
     if (gLastInputType != INPUT_TYPE_TOUCH) {
         // Reset mouse data.
-        SDL_GetRelativeMouseState(NULL, NULL);
+        SDL_GetRelativeMouseState(nullptr, nullptr);
 
         gLastInputType = INPUT_TYPE_TOUCH;
     }

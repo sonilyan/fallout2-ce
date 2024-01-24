@@ -40,7 +40,7 @@ static void main_menu_play_sound(const char* fileName);
 static int gMainMenuWindow = -1;
 
 // 0x5194F4
-static unsigned char* gMainMenuWindowBuffer = NULL;
+static unsigned char* gMainMenuWindowBuffer = nullptr;
 
 // 0x519504
 static bool _in_main_menu = false;
