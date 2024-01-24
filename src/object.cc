@@ -701,7 +701,7 @@ int objectSaveAll(File* stream)
                 if (PID_TYPE(object->pid) == OBJ_TYPE_CRITTER) {
                     combatData = &(object->data.critter.combat);
                     whoHitMe = combatData->whoHitMe;
-                    if (whoHitMe != 0) {
+                    if (whoHitMe != nullptr) {
                         if (combatData->whoHitMeCid != -1) {
                             combatData->whoHitMeCid = whoHitMe->cid;
                         }
@@ -1472,7 +1472,7 @@ int objectSetLocation(Object* obj, int tile, int elevation, Rect* rect)
             objectSetLocation(gEgg, tile, elevation, &r);
             rectUnion(rect, &r, rect);
         } else {
-            objectSetLocation(gEgg, tile, elevation, 0);
+            objectSetLocation(gEgg, tile, elevation, nullptr);
         }
 
         if (elevation != oldElevation) {
@@ -3486,7 +3486,7 @@ static int _obj_save_obj(File* stream, Object* object)
     if (PID_TYPE(object->pid) == OBJ_TYPE_CRITTER) {
         combatData = &(object->data.critter.combat);
         whoHitMe = combatData->whoHitMe;
-        if (whoHitMe != 0) {
+        if (whoHitMe != nullptr) {
             if (combatData->whoHitMeCid != -1) {
                 combatData->whoHitMeCid = whoHitMe->cid;
             }
@@ -3937,7 +3937,7 @@ static int _obj_connect_to_tile(ObjectListNode* node, int tile, int elevation, R
     node->obj->elevation = elevation;
     node->obj->x = 0;
     node->obj->y = 0;
-    node->obj->owner = 0;
+    node->obj->owner = nullptr;
 
     _obj_insert(node);
 

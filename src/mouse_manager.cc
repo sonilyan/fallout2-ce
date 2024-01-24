@@ -219,7 +219,7 @@ void mouseManagerExit()
     mouseManagerFlushCache();
 
     gMouseManagerCurrentPalette = nullptr;
-    gMouseManagerCurrentAnimatedData = 0;
+    gMouseManagerCurrentAnimatedData = nullptr;
 }
 
 // 0x485704
@@ -321,9 +321,9 @@ int mouseManagerSetFrame(char* fileName, int a2)
     }
 
     if (gMouseManagerIsAnimating) {
-        gMouseManagerCurrentPalette = 0;
+        gMouseManagerCurrentPalette = nullptr;
         gMouseManagerIsAnimating = 0;
-        gMouseManagerCurrentAnimatedData = 0;
+        gMouseManagerCurrentAnimatedData = nullptr;
     } else {
         if (gMouseManagerCurrentStaticData != nullptr) {
             internal_free_safe(gMouseManagerCurrentStaticData, __FILE__, __LINE__); // "..\\int\\MOUSEMGR.C", 337
@@ -498,7 +498,7 @@ bool mouseManagerSetMousePointer(char* fileName)
 
         gMouseManagerCurrentPalette = nullptr;
         gMouseManagerIsAnimating = false;
-        gMouseManagerCurrentAnimatedData = 0;
+        gMouseManagerCurrentAnimatedData = nullptr;
 
         switch (type) {
         case MOUSE_MANAGER_MOUSE_TYPE_STATIC:

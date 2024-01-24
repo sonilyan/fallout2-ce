@@ -672,7 +672,7 @@ static File* movieOpen(char* filePath)
     if (gMovieFileStream == nullptr) {
         if (_failedOpenFunc == nullptr) {
             debugPrint("Couldn't find movie file %s\n", filePath);
-            return 0;
+            return nullptr;
         }
 
         while (gMovieFileStream == nullptr && _failedOpenFunc(filePath) != 0) {

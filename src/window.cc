@@ -1664,7 +1664,7 @@ bool _windowAddButton(const char* buttonName, int x, int y, int width, int heigh
     managedButton->rightProcs[MANAGED_BUTTON_RIGHT_MOUSE_EVENT_BUTTON_UP] = 0;
     managedButton->mouseEventCallback = nullptr;
     managedButton->rightMouseEventCallback = nullptr;
-    managedButton->field_50 = 0;
+    managedButton->field_50 = nullptr;
     managedButton->procs[MANAGED_BUTTON_MOUSE_EVENT_BUTTON_DOWN] = 0;
     managedButton->procs[MANAGED_BUTTON_MOUSE_EVENT_EXIT] = 0;
     managedButton->procs[MANAGED_BUTTON_MOUSE_EVENT_ENTER] = 0;

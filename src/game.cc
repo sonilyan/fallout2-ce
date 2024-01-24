@@ -1311,7 +1311,7 @@ int showQuitConfirmationDialog()
     MessageListItem messageListItem;
     messageListItem.num = 0;
     if (messageListGetItem(&gMiscMessageList, &messageListItem)) {
-        rc = showDialogBox(messageListItem.text, 0, 0, 169, 117, _colorTable[32328], nullptr, _colorTable[32328], DIALOG_BOX_YES_NO);
+        rc = showDialogBox(messageListItem.text, nullptr, 0, 169, 117, _colorTable[32328], nullptr, _colorTable[32328], DIALOG_BOX_YES_NO);
         if (rc != 0) {
             _game_user_wants_to_quit = 2;
         }
@@ -1381,8 +1381,15 @@ static int gameDbInit()
         return -1;
     }
 
+    // SFALL: custom patch file name.
+    char* path_file_name_template = nullptr;
+    configGetString(&gSfallConfig, SFALL_CONFIG_MISC_KEY, SFALL_CONFIG_PATCH_FILE, &path_file_name_template);
+    if (path_file_name_template == nullptr || *path_file_name_template == '\0') {
+        path_file_name_template = "patch%03d.dat";
+    }
+
     for (patch_index = 0; patch_index < 1000; patch_index++) {
-        snprintf(filename, sizeof(filename), "patch%03d.dat", patch_index);
+        snprintf(filename, sizeof(filename), path_file_name_template, patch_index);
 
         if (compat_access(filename, 0) == 0) {
             dbOpen(filename, 0, master_patch_file_name, 1);

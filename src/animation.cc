@@ -2515,7 +2515,7 @@ static int _check_for_falling(Object* obj, int anim, int a3)
     sad->animationTimestamp = 0;
     sad->ticksPerFrame = animationComputeTicksPerFrame(obj, sad->fid);
     sad->animationSequenceIndex = a3;
-    sad->field_1C = _make_straight_path_func(obj, obj->tile, obj->tile, sad->straightPathNodeList, 0, 16, _obj_blocking_at);
+    sad->field_1C = _make_straight_path_func(obj, obj->tile, obj->tile, sad->straightPathNodeList, nullptr, 16, _obj_blocking_at);
     if (sad->field_1C == 0) {
         sad->field_20 = -1000;
         return -1;

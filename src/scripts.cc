@@ -213,10 +213,10 @@ static char* _blank_str = byte_50D6C0;
 static unsigned int gScriptsRequests;
 
 // 0x664958
-static STRUCT_664980 stru_664958;
+static CombatStartData gScriptsRequestedCSD;
 
 // 0x664980
-static STRUCT_664980 stru_664980;
+static CombatStartData gScriptsCSD;
 
 // 0x6649A8
 static int gScriptsRequestedElevatorType;
@@ -423,7 +423,7 @@ int gameTimeEventProcess(Object* obj, void* data)
 
     stopProcess = _critter_check_rads(gDude);
 
-    _queue_clear_type(4, 0);
+    _queue_clear_type(4, nullptr);
 
     gameTimeScheduleUpdateEvent();
 
@@ -884,7 +884,7 @@ static int scriptsClearPendingRequests()
 // 0x4A3F90
 int _scripts_clear_combat_requests(Script* script)
 {
-    if ((gScriptsRequests & SCRIPT_REQUEST_COMBAT) != 0 && stru_664958.attacker == script->owner) {
+    if ((gScriptsRequests & SCRIPT_REQUEST_COMBAT) != 0 && gScriptsRequestedCSD.attacker == script->owner) {
         gScriptsRequests &= ~(SCRIPT_REQUEST_0x0400 | SCRIPT_REQUEST_COMBAT);
     }
     return 0;
@@ -901,14 +901,14 @@ int scriptsHandleRequests()
         if (!_action_explode_running()) {
             // entering combat
             gScriptsRequests &= ~(SCRIPT_REQUEST_0x0400 | SCRIPT_REQUEST_COMBAT);
-            memcpy(&stru_664980, &stru_664958, sizeof(stru_664980));
+            memcpy(&gScriptsCSD, &gScriptsRequestedCSD, sizeof(gScriptsCSD));
 
             if ((gScriptsRequests & SCRIPT_REQUEST_0x40) != 0) {
                 gScriptsRequests &= ~SCRIPT_REQUEST_0x40;
                 _combat(nullptr);
             } else {
-                _combat(&stru_664980);
-                memset(&stru_664980, 0, sizeof(stru_664980));
+                _combat(&gScriptsCSD);
+                memset(&gScriptsCSD, 0, sizeof(gScriptsCSD));
             }
         }
     }
@@ -936,7 +936,7 @@ int scriptsHandleRequests()
             if (map == gMapHeader.field_34) {
                 if (elevation == gElevation) {
                     reg_anim_clear(gDude);
-                    objectSetRotation(gDude, ROTATION_SE, 0);
+                    objectSetRotation(gDude, ROTATION_SE, nullptr);
                     _obj_attempt_placement(gDude, tile, elevation, 0);
                 } else {
                     Object* elevatorDoors = objectFindFirstAtElevation(gDude->elevation);
@@ -951,7 +951,7 @@ int scriptsHandleRequests()
                     }
 
                     reg_anim_clear(gDude);
-                    objectSetRotation(gDude, ROTATION_SE, 0);
+                    objectSetRotation(gDude, ROTATION_SE, nullptr);
                     _obj_attempt_placement(gDude, tile, elevation, 0);
 
                     if (elevatorDoors != nullptr) {
@@ -1044,7 +1044,7 @@ int _scripts_check_state_in_combat()
             if (map == gMapHeader.field_34) {
                 if (elevation == gElevation) {
                     reg_anim_clear(gDude);
-                    objectSetRotation(gDude, ROTATION_SE, 0);
+                    objectSetRotation(gDude, ROTATION_SE, nullptr);
                     _obj_attempt_placement(gDude, tile, elevation, 0);
                 } else {
                     Object* elevatorDoors = objectFindFirstAtElevation(gDude->elevation);
@@ -1059,7 +1059,7 @@ int _scripts_check_state_in_combat()
                     }
 
                     reg_anim_clear(gDude);
-                    objectSetRotation(gDude, ROTATION_SE, 0);
+                    objectSetRotation(gDude, ROTATION_SE, nullptr);
                     _obj_attempt_placement(gDude, tile, elevation, 0);
 
                     if (elevatorDoors != nullptr) {
@@ -1097,14 +1097,14 @@ int _scripts_check_state_in_combat()
 }
 
 // 0x4A457C
-int scriptsRequestCombat(STRUCT_664980* a1)
+int scriptsRequestCombat(CombatStartData* combat)
 {
     if ((gScriptsRequests & SCRIPT_REQUEST_0x0400) != 0) {
         return -1;
     }
 
-    if (a1) {
-        memcpy(&stru_664958, a1, sizeof(stru_664958));
+    if (combat) {
+        memcpy(&gScriptsRequestedCSD, combat, sizeof(gScriptsRequestedCSD));
     } else {
         gScriptsRequests |= SCRIPT_REQUEST_0x40;
     }
@@ -1117,10 +1117,10 @@ int scriptsRequestCombat(STRUCT_664980* a1)
 // Likely related to random encounter, ala scriptsRequestRandomEncounter RELEASE
 //
 // 0x4A45D4
-void _scripts_request_combat_locked(STRUCT_664980* a1)
+void _scripts_request_combat_locked(CombatStartData* combat)
 {
-    if (a1 != nullptr) {
-        memcpy(&stru_664958, a1, sizeof(stru_664958));
+    if (combat != nullptr) {
+        memcpy(&gScriptsRequestedCSD, combat, sizeof(gScriptsRequestedCSD));
     } else {
         gScriptsRequests |= SCRIPT_REQUEST_0x40;
     }
@@ -2188,15 +2188,15 @@ int scriptAdd(int* sidPtr, int scriptType)
     scr->sp.radius = -1;
     scr->flags = 0;
     scr->field_14 = -1;
-    scr->program = 0;
+    scr->program = nullptr;
     scr->localVarsOffset = -1;
     scr->localVarsCount = 0;
     scr->field_28 = 0;
     scr->action = 0;
     scr->fixedParam = 0;
-    scr->owner = 0;
-    scr->source = 0;
-    scr->target = 0;
+    scr->owner = nullptr;
+    scr->source = nullptr;
+    scr->target = nullptr;
     scr->actionBeingUsed = -1;
     scr->scriptOverrides = 0;
     scr->field_48 = 0;
@@ -2420,7 +2420,7 @@ int _scr_remove_all_force()
     }
 
     gScriptsEnumerationScriptIndex = 0;
-    gScriptsEnumerationScriptListExtent = 0;
+    gScriptsEnumerationScriptListExtent = nullptr;
     gScriptsEnumerationElevation = 0;
     gMapSid = -1;
     programListFree();
@@ -2940,7 +2940,7 @@ int _scr_explode_scenery(Object* a1, int tile, int radius, int elevation)
         scriptExecProc(sid, SCRIPT_PROC_DAMAGE);
     }
 
-    // TODO: Redundant, we already know `scriptIds` is not nullptr.
+    // TODO: Redundant, we already know `scriptIds` is not NULL.
     if (scriptIds != nullptr) {
         internal_free(scriptIds);
     }

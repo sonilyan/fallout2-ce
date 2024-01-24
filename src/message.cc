@@ -412,8 +412,8 @@ static bool _message_add(MessageList* msg, MessageListItem* new_entry)
 
         existing_entry = &(msg->entries[index]);
         existing_entry->flags = 0;
-        existing_entry->audio = 0;
-        existing_entry->text = 0;
+        existing_entry->audio = nullptr;
+        existing_entry->text = nullptr;
         msg->entries_num++;
     }
 

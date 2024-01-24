@@ -662,7 +662,7 @@ static int pipboyWindowInit(int intent)
             soundPlayFile("iisxxxx1");
 
             const char* text = getmsg(&gPipboyMessageList, &gPipboyMessageListItem, 215);
-            showDialogBox(text, nullptr, 0, 192, 135, _colorTable[32328], 0, _colorTable[32328], DIALOG_BOX_LARGE);
+            showDialogBox(text, nullptr, 0, 192, 135, _colorTable[32328], nullptr, _colorTable[32328], DIALOG_BOX_LARGE);
 
             intent = PIPBOY_OPEN_INTENT_UNSPECIFIED;
         }
@@ -1818,7 +1818,7 @@ static void pipboyHandleAlarmClock(int a1)
 
             // You cannot rest at this location!
             const char* text = getmsg(&gPipboyMessageList, &gPipboyMessageListItem, 215);
-            showDialogBox(text, nullptr, 0, 192, 135, _colorTable[32328], 0, _colorTable[32328], DIALOG_BOX_LARGE);
+            showDialogBox(text, nullptr, 0, 192, 135, _colorTable[32328], nullptr, _colorTable[32328], DIALOG_BOX_LARGE);
 
             // CE: Restore previous tab to make sure clicks are processed by
             // appropriate handler (not the alarm clock).

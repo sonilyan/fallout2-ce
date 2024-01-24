@@ -2083,7 +2083,7 @@ int _gsound_setup_paths()
 // 0x452628
 int _gsound_sfx_q_start()
 {
-    return ambientSoundEffectEventProcess(0, nullptr);
+    return ambientSoundEffectEventProcess(nullptr, nullptr);
 }
 
 // 0x452634

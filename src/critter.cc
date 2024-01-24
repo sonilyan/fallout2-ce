@@ -1005,7 +1005,7 @@ bool _critter_is_prone(Object* critter)
 int critterGetBodyType(Object* critter)
 {
     if (critter == nullptr) {
-        debugPrint("\nError: critter_body_type: pobj was nullptr!");
+        debugPrint("\nError: critter_body_type: pobj was NULL!");
         return 0;
     }
 
@@ -1279,7 +1279,7 @@ int _critter_wake_clear(Object* obj, void* data)
     obj->data.critter.combat.results &= ~(DAM_KNOCKED_OUT | DAM_KNOCKED_DOWN);
 
     int fid = buildFid(FID_TYPE(obj->fid), obj->fid & 0xFFF, ANIM_STAND, (obj->fid & 0xF000) >> 12, obj->rotation + 1);
-    objectSetFid(obj, fid, 0);
+    objectSetFid(obj, fid, nullptr);
 
     return 0;
 }

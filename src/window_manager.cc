@@ -142,7 +142,7 @@ int windowManagerInit(VideoSystemInitProc* videoSystemInitProc, VideoSystemExitP
         gWindowIndexes[index] = -1;
     }
 
-    if (_db_total() == 0) {
+    if (db_total() == 0) {
         if (dbOpen(nullptr, 0, _path_patches, 1) == -1) {
             return WINDOW_MANAGER_ERR_INITIALIZING_DEFAULT_DATABASE;
         }
@@ -2603,7 +2603,7 @@ void _button_draw(Button* button, Window* window, unsigned char* data, bool draw
             button->currentImage = data;
 
             if (draw) {
-                _GNW_win_refresh(window, &v2, 0);
+                _GNW_win_refresh(window, &v2, nullptr);
             }
         }
     }

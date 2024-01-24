@@ -53,17 +53,17 @@ static char gDefaultTribalFemaleFileName[] = "hfprim";
 
 // 0x510738
 static ArtListDescription gArtListDescriptions[OBJ_TYPE_COUNT] = {
-    { 0, "items", 0, 0, 0 },
-    { 0, "critters", 0, 0, 0 },
-    { 0, "scenery", 0, 0, 0 },
-    { 0, "walls", 0, 0, 0 },
-    { 0, "tiles", 0, 0, 0 },
-    { 0, "misc", 0, 0, 0 },
-    { 0, "intrface", 0, 0, 0 },
-    { 0, "inven", 0, 0, 0 },
-    { 0, "heads", 0, 0, 0 },
-    { 0, "backgrnd", 0, 0, 0 },
-    { 0, "skilldex", 0, 0, 0 },
+    { 0, "items", nullptr, nullptr, 0 },
+    { 0, "critters", nullptr, nullptr, 0 },
+    { 0, "scenery", nullptr, nullptr, 0 },
+    { 0, "walls", nullptr, nullptr, 0 },
+    { 0, "tiles", nullptr, nullptr, 0 },
+    { 0, "misc", nullptr, nullptr, 0 },
+    { 0, "intrface", nullptr, nullptr, 0 },
+    { 0, "inven", nullptr, nullptr, 0 },
+    { 0, "heads", nullptr, nullptr, 0 },
+    { 0, "backgrnd", nullptr, nullptr, 0 },
+    { 0, "skilldex", nullptr, nullptr, 0 },
 };
 
 // This flag denotes that localized arts should be looked up first. Used

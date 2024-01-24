@@ -350,7 +350,7 @@ int showDialogBox(const char* title, const char** body, int bodyLength, int x, i
                 501,
                 buttonNormalFrmImage.getData(),
                 buttonPressedFrmImage.getData(),
-                0,
+                nullptr,
                 BUTTON_FLAG_TRANSPARENT,
                 offset);
             if (btn != -1) {

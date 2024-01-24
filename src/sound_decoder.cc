@@ -1250,7 +1250,7 @@ L66:
     *sampleRatePtr = 0;
     *sampleCountPtr = 0;
 
-    return 0;
+    return nullptr;
 }
 
 static inline void soundDecoderRequireBits(SoundDecoder* soundDecoder, int bits)

@@ -851,7 +851,7 @@ int characterEditorShow(bool isCreationMode)
                     messageListItemText = getmsg(&gCharacterEditorMessageList, &gCharacterEditorMessageListItem, 119);
                     strcpy(line2, messageListItemText);
 
-                    showDialogBox(line1, lines, 1, 192, 126, _colorTable[32328], 0, _colorTable[32328], 0);
+                    showDialogBox(line1, lines, 1, 192, 126, _colorTable[32328], nullptr, _colorTable[32328], 0);
                     windowRefresh(gCharacterEditorWindow);
 
                     rc = -1;
@@ -869,7 +869,7 @@ int characterEditorShow(bool isCreationMode)
                     messageListItemText = getmsg(&gCharacterEditorMessageList, &gCharacterEditorMessageListItem, 143);
                     strcpy(line2, messageListItemText);
 
-                    showDialogBox(line1, lines, 1, 192, 126, _colorTable[32328], 0, _colorTable[32328], 0);
+                    showDialogBox(line1, lines, 1, 192, 126, _colorTable[32328], nullptr, _colorTable[32328], 0);
                     windowRefresh(gCharacterEditorWindow);
 
                     rc = -1;
@@ -887,7 +887,7 @@ int characterEditorShow(bool isCreationMode)
                     messageListItemText = getmsg(&gCharacterEditorMessageList, &gCharacterEditorMessageListItem, 158);
                     strcpy(line2, messageListItemText);
 
-                    showDialogBox(line1, lines, 1, 192, 126, _colorTable[32328], 0, _colorTable[32328], 0);
+                    showDialogBox(line1, lines, 1, 192, 126, _colorTable[32328], nullptr, _colorTable[32328], 0);
                     windowRefresh(gCharacterEditorWindow);
 
                     rc = -1;
@@ -905,7 +905,7 @@ int characterEditorShow(bool isCreationMode)
                     messageListItemText = getmsg(&gCharacterEditorMessageList, &gCharacterEditorMessageListItem, 161);
                     strcpy(line2, messageListItemText);
 
-                    if (showDialogBox(line1, lines, 1, 192, 126, _colorTable[32328], 0, _colorTable[32328], DIALOG_BOX_YES_NO) == 0) {
+                    if (showDialogBox(line1, lines, 1, 192, 126, _colorTable[32328], nullptr, _colorTable[32328], DIALOG_BOX_YES_NO) == 0) {
                         windowRefresh(gCharacterEditorWindow);
 
                         rc = -1;
@@ -1541,7 +1541,7 @@ static int characterEditorWindowInit()
             522,
             _editorFrmImages[EDITOR_GRAPHIC_SLIDER_PLUS_OFF].getData(),
             _editorFrmImages[EDITOR_GRAPHIC_SLIDER_PLUS_ON].getData(),
-            0,
+            nullptr,
             96);
         gCharacterEditorSliderMinusBtn = buttonCreate(
             gCharacterEditorWindow,
@@ -1555,7 +1555,7 @@ static int characterEditorWindowInit()
             524,
             _editorFrmImages[EDITOR_GRAPHIC_SLIDER_MINUS_OFF].getData(),
             _editorFrmImages[EDITOR_GRAPHIC_SLIDER_MINUS_ON].getData(),
-            0,
+            nullptr,
             96);
         buttonSetCallbacks(gCharacterEditorSliderPlusBtn, _gsound_red_butt_press, nullptr);
         buttonSetCallbacks(gCharacterEditorSliderMinusBtn, _gsound_red_butt_press, nullptr);
@@ -1582,7 +1582,7 @@ static int characterEditorWindowInit()
             NAME_BTN_CODE,
             gCharacterEditorFrmCopy[EDITOR_GRAPHIC_NAME_OFF],
             gCharacterEditorFrmCopy[EDITOR_GRAPHIC_NAME_ON],
-            0,
+            nullptr,
             32);
         if (btn != -1) {
             buttonSetMask(btn, _editorFrmImages[EDITOR_GRAPHIC_NAME_MASK].getData());
@@ -1602,7 +1602,7 @@ static int characterEditorWindowInit()
             AGE_BTN_CODE,
             gCharacterEditorFrmCopy[EDITOR_GRAPHIC_AGE_OFF],
             gCharacterEditorFrmCopy[EDITOR_GRAPHIC_AGE_ON],
-            0,
+            nullptr,
             32);
         if (btn != -1) {
             buttonSetMask(btn, _editorFrmImages[EDITOR_GRAPHIC_AGE_MASK].getData());
@@ -1622,7 +1622,7 @@ static int characterEditorWindowInit()
             SEX_BTN_CODE,
             gCharacterEditorFrmCopy[EDITOR_GRAPHIC_SEX_OFF],
             gCharacterEditorFrmCopy[EDITOR_GRAPHIC_SEX_ON],
-            0,
+            nullptr,
             32);
         if (btn != -1) {
             buttonSetMask(btn, _editorFrmImages[EDITOR_GRAPHIC_SEX_MASK].getData());
@@ -1809,7 +1809,7 @@ static int characterEditorWindowInit()
         502,
         _editorFrmImages[EDITOR_GRAPHIC_LITTLE_RED_BUTTON_UP].getData(),
         _editorFrmImages[EDITOR_GRAPHIC_LILTTLE_RED_BUTTON_DOWN].getData(),
-        0,
+        nullptr,
         BUTTON_FLAG_TRANSPARENT,
         offset);
     if (btn != -1) {
@@ -1828,7 +1828,7 @@ static int characterEditorWindowInit()
         500,
         _editorFrmImages[23].getData(),
         _editorFrmImages[24].getData(),
-        0,
+        nullptr,
         BUTTON_FLAG_TRANSPARENT,
         offset);
     if (btn != -1) {
@@ -5395,7 +5395,7 @@ static void characterEditorToggleTaggedSkill(int skill)
             strcpy(line2, getmsg(&gCharacterEditorMessageList, &gCharacterEditorMessageListItem, 141));
 
             const char* lines[] = { line2 };
-            showDialogBox(line1, lines, 1, 192, 126, _colorTable[32328], 0, _colorTable[32328], 0);
+            showDialogBox(line1, lines, 1, 192, 126, _colorTable[32328], nullptr, _colorTable[32328], 0);
         }
     }
 
@@ -5522,7 +5522,7 @@ static void characterEditorToggleOptionalTrait(int trait)
             strcpy(line2, getmsg(&gCharacterEditorMessageList, &gCharacterEditorMessageListItem, 149));
 
             const char* lines = { line2 };
-            showDialogBox(line1, &lines, 1, 192, 126, _colorTable[32328], 0, _colorTable[32328], 0);
+            showDialogBox(line1, &lines, 1, 192, 126, _colorTable[32328], nullptr, _colorTable[32328], 0);
         } else {
             for (int index = 0; index < 2; index++) {
                 if (gCharacterEditorTempTraits[index] == -1) {
@@ -6839,7 +6839,7 @@ static int characterEditorFolderViewInit()
             17001,
             _editorFrmImages[3].getData(),
             _editorFrmImages[4].getData(),
-            0,
+            nullptr,
             32);
         if (gCharacterEditorFolderViewScrollDownBtn == -1) {
             buttonDestroy(gCharacterEditorFolderViewScrollUpBtn);

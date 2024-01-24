@@ -1658,16 +1658,16 @@ static void _map_place_dude_and_mouse()
 
     if (gDude != nullptr) {
         if (FID_ANIM_TYPE(gDude->fid) != ANIM_STAND) {
-            objectSetFrame(gDude, 0, 0);
+            objectSetFrame(gDude, 0, nullptr);
             gDude->fid = buildFid(OBJ_TYPE_CRITTER, gDude->fid & 0xFFF, ANIM_STAND, (gDude->fid & 0xF000) >> 12, gDude->rotation + 1);
         }
 
         if (gDude->tile == -1) {
             objectSetLocation(gDude, gCenterTile, gElevation, nullptr);
-            objectSetRotation(gDude, gMapHeader.enteringRotation, 0);
+            objectSetRotation(gDude, gMapHeader.enteringRotation, nullptr);
         }
 
-        objectSetLight(gDude, 4, 0x10000, 0);
+        objectSetLight(gDude, 4, 0x10000, nullptr);
         gDude->flags |= OBJECT_NO_SAVE;
 
         _dude_stand(gDude, gDude->rotation, gDude->fid);

@@ -671,7 +671,7 @@ bool _gdialogActive()
 void gameDialogEnter(Object* speaker, int a2)
 {
     if (speaker == nullptr) {
-        debugPrint("\nError: gdialogEnter: target was nullptr!");
+        debugPrint("\nError: gdialogEnter: target was NULL!");
         return;
     }
 
@@ -1747,7 +1747,7 @@ int _gdProcessInit()
     }
 
     buttonSetCallbacks(upBtn, _gsound_red_butt_press, _gsound_red_butt_release);
-    buttonSetMouseCallbacks(upBtn, _reply_arrow_up, _reply_arrow_restore, 0, 0);
+    buttonSetMouseCallbacks(upBtn, _reply_arrow_up, _reply_arrow_restore, nullptr, nullptr);
 
     // Bottom part of the reply window - scroll down.
     downBtn = buttonCreate(gGameDialogReplyWindow, 1, 29, 377, 28, -1, -1, KEY_ARROW_DOWN, -1, nullptr, nullptr, nullptr, 32);
@@ -1756,7 +1756,7 @@ int _gdProcessInit()
     }
 
     buttonSetCallbacks(downBtn, _gsound_red_butt_press, _gsound_red_butt_release);
-    buttonSetMouseCallbacks(downBtn, _reply_arrow_down, _reply_arrow_restore, 0, 0);
+    buttonSetMouseCallbacks(downBtn, _reply_arrow_down, _reply_arrow_restore, nullptr, nullptr);
 
     optionsWindowX = (screenGetWidth() - GAME_DIALOG_WINDOW_WIDTH) / 2 + GAME_DIALOG_OPTIONS_WINDOW_X;
     optionsWindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - GAME_DIALOG_WINDOW_HEIGHT) / 2 + GAME_DIALOG_OPTIONS_WINDOW_Y
@@ -2455,7 +2455,7 @@ void _gdSetupFidget(int headFrmId, int reaction)
         gameDialogRenderTalkingHead(nullptr, 0);
         _lipsFID = 0;
         _lipsKey = nullptr;
-        _lipsFp = 0;
+        _lipsFp = nullptr;
         return;
     }
 
@@ -2744,7 +2744,7 @@ void _demo_copy_options(int win)
 void _gDialogRefreshOptionsRect(int win, Rect* drawRect)
 {
     if (drawRect == nullptr) {
-        debugPrint("\nError: gDialogRefreshOptionsRect: drawRect nullptr!");
+        debugPrint("\nError: gDialogRefreshOptionsRect: drawRect NULL!");
         return;
     }
 
@@ -3211,10 +3211,10 @@ int _gdialog_barter_create_win()
                         return 0;
                     }
 
-                    objectDestroy(_barterer_table_obj, 0);
+                    objectDestroy(_barterer_table_obj, nullptr);
                 }
 
-                objectDestroy(_peon_table_obj, 0);
+                objectDestroy(_peon_table_obj, nullptr);
             }
 
             buttonDestroy(_gdialog_buttons[1]);
@@ -3238,9 +3238,9 @@ void _gdialog_barter_destroy_win()
         return;
     }
 
-    objectDestroy(_barterer_temp_obj, 0);
-    objectDestroy(_barterer_table_obj, 0);
-    objectDestroy(_peon_table_obj, 0);
+    objectDestroy(_barterer_temp_obj, nullptr);
+    objectDestroy(_barterer_table_obj, nullptr);
+    objectDestroy(_peon_table_obj, nullptr);
 
     for (int index = 0; index < 9; index++) {
         buttonDestroy(_gdialog_buttons[index]);
@@ -3337,7 +3337,7 @@ int partyMemberControlWindowInit()
     unsigned char* windowBuffer = windowGetBuffer(gGameDialogWindow);
     unsigned char* src = windowGetBuffer(gGameDialogBackgroundWindow);
     blitBufferToBuffer(src + (GAME_DIALOG_WINDOW_WIDTH) * (GAME_DIALOG_WINDOW_HEIGHT - _dialogue_subwin_len), GAME_DIALOG_WINDOW_WIDTH, _dialogue_subwin_len, GAME_DIALOG_WINDOW_WIDTH, windowBuffer, GAME_DIALOG_WINDOW_WIDTH);
-    _gdialog_scroll_subwin(gGameDialogWindow, 1, backgroundData, windowBuffer, 0, _dialogue_subwin_len, 0);
+    _gdialog_scroll_subwin(gGameDialogWindow, 1, backgroundData, windowBuffer, nullptr, _dialogue_subwin_len, 0);
     backgroundFrmImage.unlock();
 
     // TALK
@@ -3786,7 +3786,7 @@ int partyMemberCustomizationWindowInit()
     _gdialog_scroll_subwin(gGameDialogWindow, 1, backgroundFrmData, windowBuffer, nullptr, _dialogue_subwin_len, 0);
     backgroundFrmImage.unlock();
 
-    _gdialog_buttons[0] = buttonCreate(gGameDialogWindow, 593, 101, 14, 14, -1, -1, -1, 13, _redButtonNormalFrmImage.getData(), _redButtonPressedFrmImage.getData(), 0, BUTTON_FLAG_TRANSPARENT);
+    _gdialog_buttons[0] = buttonCreate(gGameDialogWindow, 593, 101, 14, 14, -1, -1, -1, 13, _redButtonNormalFrmImage.getData(), _redButtonPressedFrmImage.getData(), nullptr, BUTTON_FLAG_TRANSPARENT);
     if (_gdialog_buttons[0] == -1) {
         partyMemberCustomizationWindowFree();
         return -1;
@@ -4304,10 +4304,10 @@ int _gdialog_window_create()
 
             if (_dialogue_just_started) {
                 windowRefresh(gGameDialogBackgroundWindow);
-                _gdialog_scroll_subwin(gGameDialogWindow, 1, backgroundFrmData, v10, 0, _dialogue_subwin_len, -1);
+                _gdialog_scroll_subwin(gGameDialogWindow, 1, backgroundFrmData, v10, nullptr, _dialogue_subwin_len, -1);
                 _dialogue_just_started = 0;
             } else {
-                _gdialog_scroll_subwin(gGameDialogWindow, 1, backgroundFrmData, v10, 0, _dialogue_subwin_len, 0);
+                _gdialog_scroll_subwin(gGameDialogWindow, 1, backgroundFrmData, v10, nullptr, _dialogue_subwin_len, 0);
             }
 
                         

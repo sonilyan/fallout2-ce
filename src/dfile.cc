@@ -321,7 +321,7 @@ DFile* dfileOpen(DBase* dbase, const char* filePath, const char* mode)
     assert(filePath); // dfile.c, 296
     assert(mode); // dfile.c, 297
 
-    return dfileOpenInternal(dbase, filePath, mode, 0);
+    return dfileOpenInternal(dbase, filePath, mode, nullptr);
 }
 
 // [vfprintf].

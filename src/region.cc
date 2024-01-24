@@ -149,8 +149,8 @@ Region* regionCreate(int initialCapacity)
     region->rightProcs[2] = 0;
     region->mouseEventCallback = nullptr;
     region->rightMouseEventCallback = nullptr;
-    region->mouseEventCallbackUserData = 0;
-    region->rightMouseEventCallbackUserData = 0;
+    region->mouseEventCallbackUserData = nullptr;
+    region->rightMouseEventCallbackUserData = nullptr;
     region->pointsLength = 0;
     region->field_24 = region->field_28;
     region->field_2C = region->field_30;

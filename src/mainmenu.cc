@@ -195,7 +195,7 @@ int mainMenuWindowInit()
             gMainMenuButtonKeyBindings[index],
             _mainMenuButtonNormalFrmImage.getData(),
             _mainMenuButtonPressedFrmImage.getData(),
-            0,
+            nullptr,
             BUTTON_FLAG_TRANSPARENT,
             offset);
         if (gMainMenuButtons[index] == -1) {

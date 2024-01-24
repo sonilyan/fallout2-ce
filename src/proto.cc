@@ -54,17 +54,17 @@ char _cd_path_base[COMPAT_MAX_PATH];
 
 // 0x51C290
 static ProtoList _protoLists[11] = {
-    { 0, 0, 0, 1 },
-    { 0, 0, 0, 1 },
-    { 0, 0, 0, 1 },
-    { 0, 0, 0, 1 },
-    { 0, 0, 0, 1 },
-    { 0, 0, 0, 1 },
-    { 0, 0, 0, 1 },
-    { 0, 0, 0, 0 },
-    { 0, 0, 0, 0 },
-    { 0, 0, 0, 0 },
-    { 0, 0, 0, 0 },
+    { nullptr, nullptr, 0, 1 },
+    { nullptr, nullptr, 0, 1 },
+    { nullptr, nullptr, 0, 1 },
+    { nullptr, nullptr, 0, 1 },
+    { nullptr, nullptr, 0, 1 },
+    { nullptr, nullptr, 0, 1 },
+    { nullptr, nullptr, 0, 1 },
+    { nullptr, nullptr, 0, 0 },
+    { nullptr, nullptr, 0, 0 },
+    { nullptr, nullptr, 0, 0 },
+    { nullptr, nullptr, 0, 0 },
 };
 
 // 0x51C340
