@@ -1242,6 +1242,7 @@ static void op_activate_shader(Program* program)
 static void op_deactivate_shader(Program* program)
 {
 }
+
 static void op_set_pipboy_available(Program* program)
 {
     int value1 = programStackPopInteger(program);
@@ -1258,9 +1259,17 @@ static void op_set_pipboy_available(Program* program)
         break;
     }
 }
+
 static void op_get_kill_counter(Program* program)
 {
+    int v = programStackPopInteger(program);
+    if (v >= KILL_TYPE_COUNT) {
+        programStackPushInteger(program, 0);
+    } else {
+        programStackPushInteger(program, killsGetByType(v));
+    }
 }
+
 static void set_selectable_perk(Program* program)
 {
 }
