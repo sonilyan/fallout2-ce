@@ -41,6 +41,7 @@ int gameMoviePlay(int movie, int flags);
 void gameMovieFadeOut();
 bool gameMovieIsSeen(int movie);
 bool gameMovieIsPlaying();
+void setGameMoviesSeen(int index, int value);
 
 } // namespace fallout
 

@@ -85,6 +85,11 @@ static unsigned char gGameMoviesSeen[MOVIE_COUNT];
 // 0x596C89
 static char gGameMovieSubtitlesFilePath[COMPAT_MAX_PATH];
 
+void setGameMoviesSeen(int index, int value)
+{
+    gGameMoviesSeen[index] = value;
+}
+
 // gmovie_init
 // 0x44E5C0
 int gameMoviesInit()

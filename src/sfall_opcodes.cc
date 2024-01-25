@@ -33,6 +33,8 @@
 #include "worldmap.h"
 #include "interface.h"
 #include "critter.h"
+#include "game_movie.h"
+#include "pipboy.h"
 
 namespace fallout {
 
@@ -1243,6 +1245,18 @@ static void op_deactivate_shader(Program* program)
 static void op_set_pipboy_available(Program* program)
 {
     int value1 = programStackPopInteger(program);
+
+    switch (value1) {
+    case 0:
+        setGameMoviesSeen(3, 0);
+        break;
+    case 1:
+        setGameMoviesSeen(3, 1);
+        break;
+    case 2:
+        PipBoyAvailableAtGameStart = true;
+        break;
+    }
 }
 static void op_get_kill_counter(Program* program)
 {
