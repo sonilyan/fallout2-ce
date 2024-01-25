@@ -2847,7 +2847,7 @@ static void opGetObjectPid(Program* program)
     if (obj) {
         pid = obj->pid;
     } else {
-        scriptPredefinedError(program, "obj_pid", SCRIPT_ERROR_OBJECT_IS_NULL);
+        //scriptPredefinedError(program, "obj_pid", SCRIPT_ERROR_OBJECT_IS_NULL);
     }
 
     programStackPushInteger(program, pid);

@@ -884,9 +884,9 @@ static void opSayGoToReply(Program* program)
     }
 }
 
-// sayreply
+// sayoption
 // 0x463584
-void opSayReply(Program* program)
+void opSayOption(Program* program)
 {
     program->flags |= PROGRAM_FLAG_0x20;
 
@@ -918,8 +918,8 @@ void opSayReply(Program* program)
     program->flags &= ~PROGRAM_FLAG_0x20;
 }
 
-// sayoption
-void opSayOption(Program* program)
+// sayreply
+void opSayReply(Program* program)
 {
     program->flags |= PROGRAM_FLAG_0x20;
 
@@ -1024,14 +1024,14 @@ void opSayMessage(Program* program)
     ProgramValue v3 = programStackPopValue(program);
     ProgramValue v4 = programStackPopValue(program);
 
-    const char* v1;
+    char* v1;
     if ((v4.opcode & VALUE_TYPE_MASK) == VALUE_TYPE_STRING) {
         v1 = programGetString(program, v4.opcode, v4.integerValue);
     } else {
         v1 = nullptr;
     }
 
-    const char* v2;
+    char* v2;
     if ((v3.opcode & VALUE_TYPE_MASK) == VALUE_TYPE_STRING) {
         v2 = programGetString(program, v3.opcode, v3.integerValue);
     } else {
@@ -2240,8 +2240,8 @@ void intLibInit()
     interpreterRegisterOpcode(0x804F, opSayStartPos);
     interpreterRegisterOpcode(0x8050, opSayReplyTitle);
     interpreterRegisterOpcode(0x8051, opSayGoToReply);
-    interpreterRegisterOpcode(0x8053, opSayReply);
-    interpreterRegisterOpcode(0x8052, opSayOption);
+    interpreterRegisterOpcode(0x8053, opSayOption);
+    interpreterRegisterOpcode(0x8052, opSayReply);
     interpreterRegisterOpcode(0x804D, opSayEnd);
     interpreterRegisterOpcode(0x804C, opSayQuit);
     interpreterRegisterOpcode(0x8054, opSayMessage);

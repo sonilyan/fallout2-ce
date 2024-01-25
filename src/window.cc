@@ -245,6 +245,11 @@ unsigned char windowGetTextColor()
     return _colorTable[_currentTextColorB | (_currentTextColorG << 5) | (_currentTextColorR << 10)];
 }
 
+unsigned char windowGetTextColor(int r,int g,int b)
+{
+    return _colorTable[r | (g << 5) | (b << 10)];
+}
+
 // 0x4B6198
 unsigned char windowGetHighlightColor()
 {
@@ -1052,100 +1057,14 @@ void _windowPrintBuf(int win, char* string, int stringLength, int width, int max
     internal_free_safe(stringCopy, __FILE__, __LINE__); // "..\\int\\WINDOW.C", 1131
 }
 
-// 0x4B8638
-char** _windowWordWrap(char* string, int maxLength, int a3, int* substringListLengthPtr)
-{
-    if (string == nullptr) {
-        *substringListLengthPtr = 0;
-        return nullptr;
-    }
-
-    char** substringList = nullptr;
-    int substringListLength = 0;
-
-    char* start = string;
-    char* pch = string;
-    int v1 = a3;
-    while (*pch != '\0') {
-        v1 += fontGetCharacterWidth(*pch & 0xFF);
-        if (*pch != '\n' && v1 <= maxLength) {
-            v1 += fontGetLetterSpacing();
-            pch++;
-        } else {
-            while (v1 > maxLength) {
-                v1 -= fontGetCharacterWidth(*pch);
-                pch--;
-            }
-
-            if (*pch != '\n') {
-                while (pch != start && *pch != ' ') {
-                    pch--;
-                }
-            }
-
-            if (substringList != nullptr) {
-                substringList = (char**)internal_realloc_safe(substringList, sizeof(*substringList) * (substringListLength + 1), __FILE__, __LINE__); // "..\int\WINDOW.C", 1166
-            } else {
-                substringList = (char**)internal_malloc_safe(sizeof(*substringList), __FILE__, __LINE__); // "..\int\WINDOW.C", 1167
-            }
-
-            char* substring = (char*)internal_malloc_safe(pch - start + 1, __FILE__, __LINE__); // "..\int\WINDOW.C", 1169
-            strncpy(substring, start, pch - start);
-            substring[pch - start] = '\0';
-
-            substringList[substringListLength] = substring;
-
-            while (*pch == ' ') {
-                pch++;
-            }
-
-            v1 = 0;
-            start = pch;
-            substringListLength++;
-        }
-    }
-
-    if (start != pch) {
-        if (substringList != nullptr) {
-            substringList = (char**)internal_realloc_safe(substringList, sizeof(*substringList) * (substringListLength + 1), __FILE__, __LINE__); // "..\int\WINDOW.C", 1184
-        } else {
-            substringList = (char**)internal_malloc_safe(sizeof(*substringList), __FILE__, __LINE__); // "..\int\WINDOW.C", 1185
-        }
-
-        char* substring = (char*)internal_malloc_safe(pch - start + 1, __FILE__, __LINE__); // "..\int\WINDOW.C", 1169
-        strncpy(substring, start, pch - start);
-        substring[pch - start] = '\0';
-
-        substringList[substringListLength] = substring;
-        substringListLength++;
-    }
-
-    *substringListLengthPtr = substringListLength;
-
-    return substringList;
-}
-
-// 0x4B880C
-void _windowFreeWordList(char** substringList, int substringListLength)
-{
-    if (substringList == nullptr) {
-        return;
-    }
-
-    for (int index = 0; index < substringListLength; index++) {
-        internal_free_safe(substringList[index], __FILE__, __LINE__); // "..\\int\\WINDOW.C", 1200
-    }
-
-    internal_free_safe(substringList, __FILE__, __LINE__); // "..\\int\\WINDOW.C", 1201
-}
 
 // Renders multiline string in the specified bounding box.
 //
 // 0x4B8854
-void _windowWrapLineWithSpacing(int win, char* string, int width, int height, int x, int y, int flags, int textAlignment, int a9)
+int _windowWrapLineWithSpacing(int win, char* string, int width, int height, int x, int y, int flags, int textAlignment, int space)
 {
     if (string == nullptr) {
-        return;
+        return 0;
     }
 
     short beginnings[WORD_WRAP_MAX_COUNT] = {
@@ -1153,7 +1072,7 @@ void _windowWrapLineWithSpacing(int win, char* string, int width, int height, in
     };
     short count = -1;
     if (wordWrap(string, width, beginnings, &count) != 0) {
-        return;
+        return 0;
     }
 
     for (int index = 0; index < count-1; index++) {
@@ -1162,20 +1081,22 @@ void _windowWrapLineWithSpacing(int win, char* string, int width, int height, in
         char c = string[ending];
         string[ending] = '\0';
 
-        int v1 = y + index * (a9 + fontGetLineHeight());
+        int v1 = y + index * (space + fontGetLineHeight());
         //void _windowPrintBuf(int win, char* string, int stringLength, int width, int maxY, int x, int y, int flags, int textAlignment)
 
         _windowPrintBuf(win, string + beginning, strlen(string + beginning), width, height + y, x, v1, flags, textAlignment);
         string[ending] = c;
     }
+
+    return count - 1;
 }
 
 // Renders multiline string in the specified bounding box.
 //
 // 0x4B88FC
-void _windowWrapLine(int win, char* string, int width, int height, int x, int y, int flags, int textAlignment)
+int _windowWrapLine(int win, char* string, int width, int height, int x, int y, int flags, int textAlignment)
 {
-    _windowWrapLineWithSpacing(win, string, width, height, x, y, flags, textAlignment, 0);
+    return _windowWrapLineWithSpacing(win, string, width, height, x, y, flags, textAlignment, 0);
 }
 
 // 0x4B8920
