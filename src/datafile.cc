@@ -52,7 +52,7 @@ void sub_42EE84(unsigned char* data, unsigned char* palette, int width, int heig
         int r = palette[index * 3 + 2] >> 3;
         int g = palette[index * 3 + 1] >> 3;
         int b = palette[index * 3] >> 3;
-        int colorTableIndex = (r << 10) | (g << 5) | b;
+        int colorTableIndex = (r) | (g << 5) | (b<<10);
         indexedPalette[index] = _colorTable[colorTableIndex];
     }
 
