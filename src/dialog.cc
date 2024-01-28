@@ -606,7 +606,7 @@ int drawReply(char* string, char* text, int a3, int a4, int textAlignment)
     }
 
     if (_replyRGBset)
-        color = windowGetTextColor(0, 0, gDialogReplyColorB | (gDialogReplyColorR << 10) | (32 * gDialogReplyColorG));
+        color = windowGetTextColor(gDialogOptionColorR, gDialogOptionColorG, gDialogOptionColorB);
     else
         color = windowGetTextColor(8, 8, 8);
 
