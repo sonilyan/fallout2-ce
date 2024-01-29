@@ -252,6 +252,8 @@ target_sources(${EXECUTABLE_NAME} PUBLIC
     "src/xfile.h"
     "src/edge_border.h"
     "src/edge_border.cc"
+    "src/sfall_hooks.h"
+    "src/sfall_hooks.cc"
 )
 
 target_sources(${EXECUTABLE_NAME} PUBLIC
