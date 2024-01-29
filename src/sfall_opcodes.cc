@@ -1194,7 +1194,7 @@ static void op_refresh_pc_art(Program* program)
 
 static void register_hook_proc_internal(Program* program, int id, int proc, bool spec)
 {
-    debugPrint("register_hook_proc_internal value=%d proc=%d spec=%d", id, proc, spec ? 1 : 0);
+    debugPrint("register_hook_proc_internal %s value=%d proc=%d spec=%d",program->name, id, proc, spec ? 1 : 0);
     registerHook(program,id,proc,spec);
 }
 

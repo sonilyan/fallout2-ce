@@ -445,6 +445,7 @@ void gameReset()
     messageListRepositoryReset();
     sfallArraysReset();
     sfall_gl_scr_reset();
+    sfall_hooks_reset();
 }
 
 // 0x442C34
@@ -453,6 +454,7 @@ void gameExit()
     debugPrint("\nGame Exit\n");
 
     // SFALL
+    sfall_hooks_reset();
     sfall_gl_scr_exit();
     sfallArraysExit();
     sfallListsExit();

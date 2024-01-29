@@ -60,6 +60,8 @@ enum HookType {
     HOOK_COUNT
 };
 
+void sfall_hooks_reset();
+
 void registerHook(Program* program, int id, int proc, bool spec);
 void RunHook(int id);
 void RunKeyPressHook(int pressed, int v1, int v2);

@@ -33,6 +33,13 @@ struct HookScript {
 
 std::vector<HookScript> hooks[HOOK_COUNT];
 
+void sfall_hooks_reset()
+{
+    for (int i = 0; i < HOOK_COUNT; i++) {
+        hooks[i].clear();
+    }
+}
+    
 void registerHook(Program* program, int id, int proc, bool spec)
 {
     if (id >= HOOK_COUNT)
