@@ -69,8 +69,27 @@ void RunHook(int id)
     cRetTmp = 0;
 
     for (std::vector<HookScript>::iterator it = hooks[id].begin(); it != hooks[id].end(); ++it) {
+        if (it->proc == -1)
+            continue;
         _executeProcedure(it->program, it->proc);
     }
+}
+
+
+void RunCombatTurnHook(int critter, int dudeBegin)
+{
+    argCount = 3;
+    args[0] = 1;
+    args[1] = critter;
+    args[2] = dudeBegin;
+
+    RunHook(HOOK_KEYPRESS);
+    /*
+    if (cRet != 0) {
+        long retKey = rets[0];
+        if (retKey > 0 && retKey < 264) *dxKey = retKey;
+    }
+    */
 }
 
 
