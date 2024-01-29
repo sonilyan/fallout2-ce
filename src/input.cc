@@ -16,6 +16,7 @@
 #include "vcr.h"
 #include "win32.h"
 #include "game_mouse.h"
+#include "sfall_hooks.h"
 
 namespace fallout {
 
@@ -1152,6 +1153,7 @@ void _GNW95_process_message()
                 keyboardData.key = e.key.keysym.scancode;
                 keyboardData.down = (e.key.state & SDL_PRESSED) != 0;
                 _GNW95_process_key(&keyboardData);
+                RunKeyPressHook(keyboardData.down, keyboardData.key, keyboardData.key);
             }
             break;
         case SDL_WINDOWEVENT:

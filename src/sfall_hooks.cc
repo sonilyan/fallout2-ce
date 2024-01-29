@@ -2,34 +2,28 @@
 
 namespace fallout {
 
-/*
-    	if (id >= numHooks) return;
-	for (std::vector<HookScript>::iterator it = hooks[id].begin(); it != hooks[id].end(); ++it) {
-		if (it->prog.ptr == script) {
-			if (procNum == 0) hooks[id].erase(it); // unregister
-			return;
-		}
-	}
-	if (procNum == 0) return; // prevent registration to first location in procedure when reusing "unregister" method
 
-	ScriptProgram *prog = ScriptExtender::GetGlobalScriptProgram(script);
-	if (prog) {
-		dlog_f("Script: %s registered as hook ID %d\n", DL_HOOK, script->fileName, id);
-		HookScript hook;
-		hook.prog = *prog;
-		hook.callback = procNum;
-		hook.isGlobalScript = true;
+constexpr int maxArgs = 16; // Maximum number of hook arguments
+constexpr int maxRets = 8; // Maximum number of return values
+constexpr int maxDepth = 8;
 
-		auto c_it = hooks[id].cend();
-		if (specReg) {
-			c_it = hooks[id].cbegin();
-			hooksInfo[id].hsPosition++;
-		}
-		hooks[id].insert(c_it, hook);
+enum class DataType : unsigned long {
+    NONE = 0,
+    INT = 1,
+    FLOAT = 2,
+    STR = 3,
+};
 
-		HookScripts::InjectingHook(id); // inject hook to engine code
-	}
-    */
+bool allowNonIntReturn;
+
+DataType retTypes[maxRets]; // current hook return value types
+int args[maxArgs]; // current hook arguments
+int rets[maxRets]; // current hook return values
+int argCount;
+int cArg; // how many arguments were taken by current hook script
+int cRet; // how many return values were set by current hook script
+int cRetTmp; // how many return values were set by specific hook script (when using register_hook)
+
 
 struct HookScript {
     Program* program;
@@ -69,8 +63,50 @@ void RunHook(int id)
 {
     if (id >= HOOK_COUNT)
         return;
+
+    cArg = 0;
+    cRet = 0;
+    cRetTmp = 0;
+
     for (std::vector<HookScript>::iterator it = hooks[id].begin(); it != hooks[id].end(); ++it) {
         _executeProcedure(it->program, it->proc);
     }
 }
+
+
+void RunKeyPressHook(int pressed,int v1,int v2)
+{
+    argCount = 3;
+    args[0] = pressed;
+    args[1] = v1;
+    args[2] = v2;
+    RunHook(HOOK_KEYPRESS);
+    /*
+    if (cRet != 0) {
+        long retKey = rets[0];
+        if (retKey > 0 && retKey < 264) *dxKey = retKey;
+    }
+    */
+}
+
+ void get_sfall_arg(Program* program)
+{
+     programStackPushInteger(program, (cArg == argCount) ? 0 : args[cArg++]);
+ }
+
+ void op_get_sfall_args(Program* program)
+{
+    programStackPushInteger(program, 0);
+}
+
+ void set_sfall_return(Program* program)
+{
+    programStackPopValue(program);
+}
+
+ void op_set_sfall_arg(Program* program)
+{
+}
+
 } // namespace fallout
+

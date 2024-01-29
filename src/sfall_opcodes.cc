@@ -1144,17 +1144,6 @@ static void is_iface_tag_active(Program* program)
     }
 }
 
-
-static void get_sfall_arg(Program* program)
-{
-    programStackPushInteger(program, 0);
-}
-
-static void set_sfall_return(Program* program)
-{
-    programStackPopValue(program);
-}
-
 static void fs_copy(Program* program)
 {
     char* value1 = programStackPopString(program);
@@ -1337,9 +1326,6 @@ static void op_stop_sfall_sound(Program* program)
 {
     int value = programStackPopInteger(program);
 }
-static void op_set_sfall_arg(Program* program)
-{
-}
 static void op_set_perk_freq(Program* program)
 {
     int value = programStackPopInteger(program);
@@ -1452,8 +1438,6 @@ void sfallOpcodesInit()
     interpreterRegisterOpcode(0x81DC, show_iface_tag);
     interpreterRegisterOpcode(0x81DD, hide_iface_tag);
     interpreterRegisterOpcode(0x81DE, is_iface_tag_active);
-    interpreterRegisterOpcode(0x81E4, get_sfall_arg);
-    interpreterRegisterOpcode(0x81E5, set_sfall_return);
 
     interpreterRegisterOpcode(0x81F8, fs_copy);
     interpreterRegisterOpcode(0x81FB, fs_write_short);
@@ -1468,6 +1452,11 @@ void sfallOpcodesInit()
     interpreterRegisterOpcode(0x8207, op_register_hook);
     interpreterRegisterOpcode(0x8262, register_hook_proc);
     interpreterRegisterOpcode(0x827d, register_hook_proc_spec);
+
+    interpreterRegisterOpcode(0x81E4, get_sfall_arg);
+    interpreterRegisterOpcode(0x81E5, set_sfall_return);
+    interpreterRegisterOpcode(0x823C, op_get_sfall_args);
+    interpreterRegisterOpcode(0x823D, op_set_sfall_arg);
     
     interpreterRegisterOpcode(0x81cf, op_write_byte);
     interpreterRegisterOpcode(0x81a2, op_set_skill_max);
@@ -1492,7 +1481,6 @@ void sfallOpcodesInit()
     interpreterRegisterOpcode(0x81c5, op_set_critter_hit_chance_mod);
     interpreterRegisterOpcode(0x822b, op_play_sfall_sound);
     interpreterRegisterOpcode(0x822c, op_stop_sfall_sound);
-    interpreterRegisterOpcode(0x823d, op_set_sfall_arg);
     interpreterRegisterOpcode(0x8247, op_set_perk_freq);
 }
 

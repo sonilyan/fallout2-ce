@@ -62,6 +62,12 @@ enum HookType {
 
 void registerHook(Program* program, int id, int proc, bool spec);
 void RunHook(int id);
+void RunKeyPressHook(int pressed, int v1, int v2);
+
+void get_sfall_arg(Program* program);
+void op_get_sfall_args(Program* program);
+void set_sfall_return(Program* program);
+void op_set_sfall_arg(Program* program);
 
 } // namespace fallout
 
