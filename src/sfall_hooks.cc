@@ -61,12 +61,12 @@ void registerHook(Program* program, int id, int proc, bool spec)
 
 void RunHook(int id)
 {
-    if (id >= HOOK_COUNT)
-        return;
-
     cArg = 0;
     cRet = 0;
     cRetTmp = 0;
+
+    if (id >= HOOK_COUNT || hooks[id].empty())
+        return;
 
     for (std::vector<HookScript>::iterator it = hooks[id].begin(); it != hooks[id].end(); ++it) {
         if (it->proc == -1)
@@ -92,6 +92,14 @@ void RunCombatTurnHook(int critter, int dudeBegin)
     */
 }
 
+
+void RunMouseClickHook(int button, int pressed)
+{
+    argCount = 2;
+    args[0] = pressed;
+    args[1] = button;
+    RunHook(HOOK_MOUSECLICK);
+}
 
 void RunKeyPressHook(int pressed,int v1,int v2)
 {
