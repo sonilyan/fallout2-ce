@@ -35,6 +35,7 @@
 #include "critter.h"
 #include "game_movie.h"
 #include "pipboy.h"
+#include "sfall_hooks.h"
 
 namespace fallout {
 
@@ -1202,27 +1203,28 @@ static void op_refresh_pc_art(Program* program)
     debugPrint("op_refresh_pc_art");
 }
 
-static void register_hook_proc_internal(Program* program, int value, int proc, bool spec)
+static void register_hook_proc_internal(Program* program, int id, int proc, bool spec)
 {
-    debugPrint("register_hook_proc_internal value=%d proc=%d spec=%d", value, proc, spec ? 1 : 0);
+    debugPrint("register_hook_proc_internal value=%d proc=%d spec=%d", id, proc, spec ? 1 : 0);
+    registerHook(program,id,proc,spec);
 }
 
 static void register_hook_proc(Program* program)
 {
     int proc = programStackPopInteger(program);
-    int value = programStackPopInteger(program);
-    register_hook_proc_internal(program, value, proc, false);
+    int id = programStackPopInteger(program);
+    register_hook_proc_internal(program, id, proc, false);
 }
 static void register_hook_proc_spec(Program* program)
 {
     int proc = programStackPopInteger(program);
-    int value = programStackPopInteger(program);
-    register_hook_proc_internal(program, value, proc, true);
+    int id = programStackPopInteger(program);
+    register_hook_proc_internal(program, id, proc, true);
 }
 static void op_register_hook(Program* program)
 {
-    int value = programStackPopInteger(program);
-    register_hook_proc_internal(program, value, -1, true);
+    int id = programStackPopInteger(program);
+    register_hook_proc_internal(program, id, -1, true);
 }
 
 
