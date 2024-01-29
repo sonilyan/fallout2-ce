@@ -77,6 +77,7 @@
 #include "window_manager.h"
 #include "window_manager_private.h"
 #include "worldmap.h"
+#include "sfall_hooks.h"
 
 namespace fallout {
 
@@ -1654,11 +1655,13 @@ int GameMode::currentGameMode = 0;
 void GameMode::enterGameMode(int gameMode)
 {
     currentGameMode |= gameMode;
+    RunHook(HOOK_GAMEMODECHANGE);
 }
 
 void GameMode::exitGameMode(int gameMode)
 {
     currentGameMode &= ~gameMode;
+    RunHook(HOOK_GAMEMODECHANGE);
 }
 
 bool GameMode::isInGameMode(int gameMode)

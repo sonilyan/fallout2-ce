@@ -54,6 +54,7 @@ void registerHook(Program* program, int id, int proc, bool spec)
 
     HookScript hook;
     hook.program = program;
+    hook.proc = proc;
     hook.isGlobalScript = true;
 
     auto c_it = hooks[id].cend();

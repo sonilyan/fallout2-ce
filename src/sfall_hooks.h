@@ -61,6 +61,7 @@ enum HookType {
 };
 
 void registerHook(Program* program, int id, int proc, bool spec);
+void RunHook(int id);
 
 } // namespace fallout
 
