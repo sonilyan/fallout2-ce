@@ -492,7 +492,7 @@ static int gInventoryWindowDudeFid;
 static Inventory* _pud;
 
 // 0x59E964
-static int gInventoryWindow;
+int gInventoryWindow;
 
 // item2
 // 0x59E968
@@ -515,6 +515,15 @@ static int _barter_back_win;
 
 static FrmImage _inventoryFrmImages[INVENTORY_FRM_COUNT];
 static FrmImage _moveFrmImages[8];
+
+int getCurrentStack()
+{
+    return _curr_stack;
+}
+int getInventoryWindowMaxY()
+{
+    return gInventoryWindowMaxY;
+}
 
 // 0x46E724
 void _inven_reset_dude()
@@ -556,8 +565,6 @@ void inventoryOpen()
         }
     }
 
-    ScopedGameMode gm(GameMode::kInventory);
-
     if (inventoryCommonInit() == -1) {
         return;
     }
@@ -596,6 +603,8 @@ void inventoryOpen()
     inventoryRenderSummary();
     _display_inventory(_stack_offset[_curr_stack], -1, INVENTORY_WINDOW_TYPE_NORMAL);
     inventorySetCursor(INVENTORY_WINDOW_CURSOR_HAND);
+
+    ScopedGameMode gm(GameMode::kInventory);
 
     for (;;) {
         sharedFpsLimiter.mark();

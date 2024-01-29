@@ -8,6 +8,7 @@
 #include "svga.h"
 #include "touch.h"
 #include "vcr.h"
+#include "sfall_hooks.h"
 
 namespace fallout {
 
@@ -542,11 +543,13 @@ void _mouse_simulate_input(int delta_x, int delta_y, int buttons)
             }
         } else {
             gMouseEvent |= MOUSE_EVENT_LEFT_BUTTON_UP;
+            RunMouseClickHook(0, 0);
         }
     } else {
         if ((buttons & 0x01) != 0) {
             gMouseEvent |= MOUSE_EVENT_LEFT_BUTTON_DOWN;
             previousLeftButtonTimestamp = getTicks();
+            RunMouseClickHook(0, 1);
         }
     }
 
@@ -559,11 +562,13 @@ void _mouse_simulate_input(int delta_x, int delta_y, int buttons)
             }
         } else {
             gMouseEvent |= MOUSE_EVENT_RIGHT_BUTTON_UP;
+            RunMouseClickHook(1, 0);
         }
     } else {
         if (buttons & 0x02) {
             gMouseEvent |= MOUSE_EVENT_RIGHT_BUTTON_DOWN;
             previousRightButtonTimestamp = getTicks();
+            RunMouseClickHook(1, 1);
         }
     }
 

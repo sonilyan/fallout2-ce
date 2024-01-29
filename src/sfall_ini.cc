@@ -96,6 +96,41 @@ bool sfall_ini_get_int(const char* triplet, int* value)
     return true;
 }
 
+bool sfall_ini_get(const char* triplet,Config* config)
+{
+    char fileName[kFileNameMaxSize];
+    char section[kSectionMaxSize];
+
+    const char* key = parse_ini_triplet(triplet, fileName, section);
+    if (key == nullptr) {
+        return false;
+    }
+
+    if (!configInit(config)) {
+        return false;
+    }
+
+    char path[COMPAT_MAX_PATH];
+    bool loaded = false;
+
+    if (basePath[0] != '\0' && !is_system_file_name(fileName)) {
+        // Attempt to load requested file in base directory.
+        snprintf(path, sizeof(path), "%s\\%s", basePath, fileName);
+        loaded = configRead(config, path, false);
+    }
+
+    if (!loaded) {
+        // There was no base path set, requested file is a system config, or
+        // non-system config file was not found the base path - attempt to load
+        // from current working directory.
+        strcpy(path, fileName);
+        loaded = configRead(config, path, false);
+    }
+
+    return true;
+}
+
+
 bool sfall_ini_get_string(const char* triplet, char* value, size_t size)
 {
     char fileName[kFileNameMaxSize];

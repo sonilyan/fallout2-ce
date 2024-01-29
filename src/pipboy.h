@@ -18,6 +18,7 @@ int pipboyLoad(File* stream);
 
 extern bool PipBoyAvailableAtGameStart;
 
+extern int gPipboyWindow;
 } // namespace fallout
 
 #endif /* PIPBOY_H */

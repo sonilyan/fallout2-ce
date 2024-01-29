@@ -15,6 +15,17 @@
 #include "tile.h"
 #include "window.h"
 #include "worldmap.h"
+#include "config.h"
+#include "sfall_arrays.h"
+#include "interface.h"
+#include "automap.h"
+#include "game.h"
+#include "inventory.h"
+#include "game_dialog.h"
+#include "pipboy.h"
+#include "worldmap.h"
+#include "character_editor.h"
+#include "skilldex.h"
 
 namespace fallout {
 
@@ -43,6 +54,8 @@ static void mf_outlined_object(Program* program, int args);
 static void mf_set_cursor_mode(Program* program, int args);
 static void mf_set_flags(Program* program, int args);
 static void mf_set_ini_setting(Program* program, int args);
+static void mf_get_ini_setting(Program* program, int args);
+static void mf_get_window_attribute(Program* program, int args);
 static void mf_set_outline(Program* program, int args);
 static void mf_show_window(Program* program, int args);
 static void mf_tile_refresh_display(Program* program, int args);
@@ -63,6 +76,8 @@ constexpr MetaruleInfo kMetarules[] = {
     { "set_cursor_mode", mf_set_cursor_mode, 1, 1 },
     { "set_flags", mf_set_flags, 2, 2 },
     { "set_ini_setting", mf_set_ini_setting, 2, 2 },
+    { "get_ini_section", mf_get_ini_setting, 2, 2 },
+    { "get_window_attribute", mf_get_window_attribute, 1, 2 },
     { "set_outline", mf_set_outline, 2, 2 },
     { "show_window", mf_show_window, 0, 1 },
     { "tile_refresh_display", mf_tile_refresh_display, 0, 0 },
@@ -201,6 +216,169 @@ void mf_set_flags(Program* program, int args)
     object->flags = flags;
 
     programStackPushInteger(program, -1);
+}
+
+enum WinNameType {
+    Inventory = 0, // any inventory window (player/loot/use/barter)
+    Dialog = 1,
+    PipBoy = 2,
+    WorldMap = 3,
+    IfaceBar = 4, // the interface bar
+    Character = 5,
+    Skilldex = 6,
+    EscMenu = 7, // escape menu
+    Automap = 8,
+    // TODO
+    DialogView,
+    DialogPanel,
+    MemberPanel,
+
+    // Inventory types
+    Inven = 50, // player inventory
+    Loot = 51,
+    Use = 53,
+    Barter = 54
+};
+
+Window* GetWindow(long winType)
+{
+    long winID = 0;
+    switch (winType) {
+    case WinNameType::Inventory:
+        if (GameMode::getCurrentGameMode() & (GameMode::kInventory | GameMode::kUseOn | GameMode::kLoot | GameMode::kBarter)) winID = gInventoryWindow;
+        break;
+    case WinNameType::Dialog:
+        if (GameMode::getCurrentGameMode() & GameMode::kDialog) winID = gGameDialogBackgroundWindow;
+        break;
+    case WinNameType::PipBoy:
+        if (GameMode::getCurrentGameMode() & GameMode::kPipboy) winID = gPipboyWindow;
+        break;
+    case WinNameType::WorldMap:
+        if (GameMode::getCurrentGameMode() & GameMode::kWorldmap) winID = wmBkWin;
+        break;
+    case WinNameType::IfaceBar:
+        winID = gInterfaceBarWindow;
+        break;
+    case WinNameType::Character:
+        if (GameMode::getCurrentGameMode() & GameMode::kEditor) winID = gCharacterEditorWindow;
+        break;
+    case WinNameType::Skilldex:
+        if (GameMode::getCurrentGameMode() & GameMode::kSkilldex) winID = gSkilldexWindow;
+        break;
+    case WinNameType::Automap:
+        if (GameMode::getCurrentGameMode() & GameMode::kAutomap) winID = automapWindow;
+        break;
+    default:
+        return (Window*)(-1); // unsupported type
+    }
+    return (winID > 0) ? windowGetWindow(winID) : nullptr;
+}
+
+void mf_get_window_attribute(Program* program, int args)
+{
+    int v0 = programStackPopInteger(program);
+    int v1 = programStackPopInteger(program);
+
+    Window* win = GetWindow(v0);
+    if (win == nullptr) {
+        if (v1 != 0) {
+            debugPrint("%s() - failed to get the interface window.", "mf_get_window_attribute");
+            programStackPushInteger(program, -1);
+        }
+        return;
+    }
+    if ((long)win == -1) {
+        debugPrint("%s() - invalid window type number.", "mf_get_window_attribute");
+        programStackPushInteger(program, -1);
+        return;
+    }
+    long result = 0;
+    switch (v1) {
+    case -1: // rectangle map.left map.top map.right map.bottom
+    {
+        result = CreateTempArray(-1, 0); // associative
+        ProgramValue key1;
+        key1.opcode = VALUE_TYPE_DYNAMIC_STRING;
+        key1.integerValue = programPushString(program, "left");
+
+        ProgramValue key2;
+        key2.opcode = VALUE_TYPE_DYNAMIC_STRING;
+        key2.integerValue = programPushString(program, "top");
+
+        ProgramValue key3;
+        key3.opcode = VALUE_TYPE_DYNAMIC_STRING;
+        key3.integerValue = programPushString(program, "right");
+
+        ProgramValue key4;
+        key4.opcode = VALUE_TYPE_DYNAMIC_STRING;
+        key4.integerValue = programPushString(program, "bottom");
+
+        SetArray(result, key1, ProgramValue(win->rect.left), false, program);
+        SetArray(result, key2, ProgramValue(win->rect.top), false, program);
+        SetArray(result, key3, ProgramValue(win->rect.right), false, program);
+        SetArray(result, key4, ProgramValue(win->rect.bottom), false, program);
+    } break;
+    case 0: // check if window exists
+        result = 1;
+        break;
+    case 1:
+        result = win->rect.left;
+        break;
+    case 2:
+        result = win->rect.top;
+        break;
+    case 3:
+        result = win->width;
+        break;
+    case 4:
+        result = win->height;
+        break;
+    }
+
+    programStackPushInteger(program, result);
+}
+
+void mf_get_ini_setting(Program* program, int args)
+{
+    char tmp[200];
+    const char* string1 = programStackPopString(program);
+    const char* sectionName = programStackPopString(program);
+    sprintf(tmp, "%s|%s|test", string1, sectionName);
+
+    ArrayId id = CreateTempArray(-1, 0);
+
+    Config config;
+    if (!sfall_ini_get(tmp, &config)) {
+        programStackPushInteger(program, id);
+        return;
+    }
+
+    int sectionIndex = dictionaryGetIndexByKey(&config, sectionName);
+    if (sectionIndex == -1) {
+        programStackPushInteger(program, id);
+        return;
+    }
+
+    DictionaryEntry* sectionEntry = &(config.entries[sectionIndex]);
+    ConfigSection* section = (ConfigSection*)sectionEntry->value;
+
+    for (int i = 0; i < section->entriesLength; i++) {
+        char* a = section->entries[i].key;
+        char** b = (char**)(section->entries[i].value);
+
+        ProgramValue key;
+        key.opcode = VALUE_TYPE_DYNAMIC_STRING;
+        key.integerValue = programPushString(program, a);
+
+        ProgramValue val;
+        val.opcode = VALUE_TYPE_DYNAMIC_STRING;
+        val.integerValue = programPushString(program, *b);
+
+        SetArray(id, key, val, false, program);
+    }
+
+    configFree(&config);
+    programStackPushInteger(program, id);
 }
 
 void mf_set_ini_setting(Program* program, int args)

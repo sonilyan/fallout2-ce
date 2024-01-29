@@ -35,6 +35,7 @@
 #include "critter.h"
 #include "game_movie.h"
 #include "pipboy.h"
+#include "sfall_hooks.h"
 
 namespace fallout {
 
@@ -82,6 +83,12 @@ static void opReadInt(Program* program)
     switch (addr) {
     case 0x56D38C:
         value = combatGetTargetHighlight();
+        break;
+    case 0x59e96c:
+        value = getCurrentStack();
+        break;
+    case 0x59e970:
+        value = getInventoryWindowMaxY();
         break;
     default:
         debugPrint("%s: attempt to 'read_int' at 0x%x", program->name, addr);
@@ -1143,17 +1150,6 @@ static void is_iface_tag_active(Program* program)
     }
 }
 
-
-static void get_sfall_arg(Program* program)
-{
-    programStackPushInteger(program, 0);
-}
-
-static void set_sfall_return(Program* program)
-{
-    programStackPopValue(program);
-}
-
 static void fs_copy(Program* program)
 {
     char* value1 = programStackPopString(program);
@@ -1202,11 +1198,30 @@ static void op_refresh_pc_art(Program* program)
     debugPrint("op_refresh_pc_art");
 }
 
+static void register_hook_proc_internal(Program* program, int id, int proc, bool spec)
+{
+    debugPrint("register_hook_proc_internal %s value=%d proc=%d spec=%d",program->name, id, proc, spec ? 1 : 0);
+    registerHook(program,id,proc,spec);
+}
+
 static void register_hook_proc(Program* program)
 {
-    int value1 = programStackPopInteger(program);
-    int value2 = programStackPopInteger(program);
+    int proc = programStackPopInteger(program);
+    int id = programStackPopInteger(program);
+    register_hook_proc_internal(program, id, proc, false);
 }
+static void register_hook_proc_spec(Program* program)
+{
+    int proc = programStackPopInteger(program);
+    int id = programStackPopInteger(program);
+    register_hook_proc_internal(program, id, proc, true);
+}
+static void op_register_hook(Program* program)
+{
+    int id = programStackPopInteger(program);
+    register_hook_proc_internal(program, id, -1, true);
+}
+
 
 static void op_write_byte(Program* program)
 {
@@ -1232,12 +1247,18 @@ static void op_graphics_funcs_available(Program* program)
 }
 static void op_load_shader(Program* program)
 {
+    char* value = programStackPopString(program);
+    //debugPrint("op_load_shader %s", value);
+    programStackPushInteger(program, 121212);
 }
 static void op_free_shader(Program* program)
 {
 }
 static void op_activate_shader(Program* program)
 {
+    int value = programStackPopInteger(program);
+    //debugPrint("op_activate_shader %d", value);
+    programStackPushInteger(program, 0);
 }
 static void op_deactivate_shader(Program* program)
 {
@@ -1281,9 +1302,15 @@ static void op_hide_real_perks(Program* program)
 }
 static void has_fake_perk(Program* program)
 {
+    char* value = programStackPopString(program);
+    //debugPrint("has_fake_perk %s", value);
+    programStackPushInteger(program, 0);
 }
 static void op_has_fake_trait(Program* program)
 {
+    char* value = programStackPopString(program);
+    //debugPrint("op_has_fake_trait %s", value);
+    programStackPushInteger(program, 0);
 }
 static void op_perk_add_mode(Program* program)
 {
@@ -1292,9 +1319,6 @@ static void op_clear_selectable_perks(Program* program)
 {
 }
 static void op_set_critter_hit_chance_mod(Program* program)
-{
-}
-static void op_register_hook(Program* program)
 {
 }
 static void op_play_sfall_sound(Program* program)
@@ -1308,11 +1332,10 @@ static void op_stop_sfall_sound(Program* program)
 {
     int value = programStackPopInteger(program);
 }
-static void op_set_sfall_arg(Program* program)
-{
-}
 static void op_set_perk_freq(Program* program)
 {
+    int value = programStackPopInteger(program);
+    debugPrint("op_set_perk_freq %d", value);
 }
 
 void sfallOpcodesInit()
@@ -1421,8 +1444,6 @@ void sfallOpcodesInit()
     interpreterRegisterOpcode(0x81DC, show_iface_tag);
     interpreterRegisterOpcode(0x81DD, hide_iface_tag);
     interpreterRegisterOpcode(0x81DE, is_iface_tag_active);
-    interpreterRegisterOpcode(0x81E4, get_sfall_arg);
-    interpreterRegisterOpcode(0x81E5, set_sfall_return);
 
     interpreterRegisterOpcode(0x81F8, fs_copy);
     interpreterRegisterOpcode(0x81FB, fs_write_short);
@@ -1434,7 +1455,14 @@ void sfallOpcodesInit()
     interpreterRegisterOpcode(0x8215, op_set_hero_style);
     interpreterRegisterOpcode(0x8227, op_refresh_pc_art);
     
+    interpreterRegisterOpcode(0x8207, op_register_hook);
     interpreterRegisterOpcode(0x8262, register_hook_proc);
+    interpreterRegisterOpcode(0x827d, register_hook_proc_spec);
+
+    interpreterRegisterOpcode(0x81E4, get_sfall_arg);
+    interpreterRegisterOpcode(0x81E5, set_sfall_return);
+    interpreterRegisterOpcode(0x823C, op_get_sfall_args);
+    interpreterRegisterOpcode(0x823D, op_set_sfall_arg);
     
     interpreterRegisterOpcode(0x81cf, op_write_byte);
     interpreterRegisterOpcode(0x81a2, op_set_skill_max);
@@ -1457,10 +1485,8 @@ void sfallOpcodesInit()
     interpreterRegisterOpcode(0x81c3, op_perk_add_mode);
     interpreterRegisterOpcode(0x81c4, op_clear_selectable_perks);
     interpreterRegisterOpcode(0x81c5, op_set_critter_hit_chance_mod);
-    interpreterRegisterOpcode(0x8207, op_register_hook);
     interpreterRegisterOpcode(0x822b, op_play_sfall_sound);
     interpreterRegisterOpcode(0x822c, op_stop_sfall_sound);
-    interpreterRegisterOpcode(0x823d, op_set_sfall_arg);
     interpreterRegisterOpcode(0x8247, op_set_perk_freq);
 }
 

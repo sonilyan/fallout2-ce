@@ -58,6 +58,8 @@ int automapGetHeader(AutomapHeader** automapHeaderPtr);
 
 void automapSetDisplayMap(int map, bool available);
 
+extern int automapWindow;
+
 } // namespace fallout
 
 #endif /* AUTOMAP_H */

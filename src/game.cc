@@ -77,6 +77,7 @@
 #include "window_manager.h"
 #include "window_manager_private.h"
 #include "worldmap.h"
+#include "sfall_hooks.h"
 
 namespace fallout {
 
@@ -444,6 +445,7 @@ void gameReset()
     messageListRepositoryReset();
     sfallArraysReset();
     sfall_gl_scr_reset();
+    sfall_hooks_reset();
 }
 
 // 0x442C34
@@ -452,6 +454,7 @@ void gameExit()
     debugPrint("\nGame Exit\n");
 
     // SFALL
+    sfall_hooks_reset();
     sfall_gl_scr_exit();
     sfallArraysExit();
     sfallListsExit();
@@ -1654,11 +1657,13 @@ int GameMode::currentGameMode = 0;
 void GameMode::enterGameMode(int gameMode)
 {
     currentGameMode |= gameMode;
+    RunHook(HOOK_GAMEMODECHANGE);
 }
 
 void GameMode::exitGameMode(int gameMode)
 {
     currentGameMode &= ~gameMode;
+    RunHook(HOOK_GAMEMODECHANGE);
 }
 
 bool GameMode::isInGameMode(int gameMode)
