@@ -2,10 +2,11 @@
 #define FALLOUT_SFALL_INI_H_
 
 #include <cstddef>
+#include "config.h"
 
 namespace fallout {
 
-/// Sets base directory to lookup .ini files.
+    /// Sets base directory to lookup .ini files.
 void sfall_ini_set_base_path(const char* path);
 
 /// Reads integer key identified by "fileName|section|key" triplet into `value`.
@@ -20,6 +21,7 @@ bool sfall_ini_set_int(const char* triplet, int value);
 /// Writes string key identified by "fileName|section|key" triplet.
 bool sfall_ini_set_string(const char* triplet, const char* value);
 
+bool sfall_ini_get(const char* triplet, Config* config);
 } // namespace fallout
 
 #endif /* FALLOUT_SFALL_INI_H_ */

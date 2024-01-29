@@ -15,6 +15,7 @@
 #include "tile.h"
 #include "window.h"
 #include "worldmap.h"
+#include "config.h"
 
 namespace fallout {
 
@@ -43,6 +44,7 @@ static void mf_outlined_object(Program* program, int args);
 static void mf_set_cursor_mode(Program* program, int args);
 static void mf_set_flags(Program* program, int args);
 static void mf_set_ini_setting(Program* program, int args);
+static void mf_get_ini_setting(Program* program, int args);
 static void mf_set_outline(Program* program, int args);
 static void mf_show_window(Program* program, int args);
 static void mf_tile_refresh_display(Program* program, int args);
@@ -63,6 +65,7 @@ constexpr MetaruleInfo kMetarules[] = {
     { "set_cursor_mode", mf_set_cursor_mode, 1, 1 },
     { "set_flags", mf_set_flags, 2, 2 },
     { "set_ini_setting", mf_set_ini_setting, 2, 2 },
+    { "get_ini_section", mf_get_ini_setting, 2, 2 },
     { "set_outline", mf_set_outline, 2, 2 },
     { "show_window", mf_show_window, 0, 1 },
     { "tile_refresh_display", mf_tile_refresh_display, 0, 0 },
@@ -201,6 +204,24 @@ void mf_set_flags(Program* program, int args)
     object->flags = flags;
 
     programStackPushInteger(program, -1);
+}
+
+void mf_get_ini_setting(Program* program, int args)
+{
+    char tmp[200];
+    const char* string1 = programStackPopString(program);
+    const char* sectionName = programStackPopString(program);
+    sprintf(tmp, "%s|%s|test", string1, sectionName);
+
+    Config config;
+    if (!sfall_ini_get(tmp, &config)) {
+        programStackPushInteger(program, -1);
+        return;
+    }
+
+    configFree(&config);
+
+    //programStackPushInteger(program, value);
 }
 
 void mf_set_ini_setting(Program* program, int args)
