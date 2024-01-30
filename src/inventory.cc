@@ -516,6 +516,22 @@ static int _barter_back_win;
 static FrmImage _inventoryFrmImages[INVENTORY_FRM_COUNT];
 static FrmImage _moveFrmImages[8];
 
+
+void SetInventoryValue(int addr, int value)
+{
+    switch (addr) {
+    case 0x59E95C:
+        static int gInventoryWindowDudeFid = value;
+        break;
+    case 0x5190F8:
+        static int gInventoryWindowDudeRotation = value;
+        break;
+    }
+}
+
+int getTargetCurrentStack(){
+    return  _target_curr_stack;
+}
 int getCurrentStack()
 {
     return _curr_stack;
@@ -554,6 +570,21 @@ static int inventoryMessageListFree()
 {
     messageListFree(&gInventoryMessageList);
     return 0;
+}
+
+void redrawInventory(int i, int mode)
+{
+    if (i == 0) {
+        _display_inventory(_stack_offset[_curr_stack], -1, INVENTORY_WINDOW_TYPE_NORMAL);
+    } else if (i == 1) {
+
+        _stack_offset[_curr_stack] = 0;
+        _display_inventory(0, -1, mode);
+    } else if (i == 2) {
+        _target_stack_offset[_target_curr_stack] = 0;
+        _display_target_inventory(0, -1, _target_pud, mode);
+        windowRefresh(gInventoryWindow);
+    }
 }
 
 // 0x46E7B0
@@ -2644,15 +2675,17 @@ static void _adjust_fid()
 // 0x4717E4
 void inventoryOpenUseItemOn(Object* a1)
 {
-    ScopedGameMode gm(GameMode::kUseOn);
-
     if (inventoryCommonInit() == -1) {
         return;
     }
 
     bool isoWasEnabled = _setup_inventory(INVENTORY_WINDOW_TYPE_USE_ITEM_ON);
+    
+    ScopedGameMode gm(GameMode::kUseOn);
+
     _display_inventory(_stack_offset[_curr_stack], -1, INVENTORY_WINDOW_TYPE_USE_ITEM_ON);
     inventorySetCursor(INVENTORY_WINDOW_CURSOR_HAND);
+
     for (;;) {
         sharedFpsLimiter.mark();
 
@@ -4018,8 +4051,6 @@ int inventoryOpenLooting(Object* looter, Object* target)
         return 0;
     }
 
-    ScopedGameMode gm(GameMode::kLoot);
-
     if (FID_TYPE(target->fid) == OBJ_TYPE_CRITTER) {
         if (_critter_flag_check(target->pid, CRITTER_NO_STEAL)) {
             // You can't find anything to take from that.
@@ -4065,7 +4096,7 @@ int inventoryOpenLooting(Object* looter, Object* target)
     if (inventoryCommonInit() == -1) {
         return 0;
     }
-
+    
     _target_pud = &(target->data.inventory);
     _target_curr_stack = 0;
     _target_stack_offset[0] = 0;
@@ -4195,6 +4226,8 @@ int inventoryOpenLooting(Object* looter, Object* target)
     _display_inventory(_stack_offset[_curr_stack], -1, INVENTORY_WINDOW_TYPE_LOOT);
     _display_body(target->fid, INVENTORY_WINDOW_TYPE_LOOT);
     inventorySetCursor(INVENTORY_WINDOW_CURSOR_HAND);
+
+    ScopedGameMode gm(GameMode::kLoot);
 
     bool isCaughtStealing = false;
     int stealingXp = 0;

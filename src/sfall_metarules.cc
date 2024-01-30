@@ -59,6 +59,8 @@ static void mf_get_window_attribute(Program* program, int args);
 static void mf_set_outline(Program* program, int args);
 static void mf_show_window(Program* program, int args);
 static void mf_tile_refresh_display(Program* program, int args);
+static void mf_display_stats(Program* program, int args);
+static void mf_inventory_redraw(Program* program, int args);
 
 constexpr MetaruleInfo kMetarules[] = {
     { "car_gas_amount", mf_car_gas_amount, 0, 0 },
@@ -80,6 +82,8 @@ constexpr MetaruleInfo kMetarules[] = {
     { "get_window_attribute", mf_get_window_attribute, 1, 2 },
     { "set_outline", mf_set_outline, 2, 2 },
     { "show_window", mf_show_window, 0, 1 },
+    { "display_stats", mf_display_stats, 0, 0 },
+    { "inventory_redraw", mf_inventory_redraw, 0, 1 },
     { "tile_refresh_display", mf_tile_refresh_display, 0, 0 },
 };
 
@@ -219,7 +223,7 @@ void mf_set_flags(Program* program, int args)
 }
 
 enum WinNameType {
-    Inventory = 0, // any inventory window (player/loot/use/barter)
+    _Inventory = 0, // any inventory window (player/loot/use/barter)
     Dialog = 1,
     PipBoy = 2,
     WorldMap = 3,
@@ -244,7 +248,7 @@ Window* GetWindow(long winType)
 {
     long winID = 0;
     switch (winType) {
-    case WinNameType::Inventory:
+    case WinNameType::_Inventory:
         if (GameMode::getCurrentGameMode() & (GameMode::kInventory | GameMode::kUseOn | GameMode::kLoot | GameMode::kBarter)) winID = gInventoryWindow;
         break;
     case WinNameType::Dialog:
@@ -336,6 +340,43 @@ void mf_get_window_attribute(Program* program, int args)
     }
 
     programStackPushInteger(program, result);
+}
+
+void mf_inventory_redraw(Program* program, int args)
+{
+    int mode;
+    int loopFlag = GameMode::getCurrentGameMode() & (GameMode::kInventory | GameMode::kUseOn | GameMode::kLoot | GameMode::kBarter);
+    switch (loopFlag) {
+    case GameMode::kInventory:
+        mode = 0;
+        break;
+    case GameMode::kUseOn:
+        mode = 1;
+        break;
+    case GameMode::kLoot:
+        mode = 2;
+        break;
+    case GameMode::kBarter:
+        mode = 3;
+        break;
+    default:
+        return;
+    }
+    long redrawSide = (args > 0) ? programStackPopInteger(program) : -1; // -1 - both
+    if (redrawSide <= 0) {
+        redrawInventory(1, mode);
+    }
+    if (redrawSide && mode >= 2) {
+        redrawInventory(2, mode);
+    }
+}
+
+
+void mf_display_stats(Program* program, int args)
+{
+     if (GameMode::getCurrentGameMode() & GameMode::kInventory){
+         redrawInventory(0,0);
+     }
 }
 
 void mf_get_ini_setting(Program* program, int args)

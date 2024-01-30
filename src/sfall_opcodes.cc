@@ -75,6 +75,26 @@ static void opReadByte(Program* program)
     programStackPushInteger(program, value);
 }
 
+
+static void op_write_int(Program* program)
+{
+    int addr = programStackPopInteger(program);
+    int value = programStackPopInteger(program);
+
+    switch (addr) {
+    case 0x59E95C:
+        SetInventoryValue(addr,value);
+        break;
+    case 0x5190F8:
+        SetInventoryValue(addr,value);
+        break;
+    default:
+        debugPrint("%s: attempt to 'op_write_int' at 0x%x", program->name, addr);
+        break;
+    }
+}
+
+
 static void opReadInt(Program* program)
 {
     int addr = programStackPopInteger(program);
@@ -83,6 +103,9 @@ static void opReadInt(Program* program)
     switch (addr) {
     case 0x56D38C:
         value = combatGetTargetHighlight();
+        break;
+    case 0x59E948:
+        value = getTargetCurrentStack();
         break;
     case 0x59e96c:
         value = getCurrentStack();
@@ -1051,6 +1074,26 @@ static void opArtExists(Program* program)
     programStackPushInteger(program, artExists(fid));
 }
 
+static void op_obj_is_carrying_obj(Program* program)
+{
+    Object* itemObj = static_cast<Object*>(programStackPopPointer(program));
+    Object* invenObj = static_cast<Object*>(programStackPopPointer(program));
+
+	int count = 0;
+
+    Inventory* inventory = &(invenObj->data.inventory);
+
+	if (inventory != nullptr && itemObj != nullptr) {
+		for (int i = 0; i < inventory->length; i++) {
+			if (inventory->items[i].item == itemObj) {
+				count = inventory->items[i].quantity;
+				break;
+			}
+		}
+	}
+    programStackPushInteger(program,count);
+}
+
 // sfall_func0
 static void op_sfall_func0(Program* program)
 {
@@ -1198,28 +1241,22 @@ static void op_refresh_pc_art(Program* program)
     debugPrint("op_refresh_pc_art");
 }
 
-static void register_hook_proc_internal(Program* program, int id, int proc, bool spec)
-{
-    debugPrint("register_hook_proc_internal %s value=%d proc=%d spec=%d",program->name, id, proc, spec ? 1 : 0);
-    registerHook(program,id,proc,spec);
-}
-
 static void register_hook_proc(Program* program)
 {
     int proc = programStackPopInteger(program);
     int id = programStackPopInteger(program);
-    register_hook_proc_internal(program, id, proc, false);
+    registerHook(program, id, proc, false);
 }
 static void register_hook_proc_spec(Program* program)
 {
     int proc = programStackPopInteger(program);
     int id = programStackPopInteger(program);
-    register_hook_proc_internal(program, id, proc, true);
+    registerHook(program, id, proc, true);
 }
 static void op_register_hook(Program* program)
 {
     int id = programStackPopInteger(program);
-    register_hook_proc_internal(program, id, -1, true);
+    registerHook(program, id, -1, true);
 }
 
 
@@ -1253,6 +1290,7 @@ static void op_load_shader(Program* program)
 }
 static void op_free_shader(Program* program)
 {
+    int value1 = programStackPopInteger(program);
 }
 static void op_activate_shader(Program* program)
 {
@@ -1262,6 +1300,7 @@ static void op_activate_shader(Program* program)
 }
 static void op_deactivate_shader(Program* program)
 {
+    int value1 = programStackPopInteger(program);
 }
 
 static void op_set_pipboy_available(Program* program)
@@ -1293,12 +1332,18 @@ static void op_get_kill_counter(Program* program)
 
 static void set_selectable_perk(Program* program)
 {
+    char* a1 = programStackPopString(program);
+    int a2 = programStackPopInteger(program);
+    int a3 = programStackPopInteger(program);
+    char* a4 = programStackPopString(program);
 }
 static void op_set_perkbox_title(Program* program)
 {
+    char* a1 = programStackPopString(program);
 }
 static void op_hide_real_perks(Program* program)
 {
+    //0 arg
 }
 static void has_fake_perk(Program* program)
 {
@@ -1308,23 +1353,47 @@ static void has_fake_perk(Program* program)
 }
 static void op_has_fake_trait(Program* program)
 {
+    char* a[] = {
+        "Pacifist",
+        //"One In a Million",
+        //"Color Blind",
+        //"Idiot Savant",
+        //"Frankenstein Monster",
+        //"Bride of Frankenstein",
+    };
+
+    //return;
     char* value = programStackPopString(program);
-    //debugPrint("op_has_fake_trait %s", value);
+
+    for (int i = 0; i < 1; i++) {
+        if (strcmp(a[i], value) == 0) {
+            programStackPushInteger(program, 1);
+            //debugPrint("%s op_has_fake_trait %s=1", program->name, value);
+            return;
+        }
+    }
+
+    //debugPrint("%s op_has_fake_trait %s=0", program->name, value);
     programStackPushInteger(program, 0);
 }
 static void op_perk_add_mode(Program* program)
 {
+    int a1 = programStackPopInteger(program);
 }
 static void op_clear_selectable_perks(Program* program)
 {
+    //0 arg
 }
 static void op_set_critter_hit_chance_mod(Program* program)
 {
+    Object* a1 = static_cast<Object*>(programStackPopPointer(program));
+    int a2 = programStackPopInteger(program);
+    int a3 = programStackPopInteger(program);
 }
 static void op_play_sfall_sound(Program* program)
 {
-    const char* string = programStackPopString(program);
     int value = programStackPopInteger(program);
+    const char* string = programStackPopString(program);
 
     programStackPushInteger(program, 0);
 }
@@ -1342,6 +1411,7 @@ void sfallOpcodesInit()
 {
     interpreterRegisterOpcode(0x8156, opReadByte);
     interpreterRegisterOpcode(0x8158, opReadInt);
+    interpreterRegisterOpcode(0x81d1, op_write_int);
 
     interpreterRegisterOpcode(0x815A, op_set_pc_base_stat);
     interpreterRegisterOpcode(0x815B, opSetPcBonusStat);
@@ -1431,6 +1501,7 @@ void sfallOpcodesInit()
     interpreterRegisterOpcode(0x826F, op_obj_blocking_at);
     interpreterRegisterOpcode(0x8271, opPartyMemberList);
     interpreterRegisterOpcode(0x8274, opArtExists);
+    interpreterRegisterOpcode(0x8275, op_obj_is_carrying_obj);
     interpreterRegisterOpcode(0x8276, op_sfall_func0);
     interpreterRegisterOpcode(0x8277, op_sfall_func1);
     interpreterRegisterOpcode(0x8278, op_sfall_func2);

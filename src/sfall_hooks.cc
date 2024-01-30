@@ -1,4 +1,5 @@
 #include "sfall_hooks.h"
+#include "debug.h"
 
 namespace fallout {
 
@@ -17,7 +18,7 @@ enum class DataType : unsigned long {
 bool allowNonIntReturn;
 
 DataType retTypes[maxRets]; // current hook return value types
-int args[maxArgs]; // current hook arguments
+long args[maxArgs]; // current hook arguments
 int rets[maxRets]; // current hook return values
 int argCount;
 int cArg; // how many arguments were taken by current hook script
@@ -39,6 +40,24 @@ void sfall_hooks_reset()
         hooks[i].clear();
     }
 }
+
+void sfall_hooks_clear(Program *program)
+{
+    if (program->hook == true) {
+        for (int id = 0; id < HOOK_COUNT; id++) {
+            for (std::vector<HookScript>::iterator it = hooks[id].begin(); it != hooks[id].end();) {
+                if (it->program == program) {
+                    it = hooks[id].erase(it);
+                    debugPrint("sfall_hooks_clear %s proc=%d", program->name, id);
+                } else {
+                    it++;
+                }
+            }
+        }
+
+        program->hook = false;
+    }
+}
     
 void registerHook(Program* program, int id, int proc, bool spec)
 {
@@ -46,7 +65,10 @@ void registerHook(Program* program, int id, int proc, bool spec)
         return;
     for (std::vector<HookScript>::iterator it = hooks[id].begin(); it != hooks[id].end(); ++it) {
         if (it->program == program) {
-            if (proc == 0) hooks[id].erase(it); // unregister
+            if (proc == 0) {
+                program->hook = false;
+                hooks[id].erase(it); // unregister
+            }
             return;
         }
     }
@@ -64,6 +86,8 @@ void registerHook(Program* program, int id, int proc, bool spec)
         //hooksInfo[id].hsPosition++;
     }
     hooks[id].insert(c_it, hook);
+    program->hook = true;
+    debugPrint("registerHook %x %s value=%d proc=%d spec=%d", program, program->name, id, proc, spec ? 1 : 0);
 }
 
 void RunHook(int id)
@@ -83,7 +107,7 @@ void RunHook(int id)
 }
 
 
-void RunCombatTurnHook(int critter, int dudeBegin)
+void RunCombatTurnHook(long critter, int dudeBegin)
 {
     argCount = 3;
     args[0] = 1;

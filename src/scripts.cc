@@ -1542,6 +1542,11 @@ int scriptsInit()
     configGetInt(&gSfallConfig, SFALL_CONFIG_MISC_KEY, SFALL_CONFIG_MOVIE_TIMER_ARTIMER3, &gMovieTimerArtimer3);
     configGetInt(&gSfallConfig, SFALL_CONFIG_MISC_KEY, SFALL_CONFIG_MOVIE_TIMER_ARTIMER4, &gMovieTimerArtimer4);
 
+    if (gMovieTimerArtimer1 < 0) gMovieTimerArtimer1 = 999999999;
+    if (gMovieTimerArtimer2 < 0) gMovieTimerArtimer1 = 999999999;
+    if (gMovieTimerArtimer3 < 0) gMovieTimerArtimer1 = 999999999;
+    if (gMovieTimerArtimer4 < 0) gMovieTimerArtimer1 = 999999999;
+
     return 0;
 }
 

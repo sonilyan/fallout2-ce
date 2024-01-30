@@ -3231,7 +3231,7 @@ static int _combat_turn(Object* obj, bool a2)
 {
     _combat_turn_obj = obj;
 
-    RunCombatTurnHook((int)obj, a2);
+    RunCombatTurnHook((long)obj, a2);
 
     attackInit(&_main_ctd, obj, nullptr, HIT_MODE_PUNCH, HIT_LOCATION_TORSO);
 

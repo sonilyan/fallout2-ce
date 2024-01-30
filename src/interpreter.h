@@ -192,6 +192,7 @@ typedef struct Program {
     bool exited;
     ProgramStack* stackValues;
     ProgramStack* returnStackValues;
+    bool hook;
 } Program;
 
 typedef unsigned int(InterpretTimerFunc)();
