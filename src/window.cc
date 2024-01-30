@@ -960,6 +960,9 @@ int _pushWindow(const char* windowName)
         return -1;
     }
 
+    if(windowIndex == oldCurrentWindowIndex)
+        return windowIndex;
+
     // TODO: Check.
     for (int index = 0; index < _winTOS; index++) {
         if (_winStack[index] == oldCurrentWindowIndex) {

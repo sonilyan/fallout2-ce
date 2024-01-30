@@ -31,6 +31,7 @@ Object* inven_get_current_target_obj();
 
 int getCurrentStack();
 int getInventoryWindowMaxY();
+void redrawInventory();
    
 extern int gInventoryWindow;
 } // namespace fallout

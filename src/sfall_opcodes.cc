@@ -1051,6 +1051,26 @@ static void opArtExists(Program* program)
     programStackPushInteger(program, artExists(fid));
 }
 
+static void op_obj_is_carrying_obj(Program* program)
+{
+    Object* itemObj = static_cast<Object*>(programStackPopPointer(program));
+    Object* invenObj = static_cast<Object*>(programStackPopPointer(program));
+
+	int count = 0;
+
+    Inventory* inventory = &(invenObj->data.inventory);
+
+	if (inventory != nullptr && itemObj != nullptr) {
+		for (int i = 0; i < inventory->length; i++) {
+			if (inventory->items[i].item == itemObj) {
+				count = inventory->items[i].quantity;
+				break;
+			}
+		}
+	}
+    programStackPushInteger(program,count);
+}
+
 // sfall_func0
 static void op_sfall_func0(Program* program)
 {
@@ -1431,6 +1451,7 @@ void sfallOpcodesInit()
     interpreterRegisterOpcode(0x826F, op_obj_blocking_at);
     interpreterRegisterOpcode(0x8271, opPartyMemberList);
     interpreterRegisterOpcode(0x8274, opArtExists);
+    interpreterRegisterOpcode(0x8275, op_obj_is_carrying_obj);
     interpreterRegisterOpcode(0x8276, op_sfall_func0);
     interpreterRegisterOpcode(0x8277, op_sfall_func1);
     interpreterRegisterOpcode(0x8278, op_sfall_func2);

@@ -556,6 +556,11 @@ static int inventoryMessageListFree()
     return 0;
 }
 
+void redrawInventory()
+{
+    _display_inventory(_stack_offset[_curr_stack], -1, INVENTORY_WINDOW_TYPE_NORMAL);
+
+}
 // 0x46E7B0
 void inventoryOpen()
 {

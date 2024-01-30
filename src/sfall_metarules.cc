@@ -59,6 +59,8 @@ static void mf_get_window_attribute(Program* program, int args);
 static void mf_set_outline(Program* program, int args);
 static void mf_show_window(Program* program, int args);
 static void mf_tile_refresh_display(Program* program, int args);
+static void mf_display_stats(Program* program, int args);
+
 
 constexpr MetaruleInfo kMetarules[] = {
     { "car_gas_amount", mf_car_gas_amount, 0, 0 },
@@ -80,6 +82,7 @@ constexpr MetaruleInfo kMetarules[] = {
     { "get_window_attribute", mf_get_window_attribute, 1, 2 },
     { "set_outline", mf_set_outline, 2, 2 },
     { "show_window", mf_show_window, 0, 1 },
+    { "display_stats", mf_display_stats, 0, 0 },
     { "tile_refresh_display", mf_tile_refresh_display, 0, 0 },
 };
 
@@ -336,6 +339,13 @@ void mf_get_window_attribute(Program* program, int args)
     }
 
     programStackPushInteger(program, result);
+}
+
+void mf_display_stats(Program* program, int args)
+{
+     if (GameMode::getCurrentGameMode() & GameMode::kInventory){
+         redrawInventory();
+     }
 }
 
 void mf_get_ini_setting(Program* program, int args)
