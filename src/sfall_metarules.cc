@@ -276,8 +276,8 @@ Window* GetWindow(long winType)
 
 void mf_get_window_attribute(Program* program, int args)
 {
-    int v1 = programStackPopInteger(program);
     int v0 = programStackPopInteger(program);
+    int v1 = programStackPopInteger(program);
 
     Window* win = GetWindow(v0);
     if (win == nullptr) {
