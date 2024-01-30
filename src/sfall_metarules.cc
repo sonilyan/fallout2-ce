@@ -240,8 +240,8 @@ void mf_get_ini_setting(Program* program, int args)
         key.integerValue = programPushString(program, a);
 
         ProgramValue val;
-        key.opcode = VALUE_TYPE_DYNAMIC_STRING;
-        key.integerValue = programPushString(program, *b);
+        val.opcode = VALUE_TYPE_DYNAMIC_STRING;
+        val.integerValue = programPushString(program, *b);
 
         SetArray(id, key, val, false, program);
     }
