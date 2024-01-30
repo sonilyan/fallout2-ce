@@ -516,6 +516,15 @@ static int _barter_back_win;
 static FrmImage _inventoryFrmImages[INVENTORY_FRM_COUNT];
 static FrmImage _moveFrmImages[8];
 
+int getCurrentStack()
+{
+    return _curr_stack;
+}
+int getInventoryWindowMaxY()
+{
+    return gInventoryWindowMaxY;
+}
+
 // 0x46E724
 void _inven_reset_dude()
 {

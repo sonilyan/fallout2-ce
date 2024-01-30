@@ -84,6 +84,12 @@ static void opReadInt(Program* program)
     case 0x56D38C:
         value = combatGetTargetHighlight();
         break;
+    case 0x59e96c:
+        value = getCurrentStack();
+        break;
+    case 0x59e970:
+        value = getInventoryWindowMaxY();
+        break;
     default:
         debugPrint("%s: attempt to 'read_int' at 0x%x", program->name, addr);
         break;
