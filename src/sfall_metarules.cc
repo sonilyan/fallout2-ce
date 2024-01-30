@@ -16,6 +16,7 @@
 #include "window.h"
 #include "worldmap.h"
 #include "config.h"
+#include "sfall_arrays.h"
 
 namespace fallout {
 
@@ -213,15 +214,38 @@ void mf_get_ini_setting(Program* program, int args)
     const char* sectionName = programStackPopString(program);
     sprintf(tmp, "%s|%s|test", string1, sectionName);
 
+    ArrayId id = CreateTempArray(-1, 0);
+    programStackPushInteger(program, id);
+
     Config config;
     if (!sfall_ini_get(tmp, &config)) {
-        programStackPushInteger(program, -1);
         return;
     }
 
-    configFree(&config);
+    int sectionIndex = dictionaryGetIndexByKey(&config, sectionName);
+    if (sectionIndex == -1) {
+        return;
+    }
 
-    //programStackPushInteger(program, value);
+    DictionaryEntry* sectionEntry = &(config.entries[sectionIndex]);
+    ConfigSection* section = (ConfigSection*)sectionEntry->value;
+
+    for (int i = 0; i < section->entriesLength; i++) {
+        char* a = section->entries[i].key;
+        char** b = (char**)(section->entries[i].value);
+
+        ProgramValue key;
+        key.opcode = VALUE_TYPE_STRING;
+        key.pointerValue = a;
+
+        ProgramValue val;
+        key.opcode = VALUE_TYPE_STRING;
+        key.pointerValue = *b;
+
+        SetArray(id, key, val, false, program);
+    }
+
+    configFree(&config);
 }
 
 void mf_set_ini_setting(Program* program, int args)
