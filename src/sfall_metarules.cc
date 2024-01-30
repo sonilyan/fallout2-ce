@@ -215,15 +215,16 @@ void mf_get_ini_setting(Program* program, int args)
     sprintf(tmp, "%s|%s|test", string1, sectionName);
 
     ArrayId id = CreateTempArray(-1, 0);
-    programStackPushInteger(program, id);
 
     Config config;
     if (!sfall_ini_get(tmp, &config)) {
+        programStackPushInteger(program, id);
         return;
     }
 
     int sectionIndex = dictionaryGetIndexByKey(&config, sectionName);
     if (sectionIndex == -1) {
+        programStackPushInteger(program, id);
         return;
     }
 
@@ -235,17 +236,18 @@ void mf_get_ini_setting(Program* program, int args)
         char** b = (char**)(section->entries[i].value);
 
         ProgramValue key;
-        key.opcode = VALUE_TYPE_STRING;
-        key.pointerValue = a;
+        key.opcode = VALUE_TYPE_DYNAMIC_STRING;
+        key.integerValue = programPushString(program, a);
 
         ProgramValue val;
-        key.opcode = VALUE_TYPE_STRING;
-        key.pointerValue = *b;
+        key.opcode = VALUE_TYPE_DYNAMIC_STRING;
+        key.integerValue = programPushString(program, *b);
 
         SetArray(id, key, val, false, program);
     }
 
     configFree(&config);
+    programStackPushInteger(program, id);
 }
 
 void mf_set_ini_setting(Program* program, int args)

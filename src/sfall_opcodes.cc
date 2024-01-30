@@ -1242,7 +1242,7 @@ static void op_graphics_funcs_available(Program* program)
 static void op_load_shader(Program* program)
 {
     char* value = programStackPopString(program);
-    debugPrint("op_load_shader %s", value);
+    //debugPrint("op_load_shader %s", value);
     programStackPushInteger(program, 121212);
 }
 static void op_free_shader(Program* program)
@@ -1251,7 +1251,7 @@ static void op_free_shader(Program* program)
 static void op_activate_shader(Program* program)
 {
     int value = programStackPopInteger(program);
-    debugPrint("op_activate_shader %d", value);
+    //debugPrint("op_activate_shader %d", value);
     programStackPushInteger(program, 0);
 }
 static void op_deactivate_shader(Program* program)
@@ -1297,13 +1297,13 @@ static void op_hide_real_perks(Program* program)
 static void has_fake_perk(Program* program)
 {
     char* value = programStackPopString(program);
-    debugPrint("has_fake_perk %s", value);
+    //debugPrint("has_fake_perk %s", value);
     programStackPushInteger(program, 0);
 }
 static void op_has_fake_trait(Program* program)
 {
     char* value = programStackPopString(program);
-    debugPrint("op_has_fake_trait %s", value);
+    //debugPrint("op_has_fake_trait %s", value);
     programStackPushInteger(program, 0);
 }
 static void op_perk_add_mode(Program* program)
