@@ -39,6 +39,7 @@ void gameDialogSetBarterModifier(int modifier);
 int gameDialogBarter(int modifier);
 void _barter_end_to_talk_to();
 
+extern int gGameDialogBackgroundWindow;
 } // namespace fallout
 
 #endif /* GAME_DIALOG_H */

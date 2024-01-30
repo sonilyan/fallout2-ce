@@ -242,6 +242,8 @@ static const int gAutomapFrmIds[AUTOMAP_FRM_COUNT] = {
     173, // autodwn.frm - switch down
 };
 
+int automapWindow = -1;
+
 // 0x5108C4
 static int gAutomapFlags = 0;
 
@@ -323,7 +325,7 @@ void automapShow(bool isInGame, bool isUsingScanner)
 
     int automapWindowX = (screenGetWidth() - AUTOMAP_WINDOW_WIDTH) / 2;
     int automapWindowY = screenGetHeight() > 580 ? (screenGetVisibleHeight() - AUTOMAP_WINDOW_HEIGHT) / 2 : (screenGetHeight() - AUTOMAP_WINDOW_HEIGHT) / 2;
-    int window = windowCreate(automapWindowX, automapWindowY, AUTOMAP_WINDOW_WIDTH, AUTOMAP_WINDOW_HEIGHT, color, WINDOW_MODAL | WINDOW_MOVE_ON_TOP);
+    automapWindow = windowCreate(automapWindowX, automapWindowY, AUTOMAP_WINDOW_WIDTH, AUTOMAP_WINDOW_HEIGHT, color, WINDOW_MODAL | WINDOW_MOVE_ON_TOP);
            
     Rect offset;
     offset.top = -3;
@@ -331,7 +333,7 @@ void automapShow(bool isInGame, bool isUsingScanner)
     offset.left = -15;
     offset.right = 80;
 
-    int scannerBtn = buttonCreate(window,
+    int scannerBtn = buttonCreate(automapWindow,
         111,
         454,
         15,
@@ -349,7 +351,7 @@ void automapShow(bool isInGame, bool isUsingScanner)
         buttonSetCallbacks(scannerBtn, _gsound_red_butt_press, _gsound_red_butt_release);
     }
 
-    int cancelBtn = buttonCreate(window,
+    int cancelBtn = buttonCreate(automapWindow,
         277,
         454,
         15,
@@ -367,7 +369,7 @@ void automapShow(bool isInGame, bool isUsingScanner)
         buttonSetCallbacks(cancelBtn, _gsound_red_butt_press, _gsound_red_butt_release);
     }
 
-    int switchBtn = buttonCreate(window,
+    int switchBtn = buttonCreate(automapWindow,
         457,
         340,
         42,
@@ -400,7 +402,7 @@ void automapShow(bool isInGame, bool isUsingScanner)
         gAutomapFlags |= AUTOMAP_WITH_SCANNER;
     }
 
-    automapRenderInMapWindow(window, elevation, frmImages[AUTOMAP_FRM_BACKGROUND].getData(), gAutomapFlags);
+    automapRenderInMapWindow(automapWindow, elevation, frmImages[AUTOMAP_FRM_BACKGROUND].getData(), gAutomapFlags);
 
     bool isoWasEnabled = isoDisable();
     gameMouseSetCursor(MOUSE_CURSOR_ARROW);
@@ -486,7 +488,7 @@ void automapShow(bool isInGame, bool isUsingScanner)
         }
 
         if (needsRefresh) {
-            automapRenderInMapWindow(window, elevation, frmImages[AUTOMAP_FRM_BACKGROUND].getData(), gAutomapFlags);
+            automapRenderInMapWindow(automapWindow, elevation, frmImages[AUTOMAP_FRM_BACKGROUND].getData(), gAutomapFlags);
             needsRefresh = false;
         }
 
@@ -498,7 +500,8 @@ void automapShow(bool isInGame, bool isUsingScanner)
         isoEnable();
     }
 
-    windowDestroy(window);
+    windowDestroy(automapWindow);
+    automapWindow = -1;
     fontSetCurrent(oldFont);
 }
 

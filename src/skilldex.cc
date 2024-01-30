@@ -95,7 +95,7 @@ static MessageList gSkilldexMessageList;
 static MessageListItem gSkilldexMessageListItem;
 
 // 0x668140
-static int gSkilldexWindow;
+int gSkilldexWindow;
 
 // 0x668144
 static unsigned char* gSkilldexWindowBuffer;

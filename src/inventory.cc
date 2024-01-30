@@ -492,7 +492,7 @@ static int gInventoryWindowDudeFid;
 static Inventory* _pud;
 
 // 0x59E964
-static int gInventoryWindow;
+int gInventoryWindow;
 
 // item2
 // 0x59E968

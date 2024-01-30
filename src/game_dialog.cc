@@ -229,7 +229,7 @@ static int gGameDialogBarterModifier = 0;
 
 // dialogueBackWindow
 // 0x518740
-static int gGameDialogBackgroundWindow = -1;
+ int gGameDialogBackgroundWindow = -1;
 
 // 0x518744
 static int gGameDialogWindow = -1;

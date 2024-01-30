@@ -29,6 +29,7 @@ void inventoryOpenTrade(int win, Object* barterer, Object* playerTable, Object* 
 int _inven_set_timer(Object* a1);
 Object* inven_get_current_target_obj();
 
+extern int gInventoryWindow;
 } // namespace fallout
 
 #endif /* INVENTORY_H */
