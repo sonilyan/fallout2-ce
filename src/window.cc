@@ -1409,7 +1409,7 @@ void _windowClose()
 // 0x4B9548
 bool _windowDeleteButton(const char* buttonName)
 {
-    if (gCurrentManagedWindowIndex != -1) {
+    if (gCurrentManagedWindowIndex == -1) {
         return false;
     }
 
