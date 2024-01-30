@@ -516,6 +516,9 @@ static int _barter_back_win;
 static FrmImage _inventoryFrmImages[INVENTORY_FRM_COUNT];
 static FrmImage _moveFrmImages[8];
 
+int getTargetCurrentStack(){
+    return  _target_curr_stack;
+}
 int getCurrentStack()
 {
     return _curr_stack;

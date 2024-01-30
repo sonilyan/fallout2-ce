@@ -30,6 +30,7 @@ int _inven_set_timer(Object* a1);
 Object* inven_get_current_target_obj();
 
 int getCurrentStack();
+int getTargetCurrentStack();
 int getInventoryWindowMaxY();
 void redrawInventory();
    

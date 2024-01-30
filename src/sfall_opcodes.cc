@@ -75,6 +75,7 @@ static void opReadByte(Program* program)
     programStackPushInteger(program, value);
 }
 
+
 static void opReadInt(Program* program)
 {
     int addr = programStackPopInteger(program);
@@ -83,6 +84,9 @@ static void opReadInt(Program* program)
     switch (addr) {
     case 0x56D38C:
         value = combatGetTargetHighlight();
+        break;
+    case 0x59E948:
+        value = getTargetCurrentStack();
         break;
     case 0x59e96c:
         value = getCurrentStack();
