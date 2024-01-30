@@ -556,8 +556,6 @@ void inventoryOpen()
         }
     }
 
-    ScopedGameMode gm(GameMode::kInventory);
-
     if (inventoryCommonInit() == -1) {
         return;
     }
@@ -596,6 +594,8 @@ void inventoryOpen()
     inventoryRenderSummary();
     _display_inventory(_stack_offset[_curr_stack], -1, INVENTORY_WINDOW_TYPE_NORMAL);
     inventorySetCursor(INVENTORY_WINDOW_CURSOR_HAND);
+
+    ScopedGameMode gm(GameMode::kInventory);
 
     for (;;) {
         sharedFpsLimiter.mark();
