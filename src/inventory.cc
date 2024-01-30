@@ -2652,15 +2652,17 @@ static void _adjust_fid()
 // 0x4717E4
 void inventoryOpenUseItemOn(Object* a1)
 {
-    ScopedGameMode gm(GameMode::kUseOn);
-
     if (inventoryCommonInit() == -1) {
         return;
     }
 
     bool isoWasEnabled = _setup_inventory(INVENTORY_WINDOW_TYPE_USE_ITEM_ON);
+    
+    ScopedGameMode gm(GameMode::kUseOn);
+
     _display_inventory(_stack_offset[_curr_stack], -1, INVENTORY_WINDOW_TYPE_USE_ITEM_ON);
     inventorySetCursor(INVENTORY_WINDOW_CURSOR_HAND);
+
     for (;;) {
         sharedFpsLimiter.mark();
 
@@ -4026,8 +4028,6 @@ int inventoryOpenLooting(Object* looter, Object* target)
         return 0;
     }
 
-    ScopedGameMode gm(GameMode::kLoot);
-
     if (FID_TYPE(target->fid) == OBJ_TYPE_CRITTER) {
         if (_critter_flag_check(target->pid, CRITTER_NO_STEAL)) {
             // You can't find anything to take from that.
@@ -4073,7 +4073,7 @@ int inventoryOpenLooting(Object* looter, Object* target)
     if (inventoryCommonInit() == -1) {
         return 0;
     }
-
+    
     _target_pud = &(target->data.inventory);
     _target_curr_stack = 0;
     _target_stack_offset[0] = 0;
@@ -4203,6 +4203,8 @@ int inventoryOpenLooting(Object* looter, Object* target)
     _display_inventory(_stack_offset[_curr_stack], -1, INVENTORY_WINDOW_TYPE_LOOT);
     _display_body(target->fid, INVENTORY_WINDOW_TYPE_LOOT);
     inventorySetCursor(INVENTORY_WINDOW_CURSOR_HAND);
+
+    ScopedGameMode gm(GameMode::kLoot);
 
     bool isCaughtStealing = false;
     int stealingXp = 0;
