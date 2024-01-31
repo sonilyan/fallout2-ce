@@ -62,8 +62,6 @@ static void mf_tile_refresh_display(Program* program, int args);
 static void mf_display_stats(Program* program, int args);
 static void mf_inventory_redraw(Program* program, int args);
 
-
-
 constexpr MetaruleInfo kMetarules[] = {
     { "car_gas_amount", mf_car_gas_amount, 0, 0 },
     { "combat_data", mf_combat_data, 0, 0 },
@@ -346,40 +344,38 @@ void mf_get_window_attribute(Program* program, int args)
 
 void mf_inventory_redraw(Program* program, int args)
 {
-	int mode;
-	int loopFlag =  GameMode::getCurrentGameMode() & (GameMode::kInventory | GameMode::kUseOn | GameMode::kLoot | GameMode::kBarter);
-	switch (loopFlag) {
-		case GameMode::kInventory:
-			mode = 0;
-			break;
-		case GameMode::kUseOn :
-			mode = 1;
-			break;
-		case  GameMode::kLoot :
-			mode = 2;
-			break;
-		case  GameMode::kBarter:
-			mode = 3;
-			break;
-		default:
-			return;
-	}
-	long redrawSide = (args > 0) ? programStackPopInteger(program) : -1; // -1 - both
-	/*if (redrawSide <= 0) {
-		fo::var::stack_offset[fo::var::curr_stack] = 0;
-		fo::func::display_inventory(0, -1, mode);
-	}
-	if (redrawSide && mode >= 2) {
-		fo::var::target_stack_offset[fo::var::target_curr_stack] = 0;
-		fo::func::display_target_inventory(0, -1, fo::var::target_pud, mode);
-		fo::func::win_draw(fo::var::i_wid);
-	}}*/
+    int mode;
+    int loopFlag = GameMode::getCurrentGameMode() & (GameMode::kInventory | GameMode::kUseOn | GameMode::kLoot | GameMode::kBarter);
+    switch (loopFlag) {
+    case GameMode::kInventory:
+        mode = 0;
+        break;
+    case GameMode::kUseOn:
+        mode = 1;
+        break;
+    case GameMode::kLoot:
+        mode = 2;
+        break;
+    case GameMode::kBarter:
+        mode = 3;
+        break;
+    default:
+        return;
+    }
+    long redrawSide = (args > 0) ? programStackPopInteger(program) : -1; // -1 - both
+    if (redrawSide <= 0) {
+        redrawInventory(1, mode);
+    }
+    if (redrawSide && mode >= 2) {
+        redrawInventory(2, mode);
+    }
 }
+
 
 void mf_display_stats(Program* program, int args)
 {
      if (GameMode::getCurrentGameMode() & GameMode::kInventory){
-         redrawInventory();
+         redrawInventory(0);
      }
 }
 

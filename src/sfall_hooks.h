@@ -68,6 +68,7 @@ void RunKeyPressHook(int pressed, int v1, int v2);
 void RunCombatTurnHook(int critter, int dudeBegin);
 void RunMouseClickHook(int button, int pressed);
 
+void sfall_hooks_clear(Program *program);
 
 void get_sfall_arg(Program* program);
 void op_get_sfall_args(Program* program);

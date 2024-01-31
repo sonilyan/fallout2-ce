@@ -559,11 +559,21 @@ static int inventoryMessageListFree()
     return 0;
 }
 
-void redrawInventory()
+void redrawInventory(int i, int mode)
 {
-    _display_inventory(_stack_offset[_curr_stack], -1, INVENTORY_WINDOW_TYPE_NORMAL);
+    if (i == 0) {
+        _display_inventory(_stack_offset[_curr_stack], -1, INVENTORY_WINDOW_TYPE_NORMAL);
+    } else if (i == 1) {
 
+        _stack_offset[_curr_stack] = 0;
+        _display_inventory(0, -1, mode);
+    } else if (i == 2) {
+        _target_stack_offset[_target_curr_stack] = 0;
+        _display_target_inventory(0, -1, _target_pud, mode);
+        windowRefresh(gInventoryWindow);
+    }
 }
+
 // 0x46E7B0
 void inventoryOpen()
 {

@@ -21,6 +21,7 @@
 #include "platform_compat.h"
 #include "sfall_global_scripts.h"
 #include "svga.h"
+#include "sfall_hooks.h"
 
 namespace fallout {
 
@@ -428,6 +429,8 @@ static void _purgeProgram(Program* program)
 // 0x467614
 void programFree(Program* program)
 {
+    sfall_hooks_clear(program);
+
     // NOTE: Uninline.
     _detachProgram(program);
 
@@ -507,6 +510,7 @@ Program* programCreateByPath(const char* path)
 
     program->stackValues = new ProgramStack();
     program->returnStackValues = new ProgramStack();
+    program->hook = false;
 
     return program;
 }

@@ -1222,28 +1222,22 @@ static void op_refresh_pc_art(Program* program)
     debugPrint("op_refresh_pc_art");
 }
 
-static void register_hook_proc_internal(Program* program, int id, int proc, bool spec)
-{
-    debugPrint("register_hook_proc_internal %s value=%d proc=%d spec=%d",program->name, id, proc, spec ? 1 : 0);
-    registerHook(program,id,proc,spec);
-}
-
 static void register_hook_proc(Program* program)
 {
     int proc = programStackPopInteger(program);
     int id = programStackPopInteger(program);
-    register_hook_proc_internal(program, id, proc, false);
+    registerHook(program, id, proc, false);
 }
 static void register_hook_proc_spec(Program* program)
 {
     int proc = programStackPopInteger(program);
     int id = programStackPopInteger(program);
-    register_hook_proc_internal(program, id, proc, true);
+    registerHook(program, id, proc, true);
 }
 static void op_register_hook(Program* program)
 {
     int id = programStackPopInteger(program);
-    register_hook_proc_internal(program, id, -1, true);
+    registerHook(program, id, -1, true);
 }
 
 
