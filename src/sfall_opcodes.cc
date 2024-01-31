@@ -1313,12 +1313,18 @@ static void op_get_kill_counter(Program* program)
 
 static void set_selectable_perk(Program* program)
 {
+    char* a1 = programStackPopString(program);
+    int a2 = programStackPopInteger(program);
+    int a3 = programStackPopInteger(program);
+    char* a4 = programStackPopString(program);
 }
 static void op_set_perkbox_title(Program* program)
 {
+    char* a1 = programStackPopString(program);
 }
 static void op_hide_real_perks(Program* program)
 {
+    //0 arg
 }
 static void has_fake_perk(Program* program)
 {
@@ -1328,15 +1334,18 @@ static void has_fake_perk(Program* program)
 }
 static void op_has_fake_trait(Program* program)
 {
+    return;
     char* value = programStackPopString(program);
     //debugPrint("op_has_fake_trait %s", value);
     programStackPushInteger(program, 0);
 }
 static void op_perk_add_mode(Program* program)
 {
+    int a1 = programStackPopInteger(program);
 }
 static void op_clear_selectable_perks(Program* program)
 {
+    //0 arg
 }
 static void op_set_critter_hit_chance_mod(Program* program)
 {
