@@ -16,7 +16,7 @@ void _GNW_rect_exit()
 {
     while (_rectList != nullptr) {
         RectListNode* next = _rectList->next;
-        internal_free(_rectList);
+        internal_free(__FILE__,__LINE__,_rectList);
         _rectList = next;
     }
 }

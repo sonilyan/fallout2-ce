@@ -1345,7 +1345,7 @@ static int characterEditorWindowInit()
     if (i != EDITOR_GRAPHIC_COUNT) {
         while (--i >= 0) {
             if (gCharacterEditorFrmShouldCopy[i]) {
-                internal_free(gCharacterEditorFrmCopy[i]);
+                internal_free(__FILE__,__LINE__,gCharacterEditorFrmCopy[i]);
             }
         }
 
@@ -1382,7 +1382,7 @@ static int characterEditorWindowInit()
     if (gCharacterEditorWindow == -1) {
         for (i = 0; i < EDITOR_GRAPHIC_COUNT; i++) {
             if (gCharacterEditorFrmShouldCopy[i]) {
-                internal_free(gCharacterEditorFrmCopy[i]);
+                internal_free(__FILE__,__LINE__,gCharacterEditorFrmCopy[i]);
             }
             _editorFrmImages[i].unlock();
         }
@@ -1860,7 +1860,7 @@ static void characterEditorWindowFree()
         _editorFrmImages[index].unlock();
 
         if (gCharacterEditorFrmShouldCopy[index]) {
-            internal_free(gCharacterEditorFrmCopy[index]);
+            internal_free(__FILE__,__LINE__,gCharacterEditorFrmCopy[index]);
         }
     }
 
@@ -3928,12 +3928,12 @@ static int characterEditorShowOptions()
 
         if (err != 0) {
             if (err == 2) {
-                internal_free(down[index]);
+                internal_free(__FILE__,__LINE__,down[index]);
             }
 
             while (--index >= 0) {
-                internal_free(up[index]);
-                internal_free(down[index]);
+                internal_free(__FILE__,__LINE__,up[index]);
+                internal_free(__FILE__,__LINE__,down[index]);
             }
 
             return -1;
@@ -4240,8 +4240,8 @@ static int characterEditorShowOptions()
         windowDestroy(win);
 
         for (index = 0; index < 5; index++) {
-            internal_free(up[index]);
-            internal_free(down[index]);
+            internal_free(__FILE__,__LINE__,up[index]);
+            internal_free(__FILE__,__LINE__,down[index]);
         }
 
         return 0;
@@ -7040,7 +7040,7 @@ static int karmaInit()
     const char* delim = " \t,";
 
     if (gKarmaEntries != nullptr) {
-        internal_free(gKarmaEntries);
+        internal_free(__FILE__,__LINE__,gKarmaEntries);
         gKarmaEntries = nullptr;
     }
 
@@ -7118,7 +7118,7 @@ static int karmaInit()
 static void karmaFree()
 {
     if (gKarmaEntries != nullptr) {
-        internal_free(gKarmaEntries);
+        internal_free(__FILE__,__LINE__,gKarmaEntries);
         gKarmaEntries = nullptr;
     }
 
@@ -7139,7 +7139,7 @@ static int genericReputationInit()
     const char* delim = " \t,";
 
     if (gGenericReputationEntries != nullptr) {
-        internal_free(gGenericReputationEntries);
+        internal_free(__FILE__,__LINE__,gGenericReputationEntries);
         gGenericReputationEntries = nullptr;
     }
 
@@ -7203,7 +7203,7 @@ static int genericReputationInit()
 static void genericReputationFree()
 {
     if (gGenericReputationEntries != nullptr) {
-        internal_free(gGenericReputationEntries);
+        internal_free(__FILE__,__LINE__,gGenericReputationEntries);
         gGenericReputationEntries = nullptr;
     }
 

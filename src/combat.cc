@@ -2157,7 +2157,7 @@ int combatLoad(File* stream)
     }
 
     if (_aiInfoList != nullptr) {
-        internal_free(_aiInfoList);
+        internal_free(__FILE__,__LINE__,_aiInfoList);
     }
 
     _aiInfoList = (CombatAiInfo*)internal_malloc(__FILE__,__LINE__,sizeof(*_aiInfoList) * _list_total);
@@ -2827,7 +2827,7 @@ static void _combat_over()
         objectListFree(_combat_list);
 
         if (_aiInfoList != nullptr) {
-            internal_free(_aiInfoList);
+            internal_free(__FILE__,__LINE__,_aiInfoList);
         }
         _aiInfoList = nullptr;
     }

@@ -51,7 +51,7 @@ typedef struct AmbientSoundEffectEvent {
 } AmbientSoundEffectEvent;
 
 typedef int QueueEventHandler(Object* owner, void* data);
-typedef void QueueEventDataFreeProc(void* data);
+typedef void QueueEventDataFreeProc(char *a,int b,void* data);
 typedef int QueueEventDataReadProc(File* stream, void** dataPtr);
 typedef int QueueEventDataWriteProc(File* stream, void* data);
 

@@ -1007,12 +1007,12 @@ static int wmGenDataReset()
 void wmWorldMap_exit()
 {
     if (wmTerrainTypeList != nullptr) {
-        internal_free(wmTerrainTypeList);
+        internal_free(__FILE__,__LINE__,wmTerrainTypeList);
         wmTerrainTypeList = nullptr;
     }
 
     if (wmTileInfoList) {
-        internal_free(wmTileInfoList);
+        internal_free(__FILE__,__LINE__,wmTileInfoList);
         wmTileInfoList = nullptr;
     }
 
@@ -1020,28 +1020,28 @@ void wmWorldMap_exit()
     wmMaxTileNum = 0;
 
     if (wmEncounterTableList != nullptr) {
-        internal_free(wmEncounterTableList);
+        internal_free(__FILE__,__LINE__,wmEncounterTableList);
         wmEncounterTableList = nullptr;
     }
 
     wmMaxEncounterInfoTables = 0;
 
     if (wmEncBaseTypeList != nullptr) {
-        internal_free(wmEncBaseTypeList);
+        internal_free(__FILE__,__LINE__,wmEncBaseTypeList);
         wmEncBaseTypeList = nullptr;
     }
 
     wmMaxEncBaseTypes = 0;
 
     if (wmAreaInfoList != nullptr) {
-        internal_free(wmAreaInfoList);
+        internal_free(__FILE__,__LINE__,wmAreaInfoList);
         wmAreaInfoList = nullptr;
     }
 
     wmMaxAreaNum = 0;
 
     if (wmMapInfoList != nullptr) {
-        internal_free(wmMapInfoList);
+        internal_free(__FILE__,__LINE__,wmMapInfoList);
     }
 
     wmMaxMapNum = 0;
@@ -4830,7 +4830,7 @@ static int wmInterfaceExit()
             tile->data = nullptr;
 
             if (tile->walkMaskData != nullptr) {
-                internal_free(tile->walkMaskData);
+                internal_free(__FILE__,__LINE__,tile->walkMaskData);
                 tile->walkMaskData = nullptr;
             }
         }
@@ -6466,7 +6466,7 @@ static int wmTabsCompareNames(const void* a1, const void* a2)
 static int wmFreeTabsLabelList(int** quickDestinationsListPtr, int* quickDestinationsLengthPtr)
 {
     if (*quickDestinationsListPtr != nullptr) {
-        internal_free(*quickDestinationsListPtr);
+        internal_free(__FILE__,__LINE__,*quickDestinationsListPtr);
         *quickDestinationsListPtr = nullptr;
     }
 

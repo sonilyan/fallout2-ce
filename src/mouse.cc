@@ -158,7 +158,7 @@ void mouseFree()
     mouseDeviceUnacquire();
 
     if (gMouseCursorData != nullptr) {
-        internal_free(gMouseCursorData);
+        internal_free(__FILE__,__LINE__,gMouseCursorData);
         gMouseCursorData = nullptr;
     }
 
@@ -220,7 +220,7 @@ int mouseSetFrame(unsigned char* a1, int width, int height, int pitch, int a5, i
         }
 
         if (gMouseCursorData != nullptr) {
-            internal_free(gMouseCursorData);
+            internal_free(__FILE__,__LINE__,gMouseCursorData);
         }
 
         gMouseCursorData = buf;

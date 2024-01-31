@@ -400,7 +400,7 @@ int lipsLoad(const char* audioFileName, const char* headFileName)
 static int _lips_make_speech()
 {
     if (gLipsData.field_14 != nullptr) {
-        internal_free(gLipsData.field_14);
+        internal_free(__FILE__,__LINE__,gLipsData.field_14);
         gLipsData.field_14 = nullptr;
     }
 
@@ -442,7 +442,7 @@ static int _lips_make_speech()
 int lipsFree()
 {
     if (gLipsData.field_14 != nullptr) {
-        internal_free(gLipsData.field_14);
+        internal_free(__FILE__,__LINE__,gLipsData.field_14);
         gLipsData.field_14 = nullptr;
     }
 
@@ -459,12 +459,12 @@ int lipsFree()
     }
 
     if (gLipsData.phonemes != nullptr) {
-        internal_free(gLipsData.phonemes);
+        internal_free(__FILE__,__LINE__,gLipsData.phonemes);
         gLipsData.phonemes = nullptr;
     }
 
     if (gLipsData.markers != nullptr) {
-        internal_free(gLipsData.markers);
+        internal_free(__FILE__,__LINE__,gLipsData.markers);
         gLipsData.markers = nullptr;
     }
 

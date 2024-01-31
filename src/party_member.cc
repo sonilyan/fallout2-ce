@@ -293,22 +293,22 @@ void partyMembersExit()
     gPartyMemberDescriptionsLength = 0;
 
     if (gPartyMemberPids != nullptr) {
-        internal_free(gPartyMemberPids);
+        internal_free(__FILE__,__LINE__,gPartyMemberPids);
         gPartyMemberPids = nullptr;
     }
 
     if (gPartyMembers != nullptr) {
-        internal_free(gPartyMembers);
+        internal_free(__FILE__,__LINE__,gPartyMembers);
         gPartyMembers = nullptr;
     }
 
     if (gPartyMemberDescriptions != nullptr) {
-        internal_free(gPartyMemberDescriptions);
+        internal_free(__FILE__,__LINE__,gPartyMemberDescriptions);
         gPartyMemberDescriptions = nullptr;
     }
 
     if (_partyMemberLevelUpInfoList != nullptr) {
-        internal_free(_partyMemberLevelUpInfoList);
+        internal_free(__FILE__,__LINE__,_partyMemberLevelUpInfoList);
         _partyMemberLevelUpInfoList = nullptr;
     }
 }
@@ -648,7 +648,7 @@ int _partyMemberRecoverLoad()
         _itemSaveListHead = v6->next;
 
         _partyMemberItemRecover(v6);
-        internal_free(v6);
+        internal_free(__FILE__,__LINE__,v6);
 
         v6 = _itemSaveListHead;
     }
@@ -696,7 +696,7 @@ static int _partyMemberRecoverLoadInstance(PartyMemberListItem* a1)
 
     script->flags &= ~(SCRIPT_FLAG_0x01 | SCRIPT_FLAG_0x04);
 
-    internal_free(a1->script);
+    internal_free(__FILE__,__LINE__,a1->script);
     a1->script = nullptr;
 
     script->flags |= (SCRIPT_FLAG_0x08 | SCRIPT_FLAG_0x10);
@@ -1093,7 +1093,7 @@ static int _partyMemberItemRecover(PartyMemberListItem* a1)
 
     _partyMemberItemCount++;
 
-    internal_free(a1->script);
+    internal_free(__FILE__,__LINE__,a1->script);
     a1->script = nullptr;
 
     if (a1->vars != nullptr) {
@@ -1112,14 +1112,14 @@ static int _partyMemberClearItemList()
         _itemSaveListHead = _itemSaveListHead->next;
 
         if (node->script != nullptr) {
-            internal_free(node->script);
+            internal_free(__FILE__,__LINE__,node->script);
         }
 
         if (node->vars != nullptr) {
-            internal_free(node->vars);
+            internal_free(__FILE__,__LINE__,node->vars);
         }
 
-        internal_free(node);
+        internal_free(__FILE__,__LINE__,node);
     }
 
     _partyMemberItemCount = 20000;

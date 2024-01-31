@@ -1593,7 +1593,7 @@ int actionExplode(int tile, int elevation, int minDamage, int maxDamage, Object*
     Object* explosion;
     int fid = buildFid(OBJ_TYPE_MISC, 10, 0, 0, 0);
     if (objectCreateWithFidPid(&explosion, fid, -1) == -1) {
-        internal_free(attack);
+        internal_free(__FILE__,__LINE__,attack);
         return -1;
     }
 
@@ -1611,7 +1611,7 @@ int actionExplode(int tile, int elevation, int minDamage, int maxDamage, Object*
             }
 
             objectDestroy(explosion, nullptr);
-            internal_free(attack);
+            internal_free(__FILE__,__LINE__,attack);
             return -1;
         }
 
@@ -1689,7 +1689,7 @@ int actionExplode(int tile, int elevation, int minDamage, int maxDamage, Object*
                 objectDestroy(adjacentExplosions[rotation], nullptr);
             }
 
-            internal_free(attack);
+            internal_free(__FILE__,__LINE__,attack);
 
             gameUiEnable();
             return -1;
@@ -1789,7 +1789,7 @@ int _report_explosion(Attack* attack, Object* sourceObj)
         }
     }
 
-    internal_free(attack);
+    internal_free(__FILE__,__LINE__,attack);
     gameUiEnable();
 
     if (sourceObj == gDude) {
@@ -1896,7 +1896,7 @@ void actionDamage(int tile, int elevation, int minDamage, int maxDamage, int dam
 
     Object* attacker;
     if (objectCreateWithFidPid(&attacker, FID_0x20001F5, -1) == -1) {
-        internal_free(attack);
+        internal_free(__FILE__,__LINE__,attack);
         return;
     }
 
@@ -1936,7 +1936,7 @@ void actionDamage(int tile, int elevation, int minDamage, int maxDamage, int dam
 
         if (reg_anim_end() == -1) {
             objectDestroy(attacker, nullptr);
-            internal_free(attack);
+            internal_free(__FILE__,__LINE__,attack);
             return;
         }
     } else {
@@ -1960,7 +1960,7 @@ int _report_dmg(Attack* attack, Object* a2)
 {
     _combat_display(attack);
     _apply_damage(attack, false);
-    internal_free(attack);
+    internal_free(__FILE__,__LINE__,attack);
     gameUiEnable();
     return 0;
 }

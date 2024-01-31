@@ -173,7 +173,7 @@ void inputExit()
     TickerListNode* curr = gTickerListHead;
     while (curr != nullptr) {
         TickerListNode* next = curr->next;
-        internal_free(curr);
+        internal_free(__FILE__,__LINE__,curr);
         curr = next;
     }
 }
@@ -370,7 +370,7 @@ void tickersExecute()
         if (curr->flags & 1) {
             *currPtr = next;
 
-            internal_free(curr);
+            internal_free(__FILE__,__LINE__,curr);
         } else {
             curr->proc();
             currPtr = &(curr->next);
@@ -520,7 +520,7 @@ void takeScreenshot()
 
     unsigned char* palette = _getSystemPalette();
     gScreenshotHandler(width, height, gScreenshotBuffer, palette);
-    internal_free(gScreenshotBuffer);
+    internal_free(__FILE__,__LINE__,gScreenshotBuffer);
 }
 
 // 0x4C8FF0

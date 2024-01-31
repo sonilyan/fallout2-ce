@@ -481,7 +481,7 @@ static int objectLoadAllInternal(File* stream)
     }
 
     if (gObjectFids != nullptr) {
-        internal_free(gObjectFids);
+        internal_free(__FILE__,__LINE__,gObjectFids);
     }
 
     if (objectCount != 0) {
@@ -1116,7 +1116,7 @@ int _obj_disconnect(Object* obj, Rect* rect)
     }
 
     if (node != nullptr) {
-        internal_free(node);
+        internal_free(__FILE__,__LINE__,node);
     }
 
     obj->tile = -1;
@@ -2016,7 +2016,7 @@ int _obj_inven_free(Inventory* inventory)
     }
 
     if (inventory->items != nullptr) {
-        internal_free(inventory->items);
+        internal_free(__FILE__,__LINE__,inventory->items);
         inventory->items = nullptr;
         inventory->capacity = 0;
         inventory->length = 0;
@@ -2715,7 +2715,7 @@ int objectListCreate(int tile, int elevation, int objectType, Object*** objectLi
 void objectListFree(Object** objectList)
 {
     if (objectList != nullptr) {
-        internal_free(objectList);
+        internal_free(__FILE__,__LINE__,objectList);
     }
 }
 
@@ -3022,7 +3022,7 @@ int _obj_create_intersect_list(int x, int y, int elevation, int objectType, Obje
 void _obj_delete_intersect_list(ObjectWithFlags** entriesPtr)
 {
     if (entriesPtr != nullptr && *entriesPtr != nullptr) {
-        internal_free(*entriesPtr);
+        internal_free(__FILE__,__LINE__,*entriesPtr);
         *entriesPtr = nullptr;
     }
 }
@@ -3206,7 +3206,7 @@ void _obj_preload_art_cache(int flags)
         }
     }
 
-    internal_free(gObjectFids);
+    internal_free(__FILE__,__LINE__,gObjectFids);
     gObjectFids = nullptr;
 
     gObjectFidsLength = 0;
@@ -3303,22 +3303,22 @@ err:
 static void _obj_offset_table_exit()
 {
     if (_offsetModTable != nullptr) {
-        internal_free(_offsetModTable);
+        internal_free(__FILE__,__LINE__,_offsetModTable);
         _offsetModTable = nullptr;
     }
 
     if (_offsetDivTable != nullptr) {
-        internal_free(_offsetDivTable);
+        internal_free(__FILE__,__LINE__,_offsetDivTable);
         _offsetDivTable = nullptr;
     }
 
     if (_offsetTable[1] != nullptr) {
-        internal_free(_offsetTable[1]);
+        internal_free(__FILE__,__LINE__,_offsetTable[1]);
         _offsetTable[1] = nullptr;
     }
 
     if (_offsetTable[0] != nullptr) {
-        internal_free(_offsetTable[0]);
+        internal_free(__FILE__,__LINE__,_offsetTable[0]);
         _offsetTable[0] = nullptr;
     }
 }
@@ -3380,12 +3380,12 @@ static int _obj_order_comp_func_odd(const void* a1, const void* a2)
 static void _obj_order_table_exit()
 {
     if (_orderTable[1] != nullptr) {
-        internal_free(_orderTable[1]);
+        internal_free(__FILE__,__LINE__,_orderTable[1]);
         _orderTable[1] = nullptr;
     }
 
     if (_orderTable[0] != nullptr) {
-        internal_free(_orderTable[0]);
+        internal_free(__FILE__,__LINE__,_orderTable[0]);
         _orderTable[0] = nullptr;
     }
 }
@@ -3415,7 +3415,7 @@ static int _obj_render_table_init()
 static void _obj_render_table_exit()
 {
     if (_renderTable != nullptr) {
-        internal_free(_renderTable);
+        internal_free(__FILE__,__LINE__,_renderTable);
         _renderTable = nullptr;
     }
 }
@@ -3728,7 +3728,7 @@ static void objectDeallocate(Object** objectPtr)
         return;
     }
 
-    internal_free(*objectPtr);
+    internal_free(__FILE__,__LINE__,*objectPtr);
 
     *objectPtr = nullptr;
 }
@@ -3766,7 +3766,7 @@ static void objectListNodeDestroy(ObjectListNode** nodePtr)
         return;
     }
 
-    internal_free(*nodePtr);
+    internal_free(__FILE__,__LINE__,*nodePtr);
 
     *nodePtr = nullptr;
 }

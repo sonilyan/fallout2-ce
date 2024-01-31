@@ -400,7 +400,7 @@ int lsgSaveGame(int mode)
         }
 
         if (_snapshotBuf != nullptr) {
-            internal_free(_snapshot);
+            internal_free(__FILE__,__LINE__,_snapshot);
         }
 
         gameMouseSetCursor(MOUSE_CURSOR_ARROW);
@@ -1364,7 +1364,7 @@ static int lsgWindowInit(int windowType)
             while (--index >= 0) {
                 _loadsaveFrmImages[index].unlock();
             }
-            internal_free(_snapshot);
+            internal_free(__FILE__,__LINE__,_snapshot);
             messageListFree(&gLoadSaveMessageList);
             fontSetCurrent(gLoadSaveWindowOldFont);
 
@@ -1390,7 +1390,7 @@ static int lsgWindowInit(int windowType)
         WINDOW_MODAL | WINDOW_MOVE_ON_TOP);
     if (gLoadSaveWindow == -1) {
         // FIXME: Leaking frms.
-        internal_free(_snapshot);
+        internal_free(__FILE__,__LINE__,_snapshot);
         messageListFree(&gLoadSaveMessageList);
         fontSetCurrent(gLoadSaveWindowOldFont);
 
@@ -1539,7 +1539,7 @@ static int lsgWindowFree(int windowType)
         _loadsaveFrmImages[index].unlock();
     }
 
-    internal_free(_snapshot);
+    internal_free(__FILE__,__LINE__,_snapshot);
 
     if (windowType != LOAD_SAVE_WINDOW_TYPE_LOAD_GAME_FROM_MAIN_MENU) {
         if (gLoadSaveWindowIsoWasEnabled) {
@@ -2774,7 +2774,7 @@ out:
     }
 
     if (buf != nullptr) {
-        internal_free(buf);
+        internal_free(__FILE__,__LINE__,buf);
     }
 
     return result;

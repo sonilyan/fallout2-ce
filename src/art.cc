@@ -331,18 +331,18 @@ void artExit()
 {
     cacheFree(&gArtCache);
 
-    internal_free(_anon_alias);
-    internal_free(gArtCritterFidShoudRunData);
+    internal_free(__FILE__,__LINE__,_anon_alias);
+    internal_free(__FILE__,__LINE__,gArtCritterFidShoudRunData);
 
     for (int index = 0; index < OBJ_TYPE_COUNT; index++) {
-        internal_free(gArtListDescriptions[index].fileNames);
+        internal_free(__FILE__,__LINE__,gArtListDescriptions[index].fileNames);
         gArtListDescriptions[index].fileNames = nullptr;
 
-        internal_free(gArtListDescriptions[index].field_18);
+        internal_free(__FILE__,__LINE__,gArtListDescriptions[index].field_18);
         gArtListDescriptions[index].field_18 = nullptr;
     }
 
-    internal_free(gHeadDescriptions);
+    internal_free(__FILE__,__LINE__,gHeadDescriptions);
 }
 
 // 0x418F1C
@@ -1003,7 +1003,7 @@ static int artCacheReadDataImpl(int fid, int* sizePtr, unsigned char* data)
 // 0x419C80
 static void artCacheFreeImpl(void* ptr)
 {
-    internal_free(ptr);
+    internal_free(__FILE__,__LINE__,ptr);
 }
 
 // 0x419C88
@@ -1119,7 +1119,7 @@ Art* artLoad(const char* path)
     }
 
     if (artRead(path, data) != 0) {
-        internal_free(data);
+        internal_free(__FILE__,__LINE__,data);
         return nullptr;
     }
 

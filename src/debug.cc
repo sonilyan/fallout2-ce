@@ -108,7 +108,7 @@ void _debug_register_env()
         _debug_register_func(_win_debug);
     }
 
-    internal_free(copy);
+    internal_free(__FILE__,__LINE__,copy);
 }
 
 // 0x4C6F18

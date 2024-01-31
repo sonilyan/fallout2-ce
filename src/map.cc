@@ -1212,7 +1212,7 @@ static int _map_age_dead_critters()
         objectDestroy(obj, nullptr);
     }
 
-    internal_free(objects);
+    internal_free(__FILE__,__LINE__,objects);
 
     return rc;
 }
@@ -1586,7 +1586,7 @@ static int mapGlobalVariablesInit(int count)
 static void mapGlobalVariablesFree()
 {
     if (gMapGlobalVars != nullptr) {
-        internal_free(gMapGlobalVars);
+        internal_free(__FILE__,__LINE__,gMapGlobalVars);
         gMapGlobalVars = nullptr;
         gMapGlobalVarsLength = 0;
     }
@@ -1631,7 +1631,7 @@ static int mapLocalVariablesInit(int count)
 static void mapLocalVariablesFree()
 {
     if (gMapLocalVars != nullptr) {
-        internal_free(gMapLocalVars);
+        internal_free(__FILE__,__LINE__,gMapLocalVars);
         gMapLocalVars = nullptr;
         gMapLocalVarsLength = 0;
     }

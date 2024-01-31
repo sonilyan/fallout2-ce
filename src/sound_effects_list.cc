@@ -123,14 +123,14 @@ int soundEffectsListInit(const char* soundEffectsPath, int a2, int debugLevel)
 
         err = soundEffectsListPopulateFileNames();
         if (err != SFXL_OK) {
-            internal_free(gSoundEffectsListPath);
+            internal_free(__FILE__,__LINE__,gSoundEffectsListPath);
             return err;
         }
 
         err = soundEffectsListPopulateFileSizes();
         if (err != SFXL_OK) {
             soundEffectsListClear();
-            internal_free(gSoundEffectsListPath);
+            internal_free(__FILE__,__LINE__,gSoundEffectsListPath);
             return err;
         }
 
@@ -174,7 +174,7 @@ void soundEffectsListExit()
 {
     if (gSoundEffectsListInitialized) {
         soundEffectsListClear();
-        internal_free(gSoundEffectsListPath);
+        internal_free(__FILE__,__LINE__,gSoundEffectsListPath);
         gSoundEffectsListInitialized = false;
     }
 }
@@ -298,11 +298,11 @@ static void soundEffectsListClear()
     for (int index = 0; index < gSoundEffectsListEntriesLength; index++) {
         SoundEffectsListEntry* entry = &(gSoundEffectsListEntries[index]);
         if (entry->name != nullptr) {
-            internal_free(entry->name);
+            internal_free(__FILE__,__LINE__,entry->name);
         }
     }
 
-    internal_free(gSoundEffectsListEntries);
+    internal_free(__FILE__,__LINE__,gSoundEffectsListEntries);
     gSoundEffectsListEntries = nullptr;
 
     gSoundEffectsListEntriesLength = 0;
@@ -334,7 +334,7 @@ static int soundEffectsListPopulateFileNames()
 
     char** fileNameList;
     gSoundEffectsListEntriesLength = fileNameListInit(pattern, &fileNameList, 0, 0);
-    internal_free(pattern);
+    internal_free(__FILE__,__LINE__,pattern);
 
     if (gSoundEffectsListEntriesLength > 10000) {
         fileNameListFree(&fileNameList, 0);
@@ -400,12 +400,12 @@ static int soundEffectsListPopulateFileSizes()
 
         int fileSize;
         if (dbGetFileSize(path, &fileSize) != 0) {
-            internal_free(path);
+            internal_free(__FILE__,__LINE__,path);
             return SFXL_ERR;
         }
 
         if (fileSize <= 0) {
-            internal_free(path);
+            internal_free(__FILE__,__LINE__,path);
             return SFXL_ERR;
         }
 
@@ -419,7 +419,7 @@ static int soundEffectsListPopulateFileSizes()
             if (1) {
                 File* stream = fileOpen(path, "rb");
                 if (stream == nullptr) {
-                    internal_free(path);
+                    internal_free(__FILE__,__LINE__,path);
                     return 1;
                 }
 
@@ -433,12 +433,12 @@ static int soundEffectsListPopulateFileSizes()
             }
             break;
         default:
-            internal_free(path);
+            internal_free(__FILE__,__LINE__,path);
             return SFXL_ERR;
         }
     }
 
-    internal_free(path);
+    internal_free(__FILE__,__LINE__,path);
 
     return SFXL_OK;
 }

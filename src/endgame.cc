@@ -611,7 +611,7 @@ static int endgameEndingSlideshowWindowInit()
 
     gEndgameEndingSubtitlesTimings = (unsigned int*)internal_malloc(__FILE__,__LINE__,sizeof(*gEndgameEndingSubtitlesTimings) * ENDGAME_ENDING_MAX_SUBTITLES);
     if (gEndgameEndingSubtitlesTimings == nullptr) {
-        internal_free(gEndgameEndingSubtitles);
+        internal_free(__FILE__,__LINE__,gEndgameEndingSubtitles);
         gEndgameEndingSubtitlesEnabled = false;
         return 0;
     }
@@ -625,8 +625,8 @@ static void endgameEndingSlideshowWindowFree()
     if (gEndgameEndingSubtitlesEnabled) {
         endgameEndingSubtitlesFree();
 
-        internal_free(gEndgameEndingSubtitlesTimings);
-        internal_free(gEndgameEndingSubtitles);
+        internal_free(__FILE__,__LINE__,gEndgameEndingSubtitlesTimings);
+        internal_free(__FILE__,__LINE__,gEndgameEndingSubtitles);
 
         gEndgameEndingSubtitles = nullptr;
         gEndgameEndingSubtitlesEnabled = false;
@@ -857,7 +857,7 @@ static void endgameEndingSubtitlesFree()
 {
     for (int index = 0; index < gEndgameEndingSubtitlesLength; index++) {
         if (gEndgameEndingSubtitles[index] != nullptr) {
-            internal_free(gEndgameEndingSubtitles[index]);
+            internal_free(__FILE__,__LINE__,gEndgameEndingSubtitles[index]);
             gEndgameEndingSubtitles[index] = nullptr;
         }
     }
@@ -895,7 +895,7 @@ static int endgameEndingInit()
     size_t narratorFileNameLength;
 
     if (gEndgameEndings != nullptr) {
-        internal_free(gEndgameEndings);
+        internal_free(__FILE__,__LINE__,gEndgameEndings);
         gEndgameEndings = nullptr;
     }
 
@@ -984,7 +984,7 @@ err:
 static void endgameEndingFree()
 {
     if (gEndgameEndings != nullptr) {
-        internal_free(gEndgameEndings);
+        internal_free(__FILE__,__LINE__,gEndgameEndings);
         gEndgameEndings = nullptr;
     }
 
@@ -1104,7 +1104,7 @@ err:
 int endgameDeathEndingExit()
 {
     if (gEndgameDeathEndings != nullptr) {
-        internal_free(gEndgameDeathEndings);
+        internal_free(__FILE__,__LINE__,gEndgameDeathEndings);
         gEndgameDeathEndings = nullptr;
 
         gEndgameDeathEndingsLength = 0;

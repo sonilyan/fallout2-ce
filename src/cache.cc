@@ -79,7 +79,7 @@ bool cacheFree(Cache* cache)
     cache->hits = 0;
 
     if (cache->entries != nullptr) {
-        internal_free(cache->entries);
+        internal_free(__FILE__,__LINE__,cache->entries);
         cache->entries = nullptr;
     }
 
@@ -393,7 +393,7 @@ static bool cacheEntryFree(Cache* cache, CacheEntry* cacheEntry)
         heapBlockDeallocate(&(cache->heap), &(cacheEntry->heapHandleIndex));
     }
 
-    internal_free(cacheEntry);
+    internal_free(__FILE__,__LINE__,cacheEntry);
 
     return true;
 }
@@ -511,7 +511,7 @@ static bool cacheEnsureSize(Cache* cache, int size)
             }
         }
 
-        internal_free(entries);
+        internal_free(__FILE__,__LINE__,entries);
     }
 
     cacheSweep(cache);

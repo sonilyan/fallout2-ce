@@ -230,7 +230,7 @@ void perksExit()
     messageListFree(&gPerksMessageList);
 
     if (gPartyMemberPerkRanks != nullptr) {
-        internal_free(gPartyMemberPerkRanks);
+        internal_free(__FILE__,__LINE__,gPartyMemberPerkRanks);
         gPartyMemberPerkRanks = nullptr;
     }
 }

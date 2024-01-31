@@ -30,7 +30,7 @@ typedef struct MovieSubtitleListNode {
 } MovieSubtitleListNode;
 
 static void* movieMallocImpl(size_t size);
-static void movieFreeImpl(void* ptr);
+static void movieFreeImpl(char *a,int b,void* ptr);
 static bool movieReadImpl(int fileHandle, void* buf, int count);
 static void movieDirectImpl(SDL_Surface* surface, int srcWidth, int srcHeight, int srcX, int srcY, int destWidth, int destHeight, int a8, int a9);
 static void movieBufferedImpl(SDL_Surface* surface, int srcWidth, int srcHeight, int srcX, int srcY, int destWidth, int destHeight, int a8, int a9);
@@ -239,9 +239,9 @@ static void* movieMallocImpl(char *a,int b,size_t size)
 }
 
 // 0x486614
-static void movieFreeImpl(void* ptr)
+static void movieFreeImpl(char *a,int b,void* ptr)
 {
-    internal_free_safe(ptr, __FILE__, __LINE__); // "..\\int\\MOVIE.C", 213
+    internal_free_safe(ptr, a, b); // "..\\int\\MOVIE.C", 213
 }
 
 // 0x48662C

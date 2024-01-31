@@ -199,7 +199,7 @@ int windowManagerInit(VideoSystemInitProc* videoSystemInitProc, VideoSystemExitP
             }
 
             if (_screen_buffer != nullptr) {
-                internal_free(_screen_buffer);
+                internal_free(__FILE__,__LINE__,_screen_buffer);
             }
 
             return WINDOW_MANAGER_ERR_NO_MEMORY;
@@ -210,7 +210,7 @@ int windowManagerInit(VideoSystemInitProc* videoSystemInitProc, VideoSystemExitP
         // TODO: Incomplete.
         // _colorBuildColorTable(_getSystemPalette(), palette);
 
-        internal_free(palette);
+        internal_free(__FILE__,__LINE__,palette);
     }
 
     _GNW_debug_init();
@@ -230,7 +230,7 @@ int windowManagerInit(VideoSystemInitProc* videoSystemInitProc, VideoSystemExitP
         }
 
         if (_screen_buffer != nullptr) {
-            internal_free(_screen_buffer);
+            internal_free(__FILE__,__LINE__,_screen_buffer);
         }
 
         return WINDOW_MANAGER_ERR_NO_MEMORY;
@@ -283,11 +283,11 @@ void windowManagerExit(void)
             }
 
             if (_GNW_texture != nullptr) {
-                internal_free(_GNW_texture);
+                internal_free(__FILE__,__LINE__,_GNW_texture);
             }
 
             if (_screen_buffer != nullptr) {
-                internal_free(_screen_buffer);
+                internal_free(__FILE__,__LINE__,_screen_buffer);
             }
 
             if (gVideoSystemExitProc != nullptr) {
@@ -343,7 +343,7 @@ int windowCreate(int x, int y, int width, int height, int color, int flags)
 
     window->buffer = (unsigned char*)internal_malloc(__FILE__,__LINE__,width * height);
     if (window->buffer == nullptr) {
-        internal_free(window);
+        internal_free(__FILE__,__LINE__,window);
         return -1;
     }
 
@@ -457,11 +457,11 @@ void windowFree(int win)
     }
 
     if (window->buffer != nullptr) {
-        internal_free(window->buffer);
+        internal_free(__FILE__,__LINE__,window->buffer);
     }
 
     if (window->menuBar != nullptr) {
-        internal_free(window->menuBar);
+        internal_free(__FILE__,__LINE__,window->menuBar);
     }
 
     Button* curr = window->buttonListHead;
@@ -471,7 +471,7 @@ void windowFree(int win)
         curr = next;
     }
 
-    internal_free(window);
+    internal_free(__FILE__,__LINE__,window);
 }
 
 // 0x4D6558
@@ -924,7 +924,7 @@ void _GNW_win_refresh(Window* window, Rect* rect, unsigned char* a3)
                             }
                         }
 
-                        internal_free(buf);
+                        internal_free(__FILE__,__LINE__,buf);
                     }
                     v16 = v16->next;
                 }
@@ -1490,7 +1490,7 @@ int _win_register_text_button(int win, int x, int y, int mouseEnterEventCode, in
 
     unsigned char* pressed = (unsigned char*)internal_malloc(__FILE__,__LINE__,buttonWidth * buttonHeight);
     if (pressed == nullptr) {
-        internal_free(normal);
+        internal_free(__FILE__,__LINE__,normal);
         return -1;
     }
 
@@ -1555,8 +1555,8 @@ int _win_register_text_button(int win, int x, int y, int mouseEnterEventCode, in
         pressed,
         nullptr);
     if (button == nullptr) {
-        internal_free(normal);
-        internal_free(pressed);
+        internal_free(__FILE__,__LINE__,normal);
+        internal_free(__FILE__,__LINE__,pressed);
         return -1;
     }
 
@@ -2261,27 +2261,27 @@ void buttonFree(Button* button)
 {
     if ((button->flags & BUTTON_FLAG_GRAPHIC) == 0) {
         if (button->normalImage != nullptr) {
-            internal_free(button->normalImage);
+            internal_free(__FILE__,__LINE__,button->normalImage);
         }
 
         if (button->pressedImage != nullptr) {
-            internal_free(button->pressedImage);
+            internal_free(__FILE__,__LINE__,button->pressedImage);
         }
 
         if (button->hoverImage != nullptr) {
-            internal_free(button->hoverImage);
+            internal_free(__FILE__,__LINE__,button->hoverImage);
         }
 
         if (button->disabledNormalImage != nullptr) {
-            internal_free(button->disabledNormalImage);
+            internal_free(__FILE__,__LINE__,button->disabledNormalImage);
         }
 
         if (button->disabledPressedImage != nullptr) {
-            internal_free(button->disabledPressedImage);
+            internal_free(__FILE__,__LINE__,button->disabledPressedImage);
         }
 
         if (button->disabledHoverImage != nullptr) {
-            internal_free(button->disabledHoverImage);
+            internal_free(__FILE__,__LINE__,button->disabledHoverImage);
         }
     }
 
@@ -2300,7 +2300,7 @@ void buttonFree(Button* button)
         }
     }
 
-    internal_free(button);
+    internal_free(__FILE__,__LINE__,button);
 }
 
 // NOTE: Inlined.

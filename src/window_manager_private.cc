@@ -1067,7 +1067,7 @@ void _win_delete_menu_bar(int win)
         rectGetHeight(&(window->menuBar->rect)),
         window->color);
 
-    internal_free(window->menuBar);
+    internal_free(__FILE__,__LINE__,window->menuBar);
     window->menuBar = nullptr;
 }
 
@@ -1317,7 +1317,7 @@ int win_get_num_i(int* value, int min, int max, bool clear, const char* title, i
         *value = original;
     }
 
-    internal_free(hint);
+    internal_free(__FILE__,__LINE__,hint);
     windowDestroy(win);
 
     return rc;
@@ -1603,7 +1603,7 @@ size_t _calc_max_field_chars_wcursor(int value1, int value2)
     snprintf(str, 17, "%d", value2);
     size_t len2 = strlen(str);
 
-    internal_free(str);
+    internal_free(__FILE__,__LINE__,str);
 
     return std::max(len1, len2) + 1;
 }
@@ -1674,7 +1674,7 @@ int get_num_i(int win, int* value, int max_chars_wcursor, bool clear, bool allow
             }
         } else if (input == KEY_ESCAPE) {
             *value = original;
-            internal_free(string);
+            internal_free(__FILE__,__LINE__,string);
 
             return -1;
         } else if (input == KEY_ARROW_LEFT) {
@@ -1713,7 +1713,7 @@ int get_num_i(int win, int* value, int max_chars_wcursor, bool clear, bool allow
     }
 
     *value = atoi(string);
-    internal_free(string);
+    internal_free(__FILE__,__LINE__,string);
 
     return 0;
 }

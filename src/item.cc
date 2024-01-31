@@ -2627,7 +2627,7 @@ static int _insert_drug_effect(Object* critter, Object* item, int a3, int* stats
     }
 
     if (queueAddEvent(delay, critter, drugEffectEvent, EVENT_TYPE_DRUG) == -1) {
-        internal_free(drugEffectEvent);
+        internal_free(__FILE__,__LINE__,drugEffectEvent);
         return -1;
     }
 
@@ -2900,7 +2900,7 @@ int drugEffectEventRead(File* stream, void** dataPtr)
 
 err:
 
-    internal_free(drugEffectEvent);
+    internal_free(__FILE__,__LINE__,drugEffectEvent);
     return -1;
 }
 
@@ -2928,7 +2928,7 @@ static int _insert_withdrawal(Object* obj, int a2, int duration, int perk, int p
     withdrawalEvent->perk = perk;
 
     if (queueAddEvent(600 * duration, obj, withdrawalEvent, EVENT_TYPE_WITHDRAWAL) == -1) {
-        internal_free(withdrawalEvent);
+        internal_free(__FILE__,__LINE__,withdrawalEvent);
         return -1;
     }
 
@@ -3020,7 +3020,7 @@ int withdrawalEventRead(File* stream, void** dataPtr)
 
 err:
 
-    internal_free(withdrawalEvent);
+    internal_free(__FILE__,__LINE__,withdrawalEvent);
     return -1;
 }
 

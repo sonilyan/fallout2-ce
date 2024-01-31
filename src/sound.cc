@@ -44,7 +44,7 @@ typedef struct FadeSound {
 
 static void* soundMallocProcDefaultImpl(char *a,int b,size_t size);
 static void* soundReallocProcDefaultImpl(void* ptr, size_t size);
-static void soundFreeProcDefaultImpl(void* ptr);
+static void soundFreeProcDefaultImpl(char *a,int b,void* ptr);
 static long soundFileSize(int fileHandle);
 static long soundTellData(int fileHandle);
 static int soundWriteData(int fileHandle, const void* buf, unsigned int size);
@@ -178,7 +178,7 @@ void* soundReallocProcDefaultImpl(void* ptr, size_t size)
 }
 
 // 0x4AC700
-void soundFreeProcDefaultImpl(void* ptr)
+void soundFreeProcDefaultImpl(char *a,int b,void* ptr)
 {
     free(ptr);
 }
@@ -477,7 +477,7 @@ void soundExit()
 
     while (_fadeFreeList != nullptr) {
         FadeSound* next = _fadeFreeList->next;
-        gSoundFreeProc(_fadeFreeList);
+        gSoundFreeProc(__FILE__,__LINE__,_fadeFreeList);
         _fadeFreeList = next;
     }
 
@@ -589,7 +589,7 @@ int _preloadBuffers(Sound* sound)
     }
 
     result = _soundSetData(sound, buf, size);
-    gSoundFreeProc(buf);
+    gSoundFreeProc(__FILE__,__LINE__,buf);
 
     if ((sound->type & SOUND_TYPE_MEMORY) != 0) {
         sound->io.close(sound->io.fd);
@@ -1300,7 +1300,7 @@ void soundDeleteInternal(Sound* sound)
     }
 
     if (sound->data != nullptr) {
-        gSoundFreeProc(sound->data);
+        gSoundFreeProc(__FILE__,__LINE__,sound->data);
         sound->data = nullptr;
     }
 
@@ -1316,7 +1316,7 @@ void soundDeleteInternal(Sound* sound)
         gSoundListHead = sound->next;
     }
 
-    gSoundFreeProc(sound);
+    gSoundFreeProc(__FILE__,__LINE__,sound);
 }
 
 // 0x4AE578

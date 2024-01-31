@@ -318,7 +318,7 @@ static bool vcrFreeBuffer()
     // NOTE: Uninline.
     vcrClear();
 
-    internal_free(_vcr_buffer);
+    internal_free(__FILE__,__LINE__,_vcr_buffer);
     _vcr_buffer = nullptr;
 
     return true;

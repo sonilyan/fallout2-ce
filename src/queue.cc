@@ -102,20 +102,20 @@ int queueLoad(File* stream)
         }
 
         if (fileReadUInt32(stream, &(queueListNode->time)) == -1) {
-            internal_free(queueListNode);
+            internal_free(__FILE__,__LINE__,queueListNode);
             rc = -1;
             break;
         }
 
         if (fileReadInt32(stream, &(queueListNode->type)) == -1) {
-            internal_free(queueListNode);
+            internal_free(__FILE__,__LINE__,queueListNode);
             rc = -1;
             break;
         }
 
         int objectId;
         if (fileReadInt32(stream, &objectId) == -1) {
-            internal_free(queueListNode);
+            internal_free(__FILE__,__LINE__,queueListNode);
             rc = -1;
             break;
         }
@@ -139,7 +139,7 @@ int queueLoad(File* stream)
         EventTypeDescription* eventTypeDescription = &(gEventTypeDescriptions[queueListNode->type]);
         if (eventTypeDescription->readProc != nullptr) {
             if (eventTypeDescription->readProc(stream, &(queueListNode->data)) == -1) {
-                internal_free(queueListNode);
+                internal_free(__FILE__,__LINE__,queueListNode);
                 rc = -1;
                 break;
             }
@@ -159,10 +159,10 @@ int queueLoad(File* stream)
 
             EventTypeDescription* eventTypeDescription = &(gEventTypeDescriptions[gQueueListHead->type]);
             if (eventTypeDescription->freeProc != nullptr) {
-                eventTypeDescription->freeProc(gQueueListHead->data);
+                eventTypeDescription->freeProc(__FILE__,__LINE__,gQueueListHead->data);
             }
 
-            internal_free(gQueueListHead);
+            internal_free(__FILE__,__LINE__,gQueueListHead);
 
             gQueueListHead = next;
         }
@@ -282,10 +282,10 @@ int queueRemoveEvents(Object* owner)
 
             EventTypeDescription* eventTypeDescription = &(gEventTypeDescriptions[temp->type]);
             if (eventTypeDescription->freeProc != nullptr) {
-                eventTypeDescription->freeProc(temp->data);
+                eventTypeDescription->freeProc(__FILE__,__LINE__,temp->data);
             }
 
-            internal_free(temp);
+            internal_free(__FILE__,__LINE__,temp);
         } else {
             queueListNodePtr = &(queueListNode->next);
             queueListNode = queueListNode->next;
@@ -310,10 +310,10 @@ int queueRemoveEventsByType(Object* owner, int eventType)
 
             EventTypeDescription* eventTypeDescription = &(gEventTypeDescriptions[temp->type]);
             if (eventTypeDescription->freeProc != nullptr) {
-                eventTypeDescription->freeProc(temp->data);
+                eventTypeDescription->freeProc(__FILE__,__LINE__,temp->data);
             }
 
-            internal_free(temp);
+            internal_free(__FILE__,__LINE__,temp);
         } else {
             queueListNodePtr = &(queueListNode->next);
             queueListNode = queueListNode->next;
@@ -359,10 +359,10 @@ int queueProcessEvents()
         stopProcess = eventTypeDescription->handlerProc(queueListNode->owner, queueListNode->data);
 
         if (eventTypeDescription->freeProc != nullptr) {
-            eventTypeDescription->freeProc(queueListNode->data);
+            eventTypeDescription->freeProc(__FILE__,__LINE__,queueListNode->data);
         }
 
-        internal_free(queueListNode);
+        internal_free(__FILE__,__LINE__,queueListNode);
     }
 
     return stopProcess;
@@ -377,10 +377,10 @@ void queueClear()
 
         EventTypeDescription* eventTypeDescription = &(gEventTypeDescriptions[queueListNode->type]);
         if (eventTypeDescription->freeProc != nullptr) {
-            eventTypeDescription->freeProc(queueListNode->data);
+            eventTypeDescription->freeProc(__FILE__,__LINE__,queueListNode->data);
         }
 
-        internal_free(queueListNode);
+        internal_free(__FILE__,__LINE__,queueListNode);
 
         queueListNode = next;
     }
@@ -407,10 +407,10 @@ void _queue_clear_type(int eventType, QueueEventHandler* fn)
             } else {
                 EventTypeDescription* eventTypeDescription = &(gEventTypeDescriptions[tmp->type]);
                 if (eventTypeDescription->freeProc != nullptr) {
-                    eventTypeDescription->freeProc(tmp->data);
+                    eventTypeDescription->freeProc(__FILE__,__LINE__,tmp->data);
                 }
 
-                internal_free(tmp);
+                internal_free(__FILE__,__LINE__,tmp);
 
                 // SFALL: Re-read next event since `fn` handler can change it.
                 // This fixes crash when leaving the map while waiting for

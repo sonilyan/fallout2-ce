@@ -235,7 +235,7 @@ static int optionsWindowInit()
         _opbtns[index] = (unsigned char*)internal_malloc(__FILE__,__LINE__,_optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth() * _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getHeight() + 1024);
         if (_opbtns[index] == nullptr) {
             while (--index >= 0) {
-                internal_free(_opbtns[index]);
+                internal_free(__FILE__,__LINE__,_opbtns[index]);
             }
 
             for (int index = 0; index < OPTIONS_WINDOW_FRM_COUNT; index++) {
@@ -263,7 +263,7 @@ static int optionsWindowInit()
 
     if (gOptionsWindow == -1) {
         for (int index = 0; index < OPTIONS_WINDOW_BUTTONS_COUNT; index++) {
-            internal_free(_opbtns[index]);
+            internal_free(__FILE__,__LINE__,_opbtns[index]);
         }
 
         for (int index = 0; index < OPTIONS_WINDOW_FRM_COUNT; index++) {
@@ -382,7 +382,7 @@ static int optionsWindowFree()
     messageListFree(&gPreferencesMessageList);
 
     for (int index = 0; index < OPTIONS_WINDOW_BUTTONS_COUNT; index++) {
-        internal_free(_opbtns[index]);
+        internal_free(__FILE__,__LINE__,_opbtns[index]);
     }
 
     for (int index = 0; index < OPTIONS_WINDOW_FRM_COUNT; index++) {

@@ -1994,7 +1994,7 @@ static int _proto_find_free_subnode(int type, Proto** protoPtr)
         if (protoListExtent->length == PROTO_LIST_EXTENT_SIZE) {
             ProtoListExtent* newExtent = protoListExtent->next = (ProtoListExtent*)internal_malloc(__FILE__,__LINE__,sizeof(ProtoListExtent));
             if (protoListExtent == nullptr) {
-                internal_free(proto);
+                internal_free(__FILE__,__LINE__,proto);
                 *protoPtr = nullptr;
                 return -1;
             }
@@ -2010,7 +2010,7 @@ static int _proto_find_free_subnode(int type, Proto** protoPtr)
     } else {
         protoListExtent = (ProtoListExtent*)internal_malloc(__FILE__,__LINE__,sizeof(ProtoListExtent));
         if (protoListExtent == nullptr) {
-            internal_free(proto);
+            internal_free(__FILE__,__LINE__,proto);
             *protoPtr = nullptr;
             return -1;
         }
@@ -2083,10 +2083,10 @@ static void _proto_remove_some_list(int type)
         protoList->head = protoListExtent->next;
 
         for (int index = 0; index < protoListExtent->length; index++) {
-            internal_free(protoListExtent->proto[index]);
+            internal_free(__FILE__,__LINE__,protoListExtent->proto[index]);
         }
 
-        internal_free(protoListExtent);
+        internal_free(__FILE__,__LINE__,protoListExtent);
     }
 }
 
@@ -2101,9 +2101,9 @@ static void _proto_remove_list(int type)
     while (curr != nullptr) {
         ProtoListExtent* next = curr->next;
         for (int index = 0; index < curr->length; index++) {
-            internal_free(curr->proto[index]);
+            internal_free(__FILE__,__LINE__,curr->proto[index]);
         }
-        internal_free(curr);
+        internal_free(__FILE__,__LINE__,curr);
         curr = next;
     }
 

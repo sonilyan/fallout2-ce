@@ -22,7 +22,7 @@ static int colorPaletteFileRead(int fd, void* buffer, size_t size);
 static int colorPaletteFileClose(int fd);
 static void* colorPaletteMallocDefaultImpl(char *a,int b,size_t size);
 static void* colorPaletteReallocDefaultImpl(void* ptr, size_t size);
-static void colorPaletteFreeDefaultImpl(void* ptr);
+static void colorPaletteFreeDefaultImpl(char *a,int b,void* ptr);
 static void _setIntensityTableColor(int a1);
 static void _setIntensityTables();
 static void _setMixTableColor(int a1);
@@ -166,7 +166,7 @@ static void* colorPaletteReallocDefaultImpl(void* ptr, size_t size)
 }
 
 // 0x4C726C
-static void colorPaletteFreeDefaultImpl(void* ptr)
+static void colorPaletteFreeDefaultImpl(char *a,int b,void* ptr)
 {
     free(ptr);
 }
@@ -568,7 +568,7 @@ void _freeColorBlendTable(int a1)
         int* count = (int*)(v2 - sizeof(int));
         *count -= 1;
         if (*count == 0) {
-            gColorPaletteFreeProc(count);
+            gColorPaletteFreeProc(__FILE__,__LINE__,count);
             _blendTable[a1] = nullptr;
         }
     }

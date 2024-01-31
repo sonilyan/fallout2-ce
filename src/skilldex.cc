@@ -209,7 +209,7 @@ static int skilldexWindowInit()
 
     if (buttonDataIndex < SKILLDEX_SKILL_BUTTON_BUFFER_COUNT) {
         while (--buttonDataIndex >= 0) {
-            internal_free(gSkilldexButtonsData[buttonDataIndex]);
+            internal_free(__FILE__,__LINE__,gSkilldexButtonsData[buttonDataIndex]);
         }
 
         for (int index = 0; index < SKILLDEX_FRM_COUNT; index++) {
@@ -232,7 +232,7 @@ static int skilldexWindowInit()
         WINDOW_MODAL | WINDOW_DONT_MOVE_TOP);
     if (gSkilldexWindow == -1) {
         for (int index = 0; index < SKILLDEX_SKILL_BUTTON_BUFFER_COUNT; index++) {
-            internal_free(gSkilldexButtonsData[index]);
+            internal_free(__FILE__,__LINE__,gSkilldexButtonsData[index]);
         }
 
         for (int index = 0; index < SKILLDEX_FRM_COUNT; index++) {
@@ -400,7 +400,7 @@ static void skilldexWindowFree()
     windowDestroy(gSkilldexWindow);
 
     for (int index = 0; index < SKILLDEX_SKILL_BUTTON_BUFFER_COUNT; index++) {
-        internal_free(gSkilldexButtonsData[index]);
+        internal_free(__FILE__,__LINE__,gSkilldexButtonsData[index]);
     }
 
     for (int index = 0; index < SKILLDEX_FRM_COUNT; index++) {

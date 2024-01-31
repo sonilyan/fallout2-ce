@@ -2435,7 +2435,7 @@ static int pipboyRenderScreensaver()
         gPipboyWindowBuffer + PIPBOY_WINDOW_WIDTH * PIPBOY_WINDOW_CONTENT_VIEW_Y + PIPBOY_WINDOW_CONTENT_VIEW_X,
         PIPBOY_WINDOW_WIDTH);
 
-    internal_free(buf);
+    internal_free(__FILE__,__LINE__,buf);
 
     windowRefreshRect(gPipboyWindow, &gPipboyWindowContentRect);
     _gmouse_enable();
@@ -2447,7 +2447,7 @@ static int pipboyRenderScreensaver()
 static int questInit()
 {
     if (gQuestDescriptions != nullptr) {
-        internal_free(gQuestDescriptions);
+        internal_free(__FILE__,__LINE__,gQuestDescriptions);
         gQuestDescriptions = nullptr;
     }
 
@@ -2546,7 +2546,7 @@ err:
 static void questFree()
 {
     if (gQuestDescriptions != nullptr) {
-        internal_free(gQuestDescriptions);
+        internal_free(__FILE__,__LINE__,gQuestDescriptions);
         gQuestDescriptions = nullptr;
     }
 
@@ -2567,7 +2567,7 @@ static int questDescriptionCompare(const void* a1, const void* a2)
 static int holodiskInit()
 {
     if (gHolodiskDescriptions != nullptr) {
-        internal_free(gHolodiskDescriptions);
+        internal_free(__FILE__,__LINE__,gHolodiskDescriptions);
         gHolodiskDescriptions = nullptr;
     }
 
@@ -2640,7 +2640,7 @@ err:
 static void holodiskFree()
 {
     if (gHolodiskDescriptions != nullptr) {
-        internal_free(gHolodiskDescriptions);
+        internal_free(__FILE__,__LINE__,gHolodiskDescriptions);
         gHolodiskDescriptions = nullptr;
     }
 

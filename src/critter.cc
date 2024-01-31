@@ -659,7 +659,7 @@ int radiationEventRead(File* stream, void** dataPtr)
 
 err:
 
-    internal_free(radiationEvent);
+    internal_free(__FILE__,__LINE__,radiationEvent);
     return -1;
 }
 

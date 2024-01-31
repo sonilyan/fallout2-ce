@@ -543,7 +543,7 @@ static void _MVE_MemInit(STRUCT_6B3690* a1, int a2, void* a3)
 static void _MVE_MemFree(STRUCT_6B3690* a1)
 {
     if (a1->field_8 && gMovieLibFreeProc != nullptr) {
-        gMovieLibFreeProc(a1->field_0);
+        gMovieLibFreeProc(__FILE__,__LINE__,a1->field_0);
         a1->field_8 = 0;
     }
     a1->field_4 = 0;
@@ -1792,7 +1792,7 @@ static void _MVE_frClose(STRUCT_4F6930* a1)
     _frLoad(&v1);
 
     if (gMovieLibFreeProc != nullptr) {
-        gMovieLibFreeProc(a1);
+        gMovieLibFreeProc(__FILE__,__LINE__,a1);
     }
 }
 

@@ -649,7 +649,7 @@ static void op_create_message_window(Program* program)
         DIALOG_BOX_LARGE);
     showing = false;
 
-    internal_free(copy);
+    internal_free(__FILE__,__LINE__,copy);
 }
 
 // get_attack_type

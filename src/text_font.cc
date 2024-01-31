@@ -144,8 +144,8 @@ void textFontsExit()
     for (int index = 0; index < TEXT_FONT_MAX; index++) {
         TextFontDescriptor* textFontDescriptor = &(gTextFontDescriptors[index]);
         if (textFontDescriptor->glyphCount != 0) {
-            internal_free(textFontDescriptor->glyphs);
-            internal_free(textFontDescriptor->data);
+            internal_free(__FILE__,__LINE__,textFontDescriptor->glyphs);
+            internal_free(__FILE__,__LINE__,textFontDescriptor->data);
         }
     }
 }
@@ -208,12 +208,12 @@ out:
 
     if (rc != 0) {
         if (textFontDescriptor->data != nullptr) {
-            internal_free(textFontDescriptor->data);
+            internal_free(__FILE__,__LINE__,textFontDescriptor->data);
             textFontDescriptor->data = nullptr;
         }
 
         if (textFontDescriptor->glyphs != nullptr) {
-            internal_free(textFontDescriptor->glyphs);
+            internal_free(__FILE__,__LINE__,textFontDescriptor->glyphs);
             textFontDescriptor->glyphs = nullptr;
         }
     }

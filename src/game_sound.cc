@@ -1781,7 +1781,7 @@ int gameSoundFindBackgroundSoundPathWithCopy(char* dest, const char* src)
         }
     }
 
-    internal_free(buffer);
+    internal_free(__FILE__,__LINE__,buffer);
     fclose(outStream);
     fclose(inStream);
 
@@ -1987,7 +1987,7 @@ int _gsound_get_music_path(char** out_value, const char* key)
     }
 
     if (configGetString(&gGameConfig, GAME_CONFIG_SOUND_KEY, key, out_value)) {
-        internal_free(copy);
+        internal_free(__FILE__,__LINE__,copy);
         return 0;
     }
 

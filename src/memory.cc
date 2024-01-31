@@ -31,7 +31,7 @@ typedef struct MemoryBlockFooter {
 
 static void* memoryBlockMallocImpl(char *a,int b,size_t size);
 static void* memoryBlockReallocImpl(void* ptr, size_t size);
-static void memoryBlockFreeImpl(void* ptr);
+static void memoryBlockFreeImpl(char *a,int b,void* ptr);
 static void* mem_prep_block(void* block, size_t size);
 static void memoryBlockValidate(void* block);
 
@@ -70,12 +70,14 @@ char* internal_strdup(const char* string)
 // 0x4C5AD0
 void* internal_malloc(char* x, int b, size_t size)
 {
-    return gMallocProc(__FILE__,__LINE__,size);
+    return gMallocProc(x,b,size);
 }
 
 // 0x4C5AD8
 static void* memoryBlockMallocImpl(char *a,int b,size_t size)
 {
+    debugPrint("malloc %s %d", a, b);
+
     void* ptr = nullptr;
 
     if (size != 0) {
@@ -154,14 +156,16 @@ static void* memoryBlockReallocImpl(void* ptr, size_t size)
 }
 
 // 0x4C5C24
-void internal_free(void* ptr)
+void internal_free(char* x, int b, void* ptr)
 {
-    gFreeProc(ptr);
+    gFreeProc(x,b,ptr);
 }
 
 // 0x4C5C2C
-static void memoryBlockFreeImpl(void* ptr)
+static void memoryBlockFreeImpl(char *a,int b,void* ptr)
 {
+    debugPrint("free %s %d", a, b);
+
     if (ptr != nullptr) {
         void* block = (unsigned char*)ptr - sizeof(MemoryBlockHeader);
         MemoryBlockHeader* header = (MemoryBlockHeader*)block;

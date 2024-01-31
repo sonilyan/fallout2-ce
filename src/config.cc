@@ -57,7 +57,7 @@ void configFree(Config* config)
             DictionaryEntry* keyValueEntry = &(section->entries[keyValueIndex]);
 
             char** value = (char**)keyValueEntry->value;
-            internal_free(*value);
+            internal_free(__FILE__,__LINE__,*value);
             *value = nullptr;
         }
 
@@ -166,7 +166,7 @@ bool configSetString(Config* config, const char* sectionKey, const char* key, co
         DictionaryEntry* keyValueEntry = &(section->entries[index]);
 
         char** existingValue = (char**)keyValueEntry->value;
-        internal_free(*existingValue);
+        internal_free(__FILE__,__LINE__,*existingValue);
         *existingValue = nullptr;
 
         dictionaryRemoveValue(section, key);
@@ -178,7 +178,7 @@ bool configSetString(Config* config, const char* sectionKey, const char* key, co
     }
 
     if (dictionaryAddValue(section, key, &valueCopy) == -1) {
-        internal_free(valueCopy);
+        internal_free(__FILE__,__LINE__,valueCopy);
         return false;
     }
 

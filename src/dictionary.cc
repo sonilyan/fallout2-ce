@@ -15,7 +15,7 @@ namespace fallout {
 
 static void* dictionaryMallocDefaultImpl(char *a,int b,size_t size);
 static void* dictionaryReallocDefaultImpl(void* ptr, size_t newSize);
-static void dictionaryFreeDefaultImpl(void* ptr);
+static void dictionaryFreeDefaultImpl(char *a,int b,void* ptr);
 static int dictionaryFindIndexForKey(Dictionary* dictionary, const char* key, int* index);
 
 // 0x51E408
@@ -40,7 +40,7 @@ static void* dictionaryReallocDefaultImpl(void* ptr, size_t newSize)
 }
 
 // 0x4D9BA0
-static void dictionaryFreeDefaultImpl(void* ptr)
+static void dictionaryFreeDefaultImpl(char *a,int b,void* ptr)
 {
     free(ptr);
 }
@@ -111,16 +111,16 @@ int dictionaryFree(Dictionary* dictionary)
     for (int index = 0; index < dictionary->entriesLength; index++) {
         DictionaryEntry* entry = &(dictionary->entries[index]);
         if (entry->key != nullptr) {
-            gDictionaryFreeProc(entry->key);
+            gDictionaryFreeProc(__FILE__,__LINE__,entry->key);
         }
 
         if (entry->value != nullptr) {
-            gDictionaryFreeProc(entry->value);
+            gDictionaryFreeProc(__FILE__,__LINE__,entry->value);
         }
     }
 
     if (dictionary->entries != nullptr) {
-        gDictionaryFreeProc(dictionary->entries);
+        gDictionaryFreeProc(__FILE__,__LINE__,dictionary->entries);
     }
 
     memset(dictionary, 0, sizeof(*dictionary));
@@ -235,7 +235,7 @@ int dictionaryAddValue(Dictionary* dictionary, const char* key, const void* valu
     if (value != nullptr && dictionary->valueSize != 0) {
         valueCopy = gDictionaryMallocProc(__FILE__,__LINE__,dictionary->valueSize);
         if (valueCopy == nullptr) {
-            gDictionaryFreeProc(keyCopy);
+            gDictionaryFreeProc(__FILE__,__LINE__,keyCopy);
             return -1;
         }
     }
@@ -281,9 +281,9 @@ int dictionaryRemoveValue(Dictionary* dictionary, const char* key)
     DictionaryEntry* entry = &(dictionary->entries[indexToRemove]);
 
     // Free key and value (which are copies).
-    gDictionaryFreeProc(entry->key);
+    gDictionaryFreeProc(__FILE__,__LINE__,entry->key);
     if (entry->value != nullptr) {
-        gDictionaryFreeProc(entry->value);
+        gDictionaryFreeProc(__FILE__,__LINE__,entry->value);
     }
 
     dictionary->entriesLength--;
@@ -398,16 +398,16 @@ int dictionaryLoad(FILE* stream, Dictionary* dictionary, int a3)
     for (int index = 0; index < dictionary->entriesLength; index++) {
         DictionaryEntry* entry = &(dictionary->entries[index]);
         if (entry->key != nullptr) {
-            gDictionaryFreeProc(entry->key);
+            gDictionaryFreeProc(__FILE__,__LINE__,entry->key);
         }
 
         if (entry->value != nullptr) {
-            gDictionaryFreeProc(entry->value);
+            gDictionaryFreeProc(__FILE__,__LINE__,entry->value);
         }
     }
 
     if (dictionary->entries != nullptr) {
-        gDictionaryFreeProc(dictionary->entries);
+        gDictionaryFreeProc(__FILE__,__LINE__,dictionary->entries);
     }
 
     if (dictionaryReadHeader(stream, dictionary) != 0) {

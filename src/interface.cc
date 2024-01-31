@@ -2247,7 +2247,7 @@ static int indicatorBarInit()
             debugPrint("\nINTRFACE: Error initializing indicator box graphics! **");
 
             while (--index >= 0) {
-                internal_free(gIndicatorDescriptions[index].data);
+                internal_free(__FILE__,__LINE__,gIndicatorDescriptions[index].data);
             }
 
             messageListFree(&messageList);
@@ -2298,7 +2298,7 @@ static void interfaceBarFree()
     for (int index = 0; index < INDICATOR_COUNT; index++) {
         IndicatorDescription* indicatorBoxDescription = &(gIndicatorDescriptions[index]);
         if (indicatorBoxDescription->data != nullptr) {
-            internal_free(indicatorBoxDescription->data);
+            internal_free(__FILE__,__LINE__,indicatorBoxDescription->data);
             indicatorBoxDescription->data = nullptr;
         }
     }
@@ -2535,7 +2535,7 @@ static void customInterfaceBarInit()
 static void customInterfaceBarExit()
 {
     if (gCustomInterfaceBarBackground != nullptr) {
-        internal_free(gCustomInterfaceBarBackground);
+        internal_free(__FILE__,__LINE__,gCustomInterfaceBarBackground);
         gCustomInterfaceBarBackground = nullptr;
     }
 }
@@ -2646,7 +2646,7 @@ static void sidePanelsDraw(const char* path, int win, bool isLeading)
         windowHeight,
         windowWidth);
 
-    internal_free(image);
+    internal_free(__FILE__,__LINE__,image);
 }
 
 // NOTE: Follows Sfall implementation of `GetCurrentAttackMode`. It slightly

@@ -136,7 +136,7 @@ int displayMonitorInit()
             FrmImage backgroundFrmImage;
             int backgroundFid = buildFid(OBJ_TYPE_INTERFACE, 16, 0, 0, 0);
             if (!backgroundFrmImage.lock(backgroundFid)) {
-                internal_free(gDisplayMonitorBackgroundFrmData);
+                internal_free(__FILE__,__LINE__,gDisplayMonitorBackgroundFrmData);
                 return -1;
             }
 
@@ -225,7 +225,7 @@ void displayMonitorExit()
         // SFALL
         consoleFileExit();
 
-        internal_free(gDisplayMonitorBackgroundFrmData);
+        internal_free(__FILE__,__LINE__,gDisplayMonitorBackgroundFrmData);
         gDisplayMonitorInitialized = false;
     }
 }

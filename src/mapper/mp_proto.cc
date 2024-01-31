@@ -597,10 +597,10 @@ int proto_pick_ai_packet(int* value)
     }
 
     for (index = 0; index < count; index++) {
-        internal_free(names[index]);
+        internal_free(__FILE__,__LINE__,names[index]);
     }
 
-    internal_free(names);
+    internal_free(__FILE__,__LINE__,names);
     return 0;
 }
 

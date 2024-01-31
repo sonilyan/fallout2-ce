@@ -99,8 +99,8 @@ int textObjectsReset()
     }
 
     for (int index = 0; index < gTextObjectsCount; index++) {
-        internal_free(gTextObjects[index]->data);
-        internal_free(gTextObjects[index]);
+        internal_free(__FILE__,__LINE__,gTextObjects[index]->data);
+        internal_free(__FILE__,__LINE__,gTextObjects[index]);
     }
 
     gTextObjectsCount = 0;
@@ -353,8 +353,8 @@ static void textObjectsTicker()
                 textObjectsRemoved = true;
             }
 
-            internal_free(textObject->data);
-            internal_free(textObject);
+            internal_free(__FILE__,__LINE__,textObject->data);
+            internal_free(__FILE__,__LINE__,textObject);
 
             memmove(&(gTextObjects[index]), &(gTextObjects[index + 1]), sizeof(*gTextObjects) * (gTextObjectsCount - index - 1));
 

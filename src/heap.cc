@@ -176,25 +176,25 @@ static bool heapInternalsInit()
 static void heapInternalsFree()
 {
     if (gHeapReservedFreeBlockIndexes != nullptr) {
-        internal_free(gHeapReservedFreeBlockIndexes);
+        internal_free(__FILE__,__LINE__,gHeapReservedFreeBlockIndexes);
         gHeapReservedFreeBlockIndexes = nullptr;
     }
     gHeapReservedFreeBlockIndexesLength = 0;
 
     if (gHeapMoveableBlocks != nullptr) {
-        internal_free(gHeapMoveableBlocks);
+        internal_free(__FILE__,__LINE__,gHeapMoveableBlocks);
         gHeapMoveableBlocks = nullptr;
     }
     gHeapMoveableBlocksLength = 0;
 
     if (gHeapMoveableExtents != nullptr) {
-        internal_free(gHeapMoveableExtents);
+        internal_free(__FILE__,__LINE__,gHeapMoveableExtents);
         gHeapMoveableExtents = nullptr;
     }
     gHeapMoveableExtentsLength = 0;
 
     if (gHeapFreeBlocks != nullptr) {
-        internal_free(gHeapFreeBlocks);
+        internal_free(__FILE__,__LINE__,gHeapFreeBlocks);
         gHeapFreeBlocks = nullptr;
     }
     gHeapFreeBlocksLength = 0;
@@ -255,18 +255,18 @@ bool heapFree(Heap* heap)
     for (int index = 0; index < heap->handlesLength; index++) {
         HeapHandle* handle = &(heap->handles[index]);
         if (handle->state == 4 && handle->data != nullptr) {
-            internal_free(handle->data);
+            internal_free(__FILE__,__LINE__,handle->data);
         }
     }
 
     if (heap->handles != nullptr) {
-        internal_free(heap->handles);
+        internal_free(__FILE__,__LINE__,heap->handles);
         heap->handles = nullptr;
         heap->handlesLength = 0;
     }
 
     if (heap->data != nullptr) {
-        internal_free(heap->data);
+        internal_free(__FILE__,__LINE__,heap->data);
     }
 
     memset(heap, 0, sizeof(*heap));
@@ -409,7 +409,7 @@ err_no_handle:
 
     debugPrint("Heap Error: Could not acquire handle for new block.\n");
     if (state == HEAP_BLOCK_STATE_SYSTEM) {
-        internal_free(block);
+        internal_free(__FILE__,__LINE__,block);
     }
 
 err:
@@ -473,7 +473,7 @@ bool heapBlockDeallocate(Heap* heap, int* handleIndexPtr)
 
     if (handle->state == HEAP_BLOCK_STATE_SYSTEM) {
         // Release system memory
-        internal_free(handle->data);
+        internal_free(__FILE__,__LINE__,handle->data);
 
         // Update heap stats
         heap->systemBlocks--;

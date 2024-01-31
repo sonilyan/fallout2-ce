@@ -97,7 +97,7 @@ int badwordsInit()
 
     gBadwordsLengths = (int*)internal_malloc(__FILE__,__LINE__,sizeof(*gBadwordsLengths) * gBadwordsCount);
     if (gBadwordsLengths == nullptr) {
-        internal_free(gBadwords);
+        internal_free(__FILE__,__LINE__,gBadwords);
         fileClose(stream);
         return -1;
     }
@@ -130,11 +130,11 @@ int badwordsInit()
 
     if (index != gBadwordsCount) {
         for (; index > 0; index--) {
-            internal_free(gBadwords[index - 1]);
+            internal_free(__FILE__,__LINE__,gBadwords[index - 1]);
         }
 
-        internal_free(gBadwords);
-        internal_free(gBadwordsLengths);
+        internal_free(__FILE__,__LINE__,gBadwords);
+        internal_free(__FILE__,__LINE__,gBadwordsLengths);
 
         return -1;
     }
@@ -146,12 +146,12 @@ int badwordsInit()
 void badwordsExit()
 {
     for (int index = 0; index < gBadwordsCount; index++) {
-        internal_free(gBadwords[index]);
+        internal_free(__FILE__,__LINE__,gBadwords[index]);
     }
 
     if (gBadwordsCount != 0) {
-        internal_free(gBadwords);
-        internal_free(gBadwordsLengths);
+        internal_free(__FILE__,__LINE__,gBadwords);
+        internal_free(__FILE__,__LINE__,gBadwordsLengths);
     }
 
     gBadwordsCount = 0;
@@ -182,18 +182,18 @@ bool messageListFree(MessageList* messageList)
         entry = &(messageList->entries[i]);
 
         if (entry->audio != nullptr) {
-            internal_free(entry->audio);
+            internal_free(__FILE__,__LINE__,entry->audio);
         }
 
         if (entry->text != nullptr) {
-            internal_free(entry->text);
+            internal_free(__FILE__,__LINE__,entry->text);
         }
     }
 
     messageList->entries_num = 0;
 
     if (messageList->entries != nullptr) {
-        internal_free(messageList->entries);
+        internal_free(__FILE__,__LINE__,messageList->entries);
         messageList->entries = nullptr;
     }
 
@@ -382,11 +382,11 @@ static bool _message_add(MessageList* msg, MessageListItem* new_entry)
         existing_entry = &(msg->entries[index]);
 
         if (existing_entry->audio != nullptr) {
-            internal_free(existing_entry->audio);
+            internal_free(__FILE__,__LINE__,existing_entry->audio);
         }
 
         if (existing_entry->text != nullptr) {
-            internal_free(existing_entry->text);
+            internal_free(__FILE__,__LINE__,existing_entry->text);
         }
     } else {
         if (msg->entries != nullptr) {

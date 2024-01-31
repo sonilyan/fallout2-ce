@@ -513,13 +513,13 @@ err:
         for (index = 0; index < config.entriesLength; index++) {
             AiPacket* ai = &(gAiPackets[index]);
             if (ai->name != nullptr) {
-                internal_free(ai->name);
+                internal_free(__FILE__,__LINE__,ai->name);
             }
 
             // FIXME: leaking ai->body_type and ai->general_type, does not matter
             // because it halts further processing
         }
-        internal_free(gAiPackets);
+        internal_free(__FILE__,__LINE__,gAiPackets);
     }
 
     debugPrint("Error processing ai.txt");
@@ -541,22 +541,22 @@ int aiExit()
         AiPacket* ai = &(gAiPackets[index]);
 
         if (ai->name != nullptr) {
-            internal_free(ai->name);
+            internal_free(__FILE__,__LINE__,ai->name);
             ai->name = nullptr;
         }
 
         if (ai->general_type != nullptr) {
-            internal_free(ai->general_type);
+            internal_free(__FILE__,__LINE__,ai->general_type);
             ai->general_type = nullptr;
         }
 
         if (ai->body_type != nullptr) {
-            internal_free(ai->body_type);
+            internal_free(__FILE__,__LINE__,ai->body_type);
             ai->body_type = nullptr;
         }
     }
 
-    internal_free(gAiPackets);
+    internal_free(__FILE__,__LINE__,gAiPackets);
     gAiPacketsLength = 0;
 
     gAiInitialized = false;
@@ -2960,7 +2960,7 @@ void _combat_ai_begin(int a1, void* a2)
 void _combat_ai_over()
 {
     if (_curr_crit_num) {
-        internal_free(_curr_crit_list);
+        internal_free(__FILE__,__LINE__,_curr_crit_list);
     }
 
     _curr_crit_num = 0;

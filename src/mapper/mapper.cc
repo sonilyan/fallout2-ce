@@ -1258,7 +1258,7 @@ int mapper_edit_init(int argc, char** argv)
         erase_down,
         45);
 
-    internal_free(lbm_buf);
+    internal_free(__FILE__,__LINE__,lbm_buf);
     windowRefresh(tool_win);
 
     if (bookmarkInit() == -1) {
@@ -1310,7 +1310,7 @@ void mapper_edit_exit()
 
     windowDestroy(menu_bar);
 
-    internal_free(art_shape);
+    internal_free(__FILE__,__LINE__,art_shape);
     gameExit();
 }
 

@@ -643,7 +643,7 @@ int automapRenderInPipboyWindow(int window, int map, int elevation)
     }
 
     if (automapLoadEntry(map, elevation) == -1) {
-        internal_free(gAutomapEntry.data);
+        internal_free(__FILE__,__LINE__,gAutomapEntry.data);
         return -1;
     }
 
@@ -684,7 +684,7 @@ int automapRenderInPipboyWindow(int window, int map, int elevation)
         windowBuffer += 640 + 240;
     }
 
-    internal_free(gAutomapEntry.data);
+    internal_free(__FILE__,__LINE__,gAutomapEntry.data);
 
     return 0;
 }
@@ -726,15 +726,15 @@ int automapSaveCurrent()
     if (stream1 == nullptr) {
         debugPrint("\nAUTOMAP: Error opening automap database file!\n");
         debugPrint("Error continued: automap_pip_save: path: %s", path);
-        internal_free(gAutomapEntry.data);
-        internal_free(gAutomapEntry.compressedData);
+        internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+        internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
         return -1;
     }
 
     if (automapLoadHeader(stream1) == -1) {
         debugPrint("\nAUTOMAP: Error reading automap database file header!\n");
-        internal_free(gAutomapEntry.data);
-        internal_free(gAutomapEntry.compressedData);
+        internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+        internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
         fileClose(stream1);
         return -1;
     }
@@ -756,8 +756,8 @@ int automapSaveCurrent()
         File* stream2 = fileOpen(path, "wb");
         if (stream2 == nullptr) {
             debugPrint("\nAUTOMAP: Error creating temp file!\n");
-            internal_free(gAutomapEntry.data);
-            internal_free(gAutomapEntry.compressedData);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
             fileClose(stream1);
             return -1;
         }
@@ -768,15 +768,15 @@ int automapSaveCurrent()
             debugPrint("\nAUTOMAP: Error copying file data!\n");
             fileClose(stream1);
             fileClose(stream2);
-            internal_free(gAutomapEntry.data);
-            internal_free(gAutomapEntry.compressedData);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
             return -1;
         }
 
         if (automapSaveEntry(stream2) == -1) {
             fileClose(stream1);
-            internal_free(gAutomapEntry.data);
-            internal_free(gAutomapEntry.compressedData);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
             return -1;
         }
 
@@ -785,8 +785,8 @@ int automapSaveCurrent()
             debugPrint("\nAUTOMAP: Error reading database #1!\n");
             fileClose(stream1);
             fileClose(stream2);
-            internal_free(gAutomapEntry.data);
-            internal_free(gAutomapEntry.compressedData);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
             return -1;
         }
 
@@ -795,8 +795,8 @@ int automapSaveCurrent()
             debugPrint("\nAUTOMAP: Error reading database #2!\n");
             fileClose(stream1);
             fileClose(stream2);
-            internal_free(gAutomapEntry.data);
-            internal_free(gAutomapEntry.compressedData);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
             return -1;
         }
 
@@ -806,8 +806,8 @@ int automapSaveCurrent()
                 debugPrint("\nAUTOMAP: Error writing temp data!\n");
                 fileClose(stream1);
                 fileClose(stream2);
-                internal_free(gAutomapEntry.data);
-                internal_free(gAutomapEntry.compressedData);
+                internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+                internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
                 return -1;
             }
 
@@ -815,8 +815,8 @@ int automapSaveCurrent()
                 debugPrint("\nAUTOMAP: Error copying file data!\n");
                 fileClose(stream1);
                 fileClose(stream2);
-                internal_free(gAutomapEntry.data);
-                internal_free(gAutomapEntry.compressedData);
+                internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+                internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
                 return -1;
             }
         }
@@ -834,16 +834,16 @@ int automapSaveCurrent()
 
         if (automapSaveHeader(stream2) == -1) {
             fileClose(stream1);
-            internal_free(gAutomapEntry.data);
-            internal_free(gAutomapEntry.compressedData);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
             return -1;
         }
 
         fileSeek(stream2, 0, SEEK_END);
         fileClose(stream2);
         fileClose(stream1);
-        internal_free(gAutomapEntry.data);
-        internal_free(gAutomapEntry.compressedData);
+        internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+        internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
 
         // NOTE: Not sure about the size.
         char automapDbPath[512];
@@ -872,15 +872,15 @@ int automapSaveCurrent()
 
         if (!proceed) {
             debugPrint("\nAUTOMAP: Error reading automap database file header!\n");
-            internal_free(gAutomapEntry.data);
-            internal_free(gAutomapEntry.compressedData);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
             fileClose(stream1);
             return -1;
         }
 
         if (automapSaveEntry(stream1) == -1) {
-            internal_free(gAutomapEntry.data);
-            internal_free(gAutomapEntry.compressedData);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
             return -1;
         }
 
@@ -888,15 +888,15 @@ int automapSaveCurrent()
         gAutomapHeader.dataSize += gAutomapEntry.dataSize + 5;
 
         if (automapSaveHeader(stream1) == -1) {
-            internal_free(gAutomapEntry.data);
-            internal_free(gAutomapEntry.compressedData);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+            internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
             return -1;
         }
 
         fileSeek(stream1, 0, SEEK_END);
         fileClose(stream1);
-        internal_free(gAutomapEntry.data);
-        internal_free(gAutomapEntry.compressedData);
+        internal_free(__FILE__,__LINE__,gAutomapEntry.data);
+        internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
     }
 
     return 1;
@@ -1015,7 +1015,7 @@ out:
     }
 
     if (gAutomapEntry.compressedData != nullptr) {
-        internal_free(gAutomapEntry.compressedData);
+        internal_free(__FILE__,__LINE__,gAutomapEntry.compressedData);
     }
 
     return 0;
@@ -1159,7 +1159,7 @@ static int _copy_file_data(File* stream1, File* stream2, int length)
         length -= chunkLength;
     }
 
-    internal_free(buffer);
+    internal_free(__FILE__,__LINE__,buffer);
 
     if (length != 0) {
         return -1;

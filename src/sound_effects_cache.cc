@@ -89,13 +89,13 @@ int soundEffectsCacheInit(int cacheSize, const char* effectsPath)
     }
 
     if (soundEffectsListInit(gSoundEffectsCacheEffectsPath, _sfxc_cmpr, gSoundEffectsCacheDebugLevel) != SFXL_OK) {
-        internal_free(gSoundEffectsCacheEffectsPath);
+        internal_free(__FILE__,__LINE__,gSoundEffectsCacheEffectsPath);
         return -1;
     }
 
     if (soundEffectsCacheCreateHandles() != 0) {
         soundEffectsListExit();
-        internal_free(gSoundEffectsCacheEffectsPath);
+        internal_free(__FILE__,__LINE__,gSoundEffectsCacheEffectsPath);
         return -1;
     }
 
@@ -103,15 +103,15 @@ int soundEffectsCacheInit(int cacheSize, const char* effectsPath)
     if (gSoundEffectsCache == nullptr) {
         soundEffectsCacheFreeHandles();
         soundEffectsListExit();
-        internal_free(gSoundEffectsCacheEffectsPath);
+        internal_free(__FILE__,__LINE__,gSoundEffectsCacheEffectsPath);
         return -1;
     }
 
     if (!cacheInit(gSoundEffectsCache, soundEffectsCacheGetFileSizeImpl, soundEffectsCacheReadDataImpl, soundEffectsCacheFreeImpl, cacheSize)) {
-        internal_free(gSoundEffectsCache);
+        internal_free(__FILE__,__LINE__,gSoundEffectsCache);
         soundEffectsCacheFreeHandles();
         soundEffectsListExit();
-        internal_free(gSoundEffectsCacheEffectsPath);
+        internal_free(__FILE__,__LINE__,gSoundEffectsCacheEffectsPath);
         return -1;
     }
 
@@ -125,14 +125,14 @@ void soundEffectsCacheExit()
 {
     if (gSoundEffectsCacheInitialized) {
         cacheFree(gSoundEffectsCache);
-        internal_free(gSoundEffectsCache);
+        internal_free(__FILE__,__LINE__,gSoundEffectsCache);
         gSoundEffectsCache = nullptr;
 
         soundEffectsCacheFreeHandles();
 
         soundEffectsListExit();
 
-        internal_free(gSoundEffectsCacheEffectsPath);
+        internal_free(__FILE__,__LINE__,gSoundEffectsCacheEffectsPath);
 
         gSoundEffectsCacheInitialized = false;
     }
@@ -168,7 +168,7 @@ int soundEffectsCacheFileOpen(const char* fname, int* sampleRate)
     int tag;
     int err = soundEffectsListGetTag(copy, &tag);
 
-    internal_free(copy);
+    internal_free(__FILE__,__LINE__,copy);
 
     if (err != SFXL_OK) {
         return -1;
@@ -356,11 +356,11 @@ static int soundEffectsCacheReadDataImpl(int tag, int* sizePtr, unsigned char* d
     soundEffectsListGetFilePath(tag, &name);
 
     if (dbGetFileContents(name, data)) {
-        internal_free(name);
+        internal_free(__FILE__,__LINE__,name);
         return -1;
     }
 
-    internal_free(name);
+    internal_free(__FILE__,__LINE__,name);
 
     *sizePtr = size;
 
@@ -370,7 +370,7 @@ static int soundEffectsCacheReadDataImpl(int tag, int* sizePtr, unsigned char* d
 // 0x4A94CC
 static void soundEffectsCacheFreeImpl(void* ptr)
 {
-    internal_free(ptr);
+    internal_free(__FILE__,__LINE__,ptr);
 }
 
 // 0x4A94D4
@@ -403,7 +403,7 @@ static void soundEffectsCacheFreeHandles()
         }
     }
 
-    internal_free(gSoundEffects);
+    internal_free(__FILE__,__LINE__,gSoundEffects);
 }
 
 // 0x4A9550
@@ -486,7 +486,7 @@ static int soundEffectsCacheFileReadCompressed(int handle, void* buf, unsigned i
         }
 
         size_t bytesRead = soundDecoderDecode(soundDecoder, temp, soundEffect->position);
-        internal_free(temp);
+        internal_free(__FILE__,__LINE__,temp);
 
         if (bytesRead != soundEffect->position) {
             soundDecoderFree(soundDecoder);

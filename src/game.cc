@@ -1071,7 +1071,7 @@ int globalVarsRead(const char* path, const char* section, int* variablesListLeng
     }
 
     if (*variablesListLengthPtr != 0) {
-        internal_free(*variablesListPtr);
+        internal_free(__FILE__,__LINE__,*variablesListPtr);
         *variablesListPtr = nullptr;
         *variablesListLengthPtr = 0;
     }
@@ -1195,12 +1195,12 @@ static void gameFreeGlobalVars()
 {
     gGameGlobalVarsLength = 0;
     if (gGameGlobalVars != nullptr) {
-        internal_free(gGameGlobalVars);
+        internal_free(__FILE__,__LINE__,gGameGlobalVars);
         gGameGlobalVars = nullptr;
     }
 
     if (gGameGlobalPointers != nullptr) {
-        internal_free(gGameGlobalPointers);
+        internal_free(__FILE__,__LINE__,gGameGlobalPointers);
         gGameGlobalPointers = nullptr;
     }
 }
@@ -1516,7 +1516,7 @@ static void showSplash()
 
     unsigned char* data = reinterpret_cast<unsigned char*>(internal_malloc(__FILE__,__LINE__,width * height));
     if (data == nullptr) {
-        internal_free(palette);
+        internal_free(__FILE__,__LINE__,palette);
         fileClose(stream);
         return;
     }
@@ -1568,7 +1568,7 @@ static void showSplash()
             _scr_blit(scaled, scaledWidth, scaledHeight, 0, 0, scaledWidth, scaledHeight, x, y);
             paletteFadeTo(palette);
 
-            internal_free(scaled);
+            internal_free(__FILE__,__LINE__,scaled);
         }
     } else {
         int x = (screenWidth - width) / 2;
@@ -1577,8 +1577,8 @@ static void showSplash()
         paletteFadeTo(palette);
     }
 
-    internal_free(data);
-    internal_free(palette);
+    internal_free(__FILE__,__LINE__,data);
+    internal_free(__FILE__,__LINE__,palette);
 
     settings.system.splash = splash + 1;
 }

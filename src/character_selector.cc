@@ -557,7 +557,7 @@ static void characterSelectorWindowFree()
     _backButtonPressedFrmImage.unlock();
 
     if (gCharacterSelectorBackground != nullptr) {
-        internal_free(gCharacterSelectorBackground);
+        internal_free(__FILE__,__LINE__,gCharacterSelectorBackground);
         gCharacterSelectorBackground = nullptr;
     }
 

@@ -226,11 +226,11 @@ void creditsOpen(const char* filePath, int backgroundFid, bool useReversedStyle)
                                     }
                                 }
 
-                                internal_free(stringBuffer);
+                                internal_free(__FILE__,__LINE__,stringBuffer);
                             }
-                            internal_free(intermediateBuffer);
+                            internal_free(__FILE__,__LINE__,intermediateBuffer);
                         }
-                        internal_free(backgroundBuffer);
+                        internal_free(__FILE__,__LINE__,backgroundBuffer);
                     }
                 }
 

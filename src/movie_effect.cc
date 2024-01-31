@@ -215,7 +215,7 @@ int movieEffectsLoad(const char* filePath)
         }
     }
 
-    internal_free(movieEffectFrameList);
+    internal_free(__FILE__,__LINE__,movieEffectFrameList);
 
 out:
 
@@ -291,7 +291,7 @@ static void movieEffectsClear()
     MovieEffect* movieEffect = gMovieEffectHead;
     while (movieEffect != nullptr) {
         MovieEffect* next = movieEffect->next;
-        internal_free(movieEffect);
+        internal_free(__FILE__,__LINE__,movieEffect);
         movieEffect = next;
     }
 

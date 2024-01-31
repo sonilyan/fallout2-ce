@@ -79,17 +79,17 @@ int graphCompress(unsigned char* a1, unsigned char* a2, int a3)
         debugPrint("\nGRAPHLIB: Error allocating compression buffers!\n");
 
         if (_dad_2 != nullptr) {
-            internal_free(_dad_2);
+            internal_free(__FILE__,__LINE__,_dad_2);
         }
 
         if (_rson != nullptr) {
-            internal_free(_rson);
+            internal_free(__FILE__,__LINE__,_rson);
         }
         if (_lson != nullptr) {
-            internal_free(_lson);
+            internal_free(__FILE__,__LINE__,_lson);
         }
         if (_text_buf != nullptr) {
-            internal_free(_text_buf);
+            internal_free(__FILE__,__LINE__,_text_buf);
         }
 
         return -1;
@@ -221,10 +221,10 @@ int graphCompress(unsigned char* a1, unsigned char* a2, int a3)
         _codesize += v36;
     }
 
-    internal_free(_lson);
-    internal_free(_rson);
-    internal_free(_dad_2);
-    internal_free(_text_buf);
+    internal_free(__FILE__,__LINE__,_lson);
+    internal_free(__FILE__,__LINE__,_rson);
+    internal_free(__FILE__,__LINE__,_dad_2);
+    internal_free(__FILE__,__LINE__,_text_buf);
 
     if (rc == -1) {
         v4 = -1;
@@ -405,7 +405,7 @@ int graphDecompress(unsigned char* src, unsigned char* dest, int length)
         }
     }
 
-    internal_free(_text_buf);
+    internal_free(__FILE__,__LINE__,_text_buf);
 
     return 0;
 }

@@ -809,12 +809,12 @@ int scriptAddTimerEvent(int sid, int delay, int param)
 
     Script* script;
     if (scriptGetScript(sid, &script) == -1) {
-        internal_free(scriptEvent);
+        internal_free(__FILE__,__LINE__,scriptEvent);
         return -1;
     }
 
     if (queueAddEvent(delay, script->owner, scriptEvent, EVENT_TYPE_SCRIPT) == -1) {
-        internal_free(scriptEvent);
+        internal_free(__FILE__,__LINE__,scriptEvent);
         return -1;
     }
 
@@ -850,7 +850,7 @@ int scriptEventRead(File* stream, void** dataPtr)
 err:
 
     // there is a memory leak in original code, free is not called
-    internal_free(scriptEvent);
+    internal_free(__FILE__,__LINE__,scriptEvent);
 
     return -1;
 }
@@ -1417,7 +1417,7 @@ static int scriptsLoadScriptsList()
 static int scriptsFreeScriptsList()
 {
     if (gScriptsListEntries != nullptr) {
-        internal_free(gScriptsListEntries);
+        internal_free(__FILE__,__LINE__,gScriptsListEntries);
         gScriptsListEntries = nullptr;
     }
 
@@ -1751,7 +1751,7 @@ int scriptsSkipGameGlobalVars(File* stream)
         return -1;
     }
 
-    internal_free(vars);
+    internal_free(__FILE__,__LINE__,vars);
 
     return 0;
 }
@@ -2318,7 +2318,7 @@ int scriptRemove(int sid)
 
             if (scriptListExtent->length == 0) {
                 scriptList->length--;
-                internal_free(scriptListExtent);
+                internal_free(__FILE__,__LINE__,scriptListExtent);
 
                 if (scriptList->length != 0) {
                     ScriptListExtent* v13 = scriptList->head;
@@ -2351,7 +2351,7 @@ int scriptRemove(int sid)
                 }
                 prev->next = nullptr;
 
-                internal_free(scriptList->tail);
+                internal_free(__FILE__,__LINE__,scriptList->tail);
                 scriptList->tail = prev;
             }
         }
@@ -2415,7 +2415,7 @@ int _scr_remove_all_force()
         ScriptListExtent* extent = scriptList->head;
         while (extent != nullptr) {
             ScriptListExtent* next = extent->next;
-            internal_free(extent);
+            internal_free(__FILE__,__LINE__,extent);
             extent = next;
         }
 
@@ -2658,7 +2658,7 @@ void scriptsExecMapUpdateScripts(int proc)
         }
     }
 
-    internal_free(sidList);
+    internal_free(__FILE__,__LINE__,sidList);
 
     _scr_SpatialsEnabled = true;
 }
@@ -2947,7 +2947,7 @@ int _scr_explode_scenery(Object* a1, int tile, int radius, int elevation)
 
     // TODO: Redundant, we already know `scriptIds` is not NULL.
     if (scriptIds != nullptr) {
-        internal_free(scriptIds);
+        internal_free(__FILE__,__LINE__,scriptIds);
     }
 
     _scr_SpatialsEnabled = true;

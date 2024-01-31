@@ -1622,7 +1622,7 @@ void dialogReviewEntriesClear()
         entry->replyMessageId = 0;
 
         if (entry->replyText != nullptr) {
-            internal_free(entry->replyText);
+            internal_free(__FILE__,__LINE__,entry->replyText);
             entry->replyText = nullptr;
         }
 
@@ -1668,7 +1668,7 @@ int gameDialogAddReviewText(const char* string)
     entry->replyMessageId = -4;
 
     if (entry->replyText != nullptr) {
-        internal_free(entry->replyText);
+        internal_free(__FILE__,__LINE__,entry->replyText);
         entry->replyText = nullptr;
     }
 
@@ -2436,7 +2436,7 @@ void _gdDestroyHeadWindow()
     }
 
     for (int index = 0; index < 8; index++) {
-        internal_free(_backgrndBufs[index]);
+        internal_free(__FILE__,__LINE__,_backgrndBufs[index]);
     }
 }
 

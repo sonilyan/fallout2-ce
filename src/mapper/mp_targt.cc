@@ -322,11 +322,11 @@ int target_remove(int pid)
         targetlist.tail = targetlist.tail->next;
     }
 
-    internal_free(node);
+    internal_free(__FILE__,__LINE__,node);
 
     while (subnode != nullptr) {
         subnode_next = subnode->next;
-        internal_free(subnode);
+        internal_free(__FILE__,__LINE__,subnode);
         subnode = subnode_next;
     }
 
@@ -356,7 +356,7 @@ int target_remove_tid(int pid, int tid)
         subnode_next = node->subnode.next;
         if (subnode_next != nullptr) {
             memcpy(&(node->subnode), subnode_next, sizeof(TargetSubNode));
-            internal_free(subnode_next);
+            internal_free(__FILE__,__LINE__,subnode_next);
         } else {
             target_remove(pid);
         }
@@ -368,7 +368,7 @@ int target_remove_tid(int pid, int tid)
             subnode_next = subnode->next;
             if (subnode_next->tid == tid) {
                 subnode->next = subnode_next->next;
-                internal_free(subnode_next);
+                internal_free(__FILE__,__LINE__,subnode_next);
                 return 0;
             }
 
@@ -396,11 +396,11 @@ int target_remove_all()
         subnode = node->subnode.next;
         while (subnode != nullptr) {
             subnode_next = subnode->next;
-            internal_free(subnode);
+            internal_free(__FILE__,__LINE__,subnode);
             subnode = subnode_next;
         }
 
-        internal_free(node);
+        internal_free(__FILE__,__LINE__,node);
         node = node_next;
     }
 
