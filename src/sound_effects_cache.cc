@@ -99,7 +99,7 @@ int soundEffectsCacheInit(int cacheSize, const char* effectsPath)
         return -1;
     }
 
-    gSoundEffectsCache = (Cache*)internal_malloc(sizeof(*gSoundEffectsCache));
+    gSoundEffectsCache = (Cache*)internal_malloc(__FILE__,__LINE__,sizeof(*gSoundEffectsCache));
     if (gSoundEffectsCache == nullptr) {
         soundEffectsCacheFreeHandles();
         soundEffectsListExit();
@@ -376,7 +376,7 @@ static void soundEffectsCacheFreeImpl(void* ptr)
 // 0x4A94D4
 static int soundEffectsCacheCreateHandles()
 {
-    gSoundEffects = (SoundEffect*)internal_malloc(sizeof(*gSoundEffects) * SOUND_EFFECTS_MAX_COUNT);
+    gSoundEffects = (SoundEffect*)internal_malloc(__FILE__,__LINE__,sizeof(*gSoundEffects) * SOUND_EFFECTS_MAX_COUNT);
     if (gSoundEffects == nullptr) {
         return -1;
     }
@@ -479,7 +479,7 @@ static int soundEffectsCacheFileReadCompressed(int handle, void* buf, unsigned i
     SoundDecoder* soundDecoder = soundDecoderInit(soundEffectsCacheSoundDecoderReadHandler, &handle, &channels, &sampleRate, &sampleCount);
 
     if (soundEffect->position != 0) {
-        void* temp = internal_malloc(soundEffect->position);
+        void* temp = internal_malloc(__FILE__,__LINE__,soundEffect->position);
         if (temp == nullptr) {
             soundDecoderFree(soundDecoder);
             return -1;

@@ -6,7 +6,7 @@
 namespace fallout {
 
 char* internal_strdup(const char* string);
-void* internal_malloc(size_t size);
+void* internal_malloc(char *x,int b,size_t size);
 void* internal_realloc(void* ptr, size_t size);
 void internal_free(void* ptr);
 void mem_check();

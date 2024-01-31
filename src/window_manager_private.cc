@@ -964,7 +964,7 @@ int _win_register_menu_bar(int win, int x, int y, int width, int height, int for
         return -1;
     }
 
-    MenuBar* menuBar = window->menuBar = (MenuBar*)internal_malloc(sizeof(MenuBar));
+    MenuBar* menuBar = window->menuBar = (MenuBar*)internal_malloc(__FILE__,__LINE__,sizeof(MenuBar));
     if (menuBar == nullptr) {
         return -1;
     }
@@ -1294,7 +1294,7 @@ int win_get_num_i(int* value, int min, int max, bool clear, const char* title, i
         "Cancel",
         0);
 
-    char* hint = (char*)internal_malloc(80);
+    char* hint = (char*)internal_malloc(__FILE__,__LINE__,80);
     if (hint == nullptr) {
         return -1;
     }
@@ -1592,7 +1592,7 @@ int _GNW_process_menu(MenuBar* menuBar, int pulldownIndex)
 // 0x4DD03C
 size_t _calc_max_field_chars_wcursor(int value1, int value2)
 {
-    char* str = (char*)internal_malloc(17);
+    char* str = (char*)internal_malloc(__FILE__,__LINE__,17);
     if (str == nullptr) {
         return -1;
     }
@@ -1623,7 +1623,7 @@ int get_num_i(int win, int* value, int max_chars_wcursor, bool clear, bool allow
     int width = max_chars_wcursor * fontGetMonospacedCharacterWidth();
     int height = fontGetLineHeight();
 
-    char* string = (char*)internal_malloc(max_chars_wcursor + 1);
+    char* string = (char*)internal_malloc(__FILE__,__LINE__,max_chars_wcursor + 1);
 
     if (clear) {
         string[0] = '\0';

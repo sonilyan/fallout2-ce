@@ -542,7 +542,7 @@ int mapper_edit_init(int argc, char** argv)
     mapper_load_toolbar(4, 0);
 
     max_art_buttons = (_scr_size.right - _scr_size.left - 136) / 50;
-    art_shape = (unsigned char*)internal_malloc(art_scale_height * art_scale_width);
+    art_shape = (unsigned char*)internal_malloc(__FILE__,__LINE__,art_scale_height * art_scale_width);
     if (art_shape == nullptr) {
         printf("Can't malloc memory!!\n");
         exit(1);
@@ -605,7 +605,7 @@ int mapper_edit_init(int argc, char** argv)
         0);
     tool = windowGetBuffer(tool_win);
 
-    lbm_buf = (unsigned char*)internal_malloc(640 * 480);
+    lbm_buf = (unsigned char*)internal_malloc(__FILE__,__LINE__,640 * 480);
     load_lbm_to_buf("data\\mapper2.lbm",
         lbm_buf,
         rectGetWidth(&_scr_size),

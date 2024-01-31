@@ -233,9 +233,9 @@ void _movieSetFunc(MovieStartFunc* startFunc, MovieEndFunc* endFunc)
 }
 
 // 0x4865FC
-static void* movieMallocImpl(size_t size)
+static void* movieMallocImpl(char *a,int b,size_t size)
 {
-    return internal_malloc_safe(size, __FILE__, __LINE__); // "..\\int\\MOVIE.C", 209
+    return internal_malloc_safe(size, a, b); // "..\\int\\MOVIE.C", 209
 }
 
 // 0x486614

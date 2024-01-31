@@ -2283,7 +2283,7 @@ static int pipboyRenderScreensaver()
 
     _gmouse_disable(0);
 
-    unsigned char* buf = (unsigned char*)internal_malloc(412 * 374);
+    unsigned char* buf = (unsigned char*)internal_malloc(__FILE__,__LINE__,412 * 374);
     if (buf == nullptr) {
         return -1;
     }

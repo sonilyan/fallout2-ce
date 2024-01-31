@@ -736,7 +736,7 @@ static void* _MVE_MemAlloc(STRUCT_6B3690* a1, unsigned int a2)
 
     _MVE_MemFree(a1);
 
-    ptr = gMovieLibMallocProc(a2 + 100);
+    ptr = gMovieLibMallocProc(__FILE__,__LINE__,a2 + 100);
     if (ptr == nullptr) {
         return nullptr;
     }

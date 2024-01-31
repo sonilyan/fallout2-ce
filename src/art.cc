@@ -158,7 +158,7 @@ int artInit()
         }
     }
 
-    _anon_alias = (int*)internal_malloc(sizeof(*_anon_alias) * gArtListDescriptions[OBJ_TYPE_CRITTER].fileNamesLength);
+    _anon_alias = (int*)internal_malloc(__FILE__,__LINE__,sizeof(*_anon_alias) * gArtListDescriptions[OBJ_TYPE_CRITTER].fileNamesLength);
     if (_anon_alias == nullptr) {
         gArtListDescriptions[OBJ_TYPE_CRITTER].fileNamesLength = 0;
         debugPrint("Out of memory for anon_alias in art_init\n");
@@ -166,7 +166,7 @@ int artInit()
         return -1;
     }
 
-    gArtCritterFidShoudRunData = (int*)internal_malloc(sizeof(*gArtCritterFidShoudRunData) * gArtListDescriptions[1].fileNamesLength);
+    gArtCritterFidShoudRunData = (int*)internal_malloc(__FILE__,__LINE__,sizeof(*gArtCritterFidShoudRunData) * gArtListDescriptions[1].fileNamesLength);
     if (gArtCritterFidShoudRunData == nullptr) {
         gArtListDescriptions[OBJ_TYPE_CRITTER].fileNamesLength = 0;
         debugPrint("Out of memory for artCritterFidShouldRunData in art_init\n");
@@ -261,7 +261,7 @@ int artInit()
         tileFileNames += 13;
     }
 
-    gHeadDescriptions = (HeadDescription*)internal_malloc(sizeof(*gHeadDescriptions) * gArtListDescriptions[OBJ_TYPE_HEAD].fileNamesLength);
+    gHeadDescriptions = (HeadDescription*)internal_malloc(__FILE__,__LINE__,sizeof(*gHeadDescriptions) * gArtListDescriptions[OBJ_TYPE_HEAD].fileNamesLength);
     if (gHeadDescriptions == nullptr) {
         gArtListDescriptions[OBJ_TYPE_HEAD].fileNamesLength = 0;
         debugPrint("Out of memory for head_info in art_init\n");
@@ -685,7 +685,7 @@ static int artReadList(const char* path, char** artListPtr, int* artListSizePtr)
 
     *artListSizePtr = count;
 
-    char* artList = (char*)internal_malloc(13 * count);
+    char* artList = (char*)internal_malloc(__FILE__,__LINE__,13 * count);
     *artListPtr = artList;
     if (artList == nullptr) {
         fileClose(stream);
@@ -1113,7 +1113,7 @@ Art* artLoad(const char* path)
 
     fileClose(stream);
 
-    unsigned char* data = reinterpret_cast<unsigned char*>(internal_malloc(artGetDataSize(&header)));
+    unsigned char* data = reinterpret_cast<unsigned char*>(internal_malloc(__FILE__,__LINE__,artGetDataSize(&header)));
     if (data == nullptr) {
         return nullptr;
     }

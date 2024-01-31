@@ -183,7 +183,7 @@ int textFontLoad(int font)
     int dataPtr;
     if (fileRead(&dataPtr, 4, 1, stream) != 1) goto out;
 
-    textFontDescriptor->glyphs = (TextFontGlyph*)internal_malloc(textFontDescriptor->glyphCount * sizeof(TextFontGlyph));
+    textFontDescriptor->glyphs = (TextFontGlyph*)internal_malloc(__FILE__,__LINE__,textFontDescriptor->glyphCount * sizeof(TextFontGlyph));
     if (textFontDescriptor->glyphs == nullptr) {
         goto out;
     }
@@ -193,7 +193,7 @@ int textFontLoad(int font)
     }
 
     dataSize = textFontDescriptor->lineHeight * ((textFontDescriptor->glyphs[textFontDescriptor->glyphCount - 1].width + 7) >> 3) + textFontDescriptor->glyphs[textFontDescriptor->glyphCount - 1].dataOffset;
-    textFontDescriptor->data = (unsigned char*)internal_malloc(dataSize);
+    textFontDescriptor->data = (unsigned char*)internal_malloc(__FILE__,__LINE__,dataSize);
     if (textFontDescriptor->data == nullptr) {
         goto out;
     }

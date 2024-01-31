@@ -286,7 +286,7 @@ static bool characterSelectorWindowInit()
         gCharacterSelectorWindowBuffer,
         CS_WINDOW_WIDTH);
 
-    gCharacterSelectorBackground = (unsigned char*)internal_malloc(CS_WINDOW_BACKGROUND_WIDTH * CS_WINDOW_BACKGROUND_HEIGHT);
+    gCharacterSelectorBackground = (unsigned char*)internal_malloc(__FILE__,__LINE__,CS_WINDOW_BACKGROUND_WIDTH * CS_WINDOW_BACKGROUND_HEIGHT);
     if (gCharacterSelectorBackground == nullptr)
         return characterSelectorWindowFatalError(false);
 

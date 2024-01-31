@@ -2242,7 +2242,7 @@ static int indicatorBarInit()
     for (int index = 0; index < INDICATOR_COUNT; index++) {
         IndicatorDescription* indicatorDescription = &(gIndicatorDescriptions[index]);
 
-        indicatorDescription->data = (unsigned char*)internal_malloc(INDICATOR_BOX_WIDTH * INDICATOR_BOX_HEIGHT);
+        indicatorDescription->data = (unsigned char*)internal_malloc(__FILE__,__LINE__,INDICATOR_BOX_WIDTH * INDICATOR_BOX_HEIGHT);
         if (indicatorDescription->data == nullptr) {
             debugPrint("\nINTRFACE: Error initializing indicator box graphics! **");
 

@@ -119,7 +119,7 @@ int displayMonitorInit()
         _disp_curr = 0;
         fontSetCurrent(oldFont);
 
-        gDisplayMonitorBackgroundFrmData = (unsigned char*)internal_malloc(DISPLAY_MONITOR_WIDTH * DISPLAY_MONITOR_HEIGHT);
+        gDisplayMonitorBackgroundFrmData = (unsigned char*)internal_malloc(__FILE__,__LINE__,DISPLAY_MONITOR_WIDTH * DISPLAY_MONITOR_HEIGHT);
         if (gDisplayMonitorBackgroundFrmData == nullptr) {
             return -1;
         }

@@ -1142,7 +1142,7 @@ static int _map_age_dead_critters()
 
     int capacity = 100;
     int count = 0;
-    Object** objects = (Object**)internal_malloc(sizeof(*objects) * capacity);
+    Object** objects = (Object**)internal_malloc(__FILE__,__LINE__,sizeof(*objects) * capacity);
 
     obj = objectFindFirst();
     while (obj != nullptr) {
@@ -1569,7 +1569,7 @@ static int mapGlobalVariablesInit(int count)
     mapGlobalVariablesFree();
 
     if (count != 0) {
-        gMapGlobalVars = (int*)internal_malloc(sizeof(*gMapGlobalVars) * count);
+        gMapGlobalVars = (int*)internal_malloc(__FILE__,__LINE__,sizeof(*gMapGlobalVars) * count);
         if (gMapGlobalVars == nullptr) {
             return -1;
         }
@@ -1614,7 +1614,7 @@ static int mapLocalVariablesInit(int count)
     mapLocalVariablesFree();
 
     if (count != 0) {
-        gMapLocalVars = (int*)internal_malloc(sizeof(*gMapLocalVars) * count);
+        gMapLocalVars = (int*)internal_malloc(__FILE__,__LINE__,sizeof(*gMapLocalVars) * count);
         if (gMapLocalVars == nullptr) {
             return -1;
         }

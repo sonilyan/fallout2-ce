@@ -171,7 +171,7 @@ int windowManagerInit(VideoSystemInitProc* videoSystemInitProc, VideoSystemExitP
     }
 
     if (a3 & 1) {
-        _screen_buffer = (unsigned char*)internal_malloc((_scr_size.bottom - _scr_size.top + 1) * (_scr_size.right - _scr_size.left + 1));
+        _screen_buffer = (unsigned char*)internal_malloc(__FILE__,__LINE__,(_scr_size.bottom - _scr_size.top + 1) * (_scr_size.right - _scr_size.left + 1));
         if (_screen_buffer == nullptr) {
             if (gVideoSystemExitProc != nullptr) {
                 gVideoSystemExitProc();
@@ -190,7 +190,7 @@ int windowManagerInit(VideoSystemInitProc* videoSystemInitProc, VideoSystemExitP
     colorPaletteSetMemoryProcs(internal_malloc, internal_realloc, internal_free);
 
     if (!_initColors()) {
-        unsigned char* palette = (unsigned char*)internal_malloc(768);
+        unsigned char* palette = (unsigned char*)internal_malloc(__FILE__,__LINE__,768);
         if (palette == nullptr) {
             if (gVideoSystemExitProc != nullptr) {
                 gVideoSystemExitProc();
@@ -221,7 +221,7 @@ int windowManagerInit(VideoSystemInitProc* videoSystemInitProc, VideoSystemExitP
 
     _GNW_intr_init();
 
-    Window* window = gWindows[0] = (Window*)internal_malloc(sizeof(*window));
+    Window* window = gWindows[0] = (Window*)internal_malloc(__FILE__,__LINE__,sizeof(*window));
     if (window == nullptr) {
         if (gVideoSystemExitProc != nullptr) {
             gVideoSystemExitProc();
@@ -336,12 +336,12 @@ int windowCreate(int x, int y, int width, int height, int color, int flags)
         return -1;
     }
 
-    Window* window = gWindows[gWindowsLength] = (Window*)internal_malloc(sizeof(*window));
+    Window* window = gWindows[gWindowsLength] = (Window*)internal_malloc(__FILE__,__LINE__,sizeof(*window));
     if (window == nullptr) {
         return -1;
     }
 
-    window->buffer = (unsigned char*)internal_malloc(width * height);
+    window->buffer = (unsigned char*)internal_malloc(__FILE__,__LINE__,width * height);
     if (window->buffer == nullptr) {
         internal_free(window);
         return -1;
@@ -900,7 +900,7 @@ void _GNW_win_refresh(Window* window, Rect* rect, unsigned char* a3)
                 while (v16 != nullptr) {
                     int width = v16->rect.right - v16->rect.left + 1;
                     int height = v16->rect.bottom - v16->rect.top + 1;
-                    unsigned char* buf = (unsigned char*)internal_malloc(width * height);
+                    unsigned char* buf = (unsigned char*)internal_malloc(__FILE__,__LINE__,width * height);
                     if (buf != nullptr) {
                         bufferFill(buf, width, height, width, _bk_color);
                         if (dest_pitch != 0) {
@@ -1483,12 +1483,12 @@ int _win_register_text_button(int win, int x, int y, int mouseEnterEventCode, in
 
     int buttonWidth = fontGetStringWidth(title) + 16;
     int buttonHeight = fontGetLineHeight() + 7;
-    unsigned char* normal = (unsigned char*)internal_malloc(buttonWidth * buttonHeight);
+    unsigned char* normal = (unsigned char*)internal_malloc(__FILE__,__LINE__,buttonWidth * buttonHeight);
     if (normal == nullptr) {
         return -1;
     }
 
-    unsigned char* pressed = (unsigned char*)internal_malloc(buttonWidth * buttonHeight);
+    unsigned char* pressed = (unsigned char*)internal_malloc(__FILE__,__LINE__,buttonWidth * buttonHeight);
     if (pressed == nullptr) {
         internal_free(normal);
         return -1;
@@ -1723,7 +1723,7 @@ Button* buttonCreateInternal(int win, int x, int y, int width, int height, int m
         return nullptr;
     }
 
-    Button* button = (Button*)internal_malloc(sizeof(*button));
+    Button* button = (Button*)internal_malloc(__FILE__,__LINE__,sizeof(*button));
     if (button == nullptr) {
         return nullptr;
     }

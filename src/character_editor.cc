@@ -1332,7 +1332,7 @@ static int characterEditorWindowInit()
 
     for (i = 0; i < EDITOR_GRAPHIC_COUNT; i++) {
         if (gCharacterEditorFrmShouldCopy[i]) {
-            gCharacterEditorFrmCopy[i] = (unsigned char*)internal_malloc(_editorFrmImages[i].getWidth() * _editorFrmImages[i].getHeight());
+            gCharacterEditorFrmCopy[i] = (unsigned char*)internal_malloc(__FILE__,__LINE__,_editorFrmImages[i].getWidth() * _editorFrmImages[i].getHeight());
             if (gCharacterEditorFrmCopy[i] == nullptr) {
                 break;
             }
@@ -3896,13 +3896,13 @@ static int characterEditorShowOptions()
             }
 
             do {
-                down[index] = (unsigned char*)internal_malloc(size);
+                down[index] = (unsigned char*)internal_malloc(__FILE__,__LINE__,size);
                 if (down[index] == nullptr) {
                     err = 1;
                     break;
                 }
 
-                up[index] = (unsigned char*)internal_malloc(size);
+                up[index] = (unsigned char*)internal_malloc(__FILE__,__LINE__,size);
                 if (up[index] == nullptr) {
                     err = 2;
                     break;

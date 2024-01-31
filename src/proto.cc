@@ -1981,7 +1981,7 @@ static int _proto_load_pid(int pid, Proto** protoPtr)
 // 0x4A1D98
 static int _proto_find_free_subnode(int type, Proto** protoPtr)
 {
-    Proto* proto = (Proto*)internal_malloc(proto_size(type));
+    Proto* proto = (Proto*)internal_malloc(__FILE__,__LINE__,proto_size(type));
     *protoPtr = proto;
     if (proto == nullptr) {
         return -1;
@@ -1992,7 +1992,7 @@ static int _proto_find_free_subnode(int type, Proto** protoPtr)
 
     if (protoList->head != nullptr) {
         if (protoListExtent->length == PROTO_LIST_EXTENT_SIZE) {
-            ProtoListExtent* newExtent = protoListExtent->next = (ProtoListExtent*)internal_malloc(sizeof(ProtoListExtent));
+            ProtoListExtent* newExtent = protoListExtent->next = (ProtoListExtent*)internal_malloc(__FILE__,__LINE__,sizeof(ProtoListExtent));
             if (protoListExtent == nullptr) {
                 internal_free(proto);
                 *protoPtr = nullptr;
@@ -2008,7 +2008,7 @@ static int _proto_find_free_subnode(int type, Proto** protoPtr)
             protoListExtent = newExtent;
         }
     } else {
-        protoListExtent = (ProtoListExtent*)internal_malloc(sizeof(ProtoListExtent));
+        protoListExtent = (ProtoListExtent*)internal_malloc(__FILE__,__LINE__,sizeof(ProtoListExtent));
         if (protoListExtent == nullptr) {
             internal_free(proto);
             *protoPtr = nullptr;

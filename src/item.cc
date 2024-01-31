@@ -2607,7 +2607,7 @@ static int _insert_drug_effect(Object* critter, Object* item, int a3, int* stats
         return -1;
     }
 
-    DrugEffectEvent* drugEffectEvent = (DrugEffectEvent*)internal_malloc(sizeof(*drugEffectEvent));
+    DrugEffectEvent* drugEffectEvent = (DrugEffectEvent*)internal_malloc(__FILE__,__LINE__,sizeof(*drugEffectEvent));
     if (drugEffectEvent == nullptr) {
         return -1;
     }
@@ -2887,7 +2887,7 @@ int drugEffectEventProcess(Object* obj, void* data)
 // 0x47A1D0
 int drugEffectEventRead(File* stream, void** dataPtr)
 {
-    DrugEffectEvent* drugEffectEvent = (DrugEffectEvent*)internal_malloc(sizeof(*drugEffectEvent));
+    DrugEffectEvent* drugEffectEvent = (DrugEffectEvent*)internal_malloc(__FILE__,__LINE__,sizeof(*drugEffectEvent));
     if (drugEffectEvent == nullptr) {
         return -1;
     }
@@ -2918,7 +2918,7 @@ int drugEffectEventWrite(File* stream, void* data)
 // 0x47A290
 static int _insert_withdrawal(Object* obj, int a2, int duration, int perk, int pid)
 {
-    WithdrawalEvent* withdrawalEvent = (WithdrawalEvent*)internal_malloc(sizeof(*withdrawalEvent));
+    WithdrawalEvent* withdrawalEvent = (WithdrawalEvent*)internal_malloc(__FILE__,__LINE__,sizeof(*withdrawalEvent));
     if (withdrawalEvent == nullptr) {
         return -1;
     }
@@ -3006,7 +3006,7 @@ int withdrawalEventProcess(Object* obj, void* data)
 // 0x47A404
 int withdrawalEventRead(File* stream, void** dataPtr)
 {
-    WithdrawalEvent* withdrawalEvent = (WithdrawalEvent*)internal_malloc(sizeof(*withdrawalEvent));
+    WithdrawalEvent* withdrawalEvent = (WithdrawalEvent*)internal_malloc(__FILE__,__LINE__,sizeof(*withdrawalEvent));
     if (withdrawalEvent == nullptr) {
         return -1;
     }

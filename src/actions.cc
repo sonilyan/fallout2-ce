@@ -1585,7 +1585,7 @@ int actionExplode(int tile, int elevation, int minDamage, int maxDamage, Object*
         return -2;
     }
 
-    Attack* attack = (Attack*)internal_malloc(sizeof(*attack));
+    Attack* attack = (Attack*)internal_malloc(__FILE__,__LINE__,sizeof(*attack));
     if (attack == nullptr) {
         return -1;
     }
@@ -1889,7 +1889,7 @@ int _talk_to(Object* a1, Object* a2)
 // 0x413494
 void actionDamage(int tile, int elevation, int minDamage, int maxDamage, int damageType, bool animated, bool bypassArmor)
 {
-    Attack* attack = (Attack*)internal_malloc(sizeof(*attack));
+    Attack* attack = (Attack*)internal_malloc(__FILE__,__LINE__,sizeof(*attack));
     if (attack == nullptr) {
         return;
     }

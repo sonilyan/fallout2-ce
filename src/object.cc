@@ -485,7 +485,7 @@ static int objectLoadAllInternal(File* stream)
     }
 
     if (objectCount != 0) {
-        gObjectFids = (int*)internal_malloc(sizeof(*gObjectFids) * objectCount);
+        gObjectFids = (int*)internal_malloc(__FILE__,__LINE__,sizeof(*gObjectFids) * objectCount);
         memset(gObjectFids, 0, sizeof(*gObjectFids) * objectCount);
         if (gObjectFids == nullptr) {
             return -1;
@@ -548,7 +548,7 @@ static int objectLoadAllInternal(File* stream)
 
             Inventory* inventory = &(objectListNode->obj->data.inventory);
             if (inventory->length != 0) {
-                inventory->items = (InventoryItem*)internal_malloc(sizeof(InventoryItem) * inventory->capacity);
+                inventory->items = (InventoryItem*)internal_malloc(__FILE__,__LINE__,sizeof(InventoryItem) * inventory->capacity);
                 if (inventory->items == nullptr) {
                     return -1;
                 }
@@ -561,7 +561,7 @@ static int objectLoadAllInternal(File* stream)
                     }
 
                     if (fixMapInventory) {
-                        inventoryItem->item = (Object*)internal_malloc(sizeof(Object));
+                        inventoryItem->item = (Object*)internal_malloc(__FILE__,__LINE__,sizeof(Object));
                         if (inventoryItem->item == nullptr) {
                             debugPrint("Error loading inventory\n");
                             return -1;
@@ -2677,7 +2677,7 @@ int objectListCreate(int tile, int elevation, int objectType, Object*** objectLi
         return 0;
     }
 
-    Object** objects = *objectListPtr = (Object**)internal_malloc(sizeof(*objects) * count);
+    Object** objects = *objectListPtr = (Object**)internal_malloc(__FILE__,__LINE__,sizeof(*objects) * count);
     if (objects == nullptr) {
         return -1;
     }
@@ -3225,12 +3225,12 @@ static int _obj_offset_table_init()
         return -1;
     }
 
-    _offsetTable[0] = (int*)internal_malloc(sizeof(int) * gObjectsUpdateAreaHexSize);
+    _offsetTable[0] = (int*)internal_malloc(__FILE__,__LINE__,sizeof(int) * gObjectsUpdateAreaHexSize);
     if (_offsetTable[0] == nullptr) {
         goto err;
     }
 
-    _offsetTable[1] = (int*)internal_malloc(sizeof(int) * gObjectsUpdateAreaHexSize);
+    _offsetTable[1] = (int*)internal_malloc(__FILE__,__LINE__,sizeof(int) * gObjectsUpdateAreaHexSize);
     if (_offsetTable[1] == nullptr) {
         goto err;
     }
@@ -3273,7 +3273,7 @@ static int _obj_offset_table_init()
         }
     }
 
-    _offsetDivTable = (int*)internal_malloc(sizeof(int) * gObjectsUpdateAreaHexSize);
+    _offsetDivTable = (int*)internal_malloc(__FILE__,__LINE__,sizeof(int) * gObjectsUpdateAreaHexSize);
     if (_offsetDivTable == nullptr) {
         goto err;
     }
@@ -3282,7 +3282,7 @@ static int _obj_offset_table_init()
         _offsetDivTable[i] = i / gObjectsUpdateAreaHexWidth;
     }
 
-    _offsetModTable = (int*)internal_malloc(sizeof(int) * gObjectsUpdateAreaHexSize);
+    _offsetModTable = (int*)internal_malloc(__FILE__,__LINE__,sizeof(int) * gObjectsUpdateAreaHexSize);
     if (_offsetModTable == nullptr) {
         goto err;
     }
@@ -3330,12 +3330,12 @@ static int _obj_order_table_init()
         return -1;
     }
 
-    _orderTable[0] = (int*)internal_malloc(sizeof(int) * gObjectsUpdateAreaHexSize);
+    _orderTable[0] = (int*)internal_malloc(__FILE__,__LINE__,sizeof(int) * gObjectsUpdateAreaHexSize);
     if (_orderTable[0] == nullptr) {
         goto err;
     }
 
-    _orderTable[1] = (int*)internal_malloc(sizeof(int) * gObjectsUpdateAreaHexSize);
+    _orderTable[1] = (int*)internal_malloc(__FILE__,__LINE__,sizeof(int) * gObjectsUpdateAreaHexSize);
     if (_orderTable[1] == nullptr) {
         goto err;
     }
@@ -3397,7 +3397,7 @@ static int _obj_render_table_init()
         return -1;
     }
 
-    _renderTable = (ObjectListNode**)internal_malloc(sizeof(*_renderTable) * gObjectsUpdateAreaHexSize);
+    _renderTable = (ObjectListNode**)internal_malloc(__FILE__,__LINE__,sizeof(*_renderTable) * gObjectsUpdateAreaHexSize);
     if (_renderTable == nullptr) {
         return -1;
     }
@@ -3572,7 +3572,7 @@ static int _obj_load_obj(File* stream, Object** objectPtr, int elevation, Object
         return 0;
     }
 
-    InventoryItem* inventoryItems = inventory->items = (InventoryItem*)internal_malloc(sizeof(*inventoryItems) * inventory->capacity);
+    InventoryItem* inventoryItems = inventory->items = (InventoryItem*)internal_malloc(__FILE__,__LINE__,sizeof(*inventoryItems) * inventory->capacity);
     if (inventoryItems == nullptr) {
         return -1;
     }
@@ -3696,7 +3696,7 @@ static int objectAllocate(Object** objectPtr)
         return -1;
     }
 
-    Object* object = *objectPtr = (Object*)internal_malloc(sizeof(Object));
+    Object* object = *objectPtr = (Object*)internal_malloc(__FILE__,__LINE__,sizeof(Object));
     if (object == nullptr) {
         return -1;
     }
@@ -3742,7 +3742,7 @@ static int objectListNodeCreate(ObjectListNode** nodePtr)
         return -1;
     }
 
-    ObjectListNode* node = *nodePtr = (ObjectListNode*)internal_malloc(sizeof(*node));
+    ObjectListNode* node = *nodePtr = (ObjectListNode*)internal_malloc(__FILE__,__LINE__,sizeof(*node));
     if (node == nullptr) {
         return -1;
     }

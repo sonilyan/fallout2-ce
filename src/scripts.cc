@@ -799,7 +799,7 @@ int _scrQueueRemoveFixed(Object* obj, void* data)
 // 0x4A3E60
 int scriptAddTimerEvent(int sid, int delay, int param)
 {
-    ScriptEvent* scriptEvent = (ScriptEvent*)internal_malloc(sizeof(*scriptEvent));
+    ScriptEvent* scriptEvent = (ScriptEvent*)internal_malloc(__FILE__,__LINE__,sizeof(*scriptEvent));
     if (scriptEvent == nullptr) {
         return -1;
     }
@@ -835,7 +835,7 @@ int scriptEventWrite(File* stream, void* data)
 // 0x4A3F04
 int scriptEventRead(File* stream, void** dataPtr)
 {
-    ScriptEvent* scriptEvent = (ScriptEvent*)internal_malloc(sizeof(*scriptEvent));
+    ScriptEvent* scriptEvent = (ScriptEvent*)internal_malloc(__FILE__,__LINE__,sizeof(*scriptEvent));
     if (scriptEvent == nullptr) {
         return -1;
     }
@@ -1741,7 +1741,7 @@ int scriptsLoadGameGlobalVars(File* stream)
 // 0x4A5448
 int scriptsSkipGameGlobalVars(File* stream)
 {
-    int* vars = (int*)internal_malloc(sizeof(*vars) * gGameGlobalVarsLength);
+    int* vars = (int*)internal_malloc(__FILE__,__LINE__,sizeof(*vars) * gGameGlobalVarsLength);
     if (vars == nullptr) {
         return -1;
     }
@@ -2039,7 +2039,7 @@ int scriptLoadAll(File* stream)
                 scriptList->length++;
             }
 
-            ScriptListExtent* extent = (ScriptListExtent*)internal_malloc(sizeof(*extent));
+            ScriptListExtent* extent = (ScriptListExtent*)internal_malloc(__FILE__,__LINE__,sizeof(*extent));
             scriptList->head = extent;
             scriptList->tail = extent;
             if (extent == nullptr) {
@@ -2063,7 +2063,7 @@ int scriptLoadAll(File* stream)
 
             ScriptListExtent* prevExtent = extent;
             for (int extentIndex = 1; extentIndex < scriptList->length; extentIndex++) {
-                ScriptListExtent* extent = (ScriptListExtent*)internal_malloc(sizeof(*extent));
+                ScriptListExtent* extent = (ScriptListExtent*)internal_malloc(__FILE__,__LINE__,sizeof(*extent));
                 if (extent == nullptr) {
                     return -1;
                 }
@@ -2155,7 +2155,7 @@ int scriptAdd(int* sidPtr, int scriptType)
     if (scriptList->head != nullptr) {
         // There is at least one extent available, which means tail is also set.
         if (scriptListExtent->length == SCRIPT_LIST_EXTENT_SIZE) {
-            ScriptListExtent* newExtent = scriptListExtent->next = (ScriptListExtent*)internal_malloc(sizeof(*newExtent));
+            ScriptListExtent* newExtent = scriptListExtent->next = (ScriptListExtent*)internal_malloc(__FILE__,__LINE__,sizeof(*newExtent));
             if (newExtent == nullptr) {
                 return -1;
             }
@@ -2170,7 +2170,7 @@ int scriptAdd(int* sidPtr, int scriptType)
         }
     } else {
         // Script head
-        scriptListExtent = (ScriptListExtent*)internal_malloc(sizeof(ScriptListExtent));
+        scriptListExtent = (ScriptListExtent*)internal_malloc(__FILE__,__LINE__,sizeof(ScriptListExtent));
         if (scriptListExtent == nullptr) {
             return -1;
         }
@@ -2622,7 +2622,7 @@ void scriptsExecMapUpdateScripts(int proc)
         return;
     }
 
-    int* sidList = (int*)internal_malloc(sizeof(*sidList) * sidListCapacity);
+    int* sidList = (int*)internal_malloc(__FILE__,__LINE__,sizeof(*sidList) * sidListCapacity);
     if (sidList == nullptr) {
         debugPrint("\nError: scr_exec_map_update_scripts: Out of memory for sidList!");
         return;
@@ -2879,7 +2879,7 @@ int _scr_explode_scenery(Object* a1, int tile, int radius, int elevation)
         return 0;
     }
 
-    int* scriptIds = (int*)internal_malloc(sizeof(*scriptIds) * scriptExtentsCount * SCRIPT_LIST_EXTENT_SIZE);
+    int* scriptIds = (int*)internal_malloc(__FILE__,__LINE__,sizeof(*scriptIds) * scriptExtentsCount * SCRIPT_LIST_EXTENT_SIZE);
     if (scriptIds == nullptr) {
         return -1;
     }

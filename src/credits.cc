@@ -86,7 +86,7 @@ void creditsOpen(const char* filePath, int backgroundFid, bool useReversedStyle)
             if (window != -1) {
                 unsigned char* windowBuffer = windowGetBuffer(window);
                 if (windowBuffer != nullptr) {
-                    unsigned char* backgroundBuffer = (unsigned char*)internal_malloc(windowWidth * windowHeight);
+                    unsigned char* backgroundBuffer = (unsigned char*)internal_malloc(__FILE__,__LINE__,windowWidth * windowHeight);
                     if (backgroundBuffer) {
                         soundContinueAll();
 
@@ -105,7 +105,7 @@ void creditsOpen(const char* filePath, int backgroundFid, bool useReversedStyle)
                             }
                         }
 
-                        unsigned char* intermediateBuffer = (unsigned char*)internal_malloc(windowWidth * windowHeight);
+                        unsigned char* intermediateBuffer = (unsigned char*)internal_malloc(__FILE__,__LINE__,windowWidth * windowHeight);
                         if (intermediateBuffer != nullptr) {
                             memset(intermediateBuffer, 0, windowWidth * windowHeight);
 
@@ -117,7 +117,7 @@ void creditsOpen(const char* filePath, int backgroundFid, bool useReversedStyle)
 
                             int lineHeight = std::max(titleFontLineHeight, nameFontLineHeight);
                             int stringBufferSize = windowWidth * lineHeight;
-                            unsigned char* stringBuffer = (unsigned char*)internal_malloc(stringBufferSize);
+                            unsigned char* stringBuffer = (unsigned char*)internal_malloc(__FILE__,__LINE__,stringBufferSize);
                             if (stringBuffer != nullptr) {
                                 blitBufferToBuffer(backgroundBuffer,
                                     windowWidth,

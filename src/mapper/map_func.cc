@@ -129,7 +129,7 @@ void draw_rect(Rect* rect, unsigned char color)
         max_dimension = height;
     }
 
-    unsigned char* buffer = (unsigned char*)internal_malloc(max_dimension);
+    unsigned char* buffer = (unsigned char*)internal_malloc(__FILE__,__LINE__,max_dimension);
     if (buffer != nullptr) {
         memset(buffer, color, max_dimension);
         _scr_blit(buffer, width, 1, 0, 0, width, 1, rect->left, rect->top);

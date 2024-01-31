@@ -1756,7 +1756,7 @@ int gameSoundFindBackgroundSoundPathWithCopy(char* dest, const char* src)
         return -1;
     }
 
-    void* buffer = internal_malloc(0x2000);
+    void* buffer = internal_malloc(__FILE__,__LINE__,0x2000);
     if (buffer == nullptr) {
         if (gGameSoundDebugEnabled) {
             debugPrint("Out of memory in gsound_background_find_with_copy.\n", src);
@@ -1966,7 +1966,7 @@ int _gsound_get_music_path(char** out_value, const char* key)
         return 0;
     }
 
-    copy = (char*)internal_malloc(len + 2);
+    copy = (char*)internal_malloc(__FILE__,__LINE__,len + 2);
     if (copy == nullptr) {
         if (gGameSoundDebugEnabled) {
             debugPrint("Out of memory in gsound_get_music_path.\n");
@@ -2101,7 +2101,7 @@ int ambientSoundEffectEventProcess(Object* a1, void* data)
         }
     }
 
-    AmbientSoundEffectEvent* nextSoundEffectEvent = (AmbientSoundEffectEvent*)internal_malloc(sizeof(*nextSoundEffectEvent));
+    AmbientSoundEffectEvent* nextSoundEffectEvent = (AmbientSoundEffectEvent*)internal_malloc(__FILE__,__LINE__,sizeof(*nextSoundEffectEvent));
     if (nextSoundEffectEvent == nullptr) {
         return -1;
     }

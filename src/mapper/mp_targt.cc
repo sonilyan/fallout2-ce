@@ -225,7 +225,7 @@ int target_load(int pid, TargetSubNode** subnode_ptr)
     *subnode_ptr = subnode;
 
     while (subnode->next != nullptr) {
-        subnode->next = (TargetSubNode*)internal_malloc(sizeof(TargetSubNode));
+        subnode->next = (TargetSubNode*)internal_malloc(__FILE__,__LINE__,sizeof(TargetSubNode));
         if (subnode->next == nullptr) {
             // FIXME: Leaks `stream`.
             return -1;
@@ -243,7 +243,7 @@ int target_load(int pid, TargetSubNode** subnode_ptr)
 // 0x49B9C0
 int target_find_free_subnode(TargetSubNode** subnode_ptr)
 {
-    TargetNode* node = (TargetNode*)internal_malloc(sizeof(TargetNode));
+    TargetNode* node = (TargetNode*)internal_malloc(__FILE__,__LINE__,sizeof(TargetNode));
     if (node == nullptr) {
         *subnode_ptr = nullptr;
         return -1;
@@ -273,7 +273,7 @@ int target_new(int pid, int* tid_ptr)
         }
     }
 
-    new_subnode = (TargetSubNode*)internal_malloc(sizeof(TargetSubNode));
+    new_subnode = (TargetSubNode*)internal_malloc(__FILE__,__LINE__,sizeof(TargetSubNode));
     if (new_subnode == nullptr) {
         return -1;
     }

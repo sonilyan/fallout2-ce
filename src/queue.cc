@@ -95,7 +95,7 @@ int queueLoad(File* stream)
 
     int rc = 0;
     for (int index = 0; index < count; index += 1) {
-        QueueListNode* queueListNode = (QueueListNode*)internal_malloc(sizeof(*queueListNode));
+        QueueListNode* queueListNode = (QueueListNode*)internal_malloc(__FILE__,__LINE__,sizeof(*queueListNode));
         if (queueListNode == nullptr) {
             rc = -1;
             break;
@@ -237,7 +237,7 @@ int queueSave(File* stream)
 // 0x4A258C
 int queueAddEvent(int delay, Object* obj, void* data, int eventType)
 {
-    QueueListNode* newQueueListNode = (QueueListNode*)internal_malloc(sizeof(QueueListNode));
+    QueueListNode* newQueueListNode = (QueueListNode*)internal_malloc(__FILE__,__LINE__,sizeof(QueueListNode));
     if (newQueueListNode == nullptr) {
         return -1;
     }

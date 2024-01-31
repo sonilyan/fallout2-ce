@@ -599,7 +599,7 @@ static int endgameEndingSlideshowWindowInit()
 
     snprintf(gEndgameEndingSubtitlesLocalizedPath, sizeof(gEndgameEndingSubtitlesLocalizedPath), "text\\%s\\cuts\\", settings.system.language.c_str());
 
-    gEndgameEndingSubtitles = (char**)internal_malloc(sizeof(*gEndgameEndingSubtitles) * ENDGAME_ENDING_MAX_SUBTITLES);
+    gEndgameEndingSubtitles = (char**)internal_malloc(__FILE__,__LINE__,sizeof(*gEndgameEndingSubtitles) * ENDGAME_ENDING_MAX_SUBTITLES);
     if (gEndgameEndingSubtitles == nullptr) {
         gEndgameEndingSubtitlesEnabled = false;
         return 0;
@@ -609,7 +609,7 @@ static int endgameEndingSlideshowWindowInit()
         gEndgameEndingSubtitles[index] = nullptr;
     }
 
-    gEndgameEndingSubtitlesTimings = (unsigned int*)internal_malloc(sizeof(*gEndgameEndingSubtitlesTimings) * ENDGAME_ENDING_MAX_SUBTITLES);
+    gEndgameEndingSubtitlesTimings = (unsigned int*)internal_malloc(__FILE__,__LINE__,sizeof(*gEndgameEndingSubtitlesTimings) * ENDGAME_ENDING_MAX_SUBTITLES);
     if (gEndgameEndingSubtitlesTimings == nullptr) {
         internal_free(gEndgameEndingSubtitles);
         gEndgameEndingSubtitlesEnabled = false;

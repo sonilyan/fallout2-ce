@@ -180,7 +180,7 @@ static MessageList gPerksMessageList;
 // 0x4965A0
 int perksInit()
 {
-    gPartyMemberPerkRanks = (PerkRankData*)internal_malloc(sizeof(*gPartyMemberPerkRanks) * gPartyMemberDescriptionsLength);
+    gPartyMemberPerkRanks = (PerkRankData*)internal_malloc(__FILE__,__LINE__,sizeof(*gPartyMemberPerkRanks) * gPartyMemberDescriptionsLength);
     if (gPartyMemberPerkRanks == nullptr) {
         return -1;
     }

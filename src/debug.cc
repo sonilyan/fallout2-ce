@@ -87,7 +87,7 @@ void _debug_register_env()
         return;
     }
 
-    char* copy = (char*)internal_malloc(strlen(type) + 1);
+    char* copy = (char*)internal_malloc(__FILE__,__LINE__,strlen(type) + 1);
     if (copy == nullptr) {
         return;
     }

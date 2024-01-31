@@ -579,9 +579,9 @@ int proto_pick_ai_packet(int* value)
         return -1;
     }
 
-    names = (char**)internal_malloc(sizeof(char*) * count);
+    names = (char**)internal_malloc(__FILE__,__LINE__,sizeof(char*) * count);
     for (index = 0; index < count; index++) {
-        names[index] = (char*)internal_malloc(strlen(combat_ai_name(index)) + 1);
+        names[index] = (char*)internal_malloc(__FILE__,__LINE__,strlen(combat_ai_name(index)) + 1);
         strcpy(names[index], combat_ai_name(index));
     }
 

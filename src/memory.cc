@@ -29,7 +29,7 @@ typedef struct MemoryBlockFooter {
     int guard;
 } MemoryBlockFooter;
 
-static void* memoryBlockMallocImpl(size_t size);
+static void* memoryBlockMallocImpl(char *a,int b,size_t size);
 static void* memoryBlockReallocImpl(void* ptr, size_t size);
 static void memoryBlockFreeImpl(void* ptr);
 static void* mem_prep_block(void* block, size_t size);
@@ -61,20 +61,20 @@ char* internal_strdup(const char* string)
 {
     char* copy = nullptr;
     if (string != nullptr) {
-        copy = (char*)gMallocProc(strlen(string) + 1);
+        copy = (char*)gMallocProc(__FILE__,__LINE__,strlen(string) + 1);
         strcpy(copy, string);
     }
     return copy;
 }
 
 // 0x4C5AD0
-void* internal_malloc(size_t size)
+void* internal_malloc(char* x, int b, size_t size)
 {
-    return gMallocProc(size);
+    return gMallocProc(__FILE__,__LINE__,size);
 }
 
 // 0x4C5AD8
-static void* memoryBlockMallocImpl(size_t size)
+static void* memoryBlockMallocImpl(char *a,int b,size_t size)
 {
     void* ptr = nullptr;
 
@@ -147,7 +147,7 @@ static void* memoryBlockReallocImpl(void* ptr, size_t size)
             ptr = nullptr;
         }
     } else {
-        ptr = gMallocProc(size);
+        ptr = gMallocProc(__FILE__,__LINE__,size);
     }
 
     return ptr;

@@ -2160,7 +2160,7 @@ int combatLoad(File* stream)
         internal_free(_aiInfoList);
     }
 
-    _aiInfoList = (CombatAiInfo*)internal_malloc(sizeof(*_aiInfoList) * _list_total);
+    _aiInfoList = (CombatAiInfo*)internal_malloc(__FILE__,__LINE__,sizeof(*_aiInfoList) * _list_total);
     if (_aiInfoList == nullptr) {
         return -1;
     }
@@ -2576,7 +2576,7 @@ static void _combat_begin(Object* attacker)
         _list_total = objectListCreate(-1, _combat_elev, OBJ_TYPE_CRITTER, &_combat_list);
         _list_noncom = _list_total;
         _list_com = 0;
-        _aiInfoList = (CombatAiInfo*)internal_malloc(sizeof(*_aiInfoList) * _list_total);
+        _aiInfoList = (CombatAiInfo*)internal_malloc(__FILE__,__LINE__,sizeof(*_aiInfoList) * _list_total);
         if (_aiInfoList == nullptr) {
             return;
         }

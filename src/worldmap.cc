@@ -1872,7 +1872,7 @@ static int wmParseTerrainTypes(Config* config, char* string)
 
     wmMaxTerrainTypes = terrainCount;
 
-    wmTerrainTypeList = (Terrain*)internal_malloc(sizeof(*wmTerrainTypeList) * terrainCount);
+    wmTerrainTypeList = (Terrain*)internal_malloc(__FILE__,__LINE__,sizeof(*wmTerrainTypeList) * terrainCount);
     if (wmTerrainTypeList == nullptr) {
         return -1;
     }
@@ -4275,7 +4275,7 @@ static int wmGrabTileWalkMask(int tileIdx)
         return 0;
     }
 
-    tileInfo->walkMaskData = (unsigned char*)internal_malloc(13200);
+    tileInfo->walkMaskData = (unsigned char*)internal_malloc(__FILE__,__LINE__,13200);
     if (tileInfo->walkMaskData == nullptr) {
         return -1;
     }
@@ -6415,7 +6415,7 @@ static int wmMakeTabsLabelList(int** quickDestinationsPtr, int* quickDestination
 
     int capacity = 10;
 
-    quickDestinations = (int*)internal_malloc(sizeof(*quickDestinations) * capacity);
+    quickDestinations = (int*)internal_malloc(__FILE__,__LINE__,sizeof(*quickDestinations) * capacity);
     *quickDestinationsPtr = quickDestinations;
 
     if (quickDestinations == nullptr) {

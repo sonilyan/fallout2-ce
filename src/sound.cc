@@ -42,7 +42,7 @@ typedef struct FadeSound {
     struct FadeSound* next;
 } FadeSound;
 
-static void* soundMallocProcDefaultImpl(size_t size);
+static void* soundMallocProcDefaultImpl(char *a,int b,size_t size);
 static void* soundReallocProcDefaultImpl(void* ptr, size_t size);
 static void soundFreeProcDefaultImpl(void* ptr);
 static long soundFileSize(int fileHandle);
@@ -166,7 +166,7 @@ static Sound* gSoundListHead;
 static SDL_TimerID gFadeSoundsTimerId = 0;
 
 // 0x4AC6F0
-void* soundMallocProcDefaultImpl(size_t size)
+void* soundMallocProcDefaultImpl(char *a,int b,size_t size)
 {
     return malloc(size);
 }
@@ -495,7 +495,7 @@ Sound* soundAllocate(int type, int soundFlags)
         return nullptr;
     }
 
-    Sound* sound = (Sound*)gSoundMallocProc(sizeof(*sound));
+    Sound* sound = (Sound*)gSoundMallocProc(__FILE__,__LINE__,sizeof(*sound));
     memset(sound, 0, sizeof(*sound));
 
     memcpy(&(sound->io), &gSoundDefaultFileIO, sizeof(gSoundDefaultFileIO));
@@ -568,7 +568,7 @@ int _preloadBuffers(Sound* sound)
         sound->type |= SOUND_TYPE_MEMORY;
     }
 
-    buf = (unsigned char*)gSoundMallocProc(size);
+    buf = (unsigned char*)gSoundMallocProc(__FILE__,__LINE__,size);
     bytes_read = sound->io.read(sound->io.fd, buf, size);
     if (bytes_read != size) {
         if ((sound->soundFlags & SOUND_LOOPING) == 0 || (sound->soundFlags & SOUND_FLAG_0x100) != 0) {
@@ -596,7 +596,7 @@ int _preloadBuffers(Sound* sound)
         sound->io.fd = -1;
     } else {
         if (sound->data == nullptr) {
-            sound->data = (unsigned char*)gSoundMallocProc(sound->dataSize);
+            sound->data = (unsigned char*)gSoundMallocProc(__FILE__,__LINE__,sound->dataSize);
         }
     }
 
@@ -1552,7 +1552,7 @@ int _internalSoundFade(Sound* sound, int duration, int targetVolume, bool pause)
             fadeSound = _fadeFreeList;
             _fadeFreeList = _fadeFreeList->next;
         } else {
-            fadeSound = (FadeSound*)gSoundMallocProc(sizeof(FadeSound));
+            fadeSound = (FadeSound*)gSoundMallocProc(__FILE__,__LINE__,sizeof(FadeSound));
         }
 
         if (fadeSound != nullptr) {

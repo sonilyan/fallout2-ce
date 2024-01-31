@@ -138,26 +138,26 @@ static bool heapInternalsInit()
     // bunch of goto's to free alloc'ed buffers one by one starting from where
     // it has failed.
     do {
-        gHeapFreeBlocks = (unsigned char**)internal_malloc(sizeof(*gHeapFreeBlocks) * HEAP_FREE_BLOCKS_INITIAL_LENGTH);
+        gHeapFreeBlocks = (unsigned char**)internal_malloc(__FILE__,__LINE__,sizeof(*gHeapFreeBlocks) * HEAP_FREE_BLOCKS_INITIAL_LENGTH);
         if (gHeapFreeBlocks == nullptr) {
             break;
         }
 
         gHeapFreeBlocksLength = HEAP_FREE_BLOCKS_INITIAL_LENGTH;
 
-        gHeapMoveableExtents = (HeapMoveableExtent*)internal_malloc(sizeof(*gHeapMoveableExtents) * HEAP_MOVEABLE_EXTENTS_INITIAL_LENGTH);
+        gHeapMoveableExtents = (HeapMoveableExtent*)internal_malloc(__FILE__,__LINE__,sizeof(*gHeapMoveableExtents) * HEAP_MOVEABLE_EXTENTS_INITIAL_LENGTH);
         if (gHeapMoveableExtents == nullptr) {
             break;
         }
         gHeapMoveableExtentsLength = HEAP_MOVEABLE_EXTENTS_INITIAL_LENGTH;
 
-        gHeapMoveableBlocks = (unsigned char**)internal_malloc(sizeof(*gHeapMoveableBlocks) * HEAP_MOVEABLE_BLOCKS_INITIAL_LENGTH);
+        gHeapMoveableBlocks = (unsigned char**)internal_malloc(__FILE__,__LINE__,sizeof(*gHeapMoveableBlocks) * HEAP_MOVEABLE_BLOCKS_INITIAL_LENGTH);
         if (gHeapMoveableBlocks == nullptr) {
             break;
         }
         gHeapMoveableBlocksLength = HEAP_MOVEABLE_BLOCKS_INITIAL_LENGTH;
 
-        gHeapReservedFreeBlockIndexes = (int*)internal_malloc(sizeof(*gHeapReservedFreeBlockIndexes) * HEAP_RESERVED_FREE_BLOCK_INDEXES_INITIAL_LENGTH);
+        gHeapReservedFreeBlockIndexes = (int*)internal_malloc(__FILE__,__LINE__,sizeof(*gHeapReservedFreeBlockIndexes) * HEAP_RESERVED_FREE_BLOCK_INDEXES_INITIAL_LENGTH);
         if (gHeapReservedFreeBlockIndexes == nullptr) {
             break;
         }
@@ -217,7 +217,7 @@ bool heapInit(Heap* heap, int a2)
 
     if (heapHandleListInit(heap)) {
         int size = (a2 >> 10) + a2;
-        heap->data = (unsigned char*)internal_malloc(size);
+        heap->data = (unsigned char*)internal_malloc(__FILE__,__LINE__,size);
         if (heap->data != nullptr) {
             heap->size = size;
             heap->freeBlocks = 1;
@@ -282,7 +282,7 @@ bool heapFree(Heap* heap)
 // 0x453430
 static bool heapHandleListInit(Heap* heap)
 {
-    heap->handles = (HeapHandle*)internal_malloc(sizeof(*heap->handles) * HEAP_HANDLES_INITIAL_LENGTH);
+    heap->handles = (HeapHandle*)internal_malloc(__FILE__,__LINE__,sizeof(*heap->handles) * HEAP_HANDLES_INITIAL_LENGTH);
     if (heap->handles == nullptr) {
         debugPrint("Heap Error : Could not initialize handles.\n");
         return false;
@@ -920,9 +920,9 @@ system:
 
         if (a4 == 0) {
             debugPrint("Allocating block from system memory...\n");
-            unsigned char* block = (unsigned char*)internal_malloc(size + HEAP_BLOCK_OVERHEAD_SIZE);
+            unsigned char* block = (unsigned char*)internal_malloc(__FILE__,__LINE__,size + HEAP_BLOCK_OVERHEAD_SIZE);
             if (block == nullptr) {
-                debugPrint("fatal error: internal_malloc() failed in heap_find_free_block()!\n");
+                debugPrint("fatal error: internal_malloc(__FILE__,__LINE__,) failed in heap_find_free_block()!\n");
                 return false;
             }
 

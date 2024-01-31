@@ -294,7 +294,7 @@ int vcrUpdate()
 static bool vcrInitBuffer()
 {
     if (_vcr_buffer == nullptr) {
-        _vcr_buffer = (VcrEntry*)internal_malloc(sizeof(*_vcr_buffer) * VCR_BUFFER_CAPACITY);
+        _vcr_buffer = (VcrEntry*)internal_malloc(__FILE__,__LINE__,sizeof(*_vcr_buffer) * VCR_BUFFER_CAPACITY);
         if (_vcr_buffer == nullptr) {
             return false;
         }

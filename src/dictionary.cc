@@ -13,7 +13,7 @@ namespace fallout {
 // with a check for this value.
 #define DICTIONARY_MARKER 0xFEBAFEBA
 
-static void* dictionaryMallocDefaultImpl(size_t size);
+static void* dictionaryMallocDefaultImpl(char *a,int b,size_t size);
 static void* dictionaryReallocDefaultImpl(void* ptr, size_t newSize);
 static void dictionaryFreeDefaultImpl(void* ptr);
 static int dictionaryFindIndexForKey(Dictionary* dictionary, const char* key, int* index);
@@ -28,7 +28,7 @@ static ReallocProc* gDictionaryReallocProc = dictionaryReallocDefaultImpl;
 static FreeProc* gDictionaryFreeProc = dictionaryFreeDefaultImpl;
 
 // 0x4D9B90
-static void* dictionaryMallocDefaultImpl(size_t size)
+static void* dictionaryMallocDefaultImpl(char *a,int b, size_t size)
 {
     return malloc(size);
 }
@@ -64,7 +64,7 @@ int dictionaryInit(Dictionary* dictionary, int initialCapacity, size_t valueSize
     int rc = 0;
 
     if (initialCapacity != 0) {
-        dictionary->entries = (DictionaryEntry*)gDictionaryMallocProc(sizeof(*dictionary->entries) * initialCapacity);
+        dictionary->entries = (DictionaryEntry*)gDictionaryMallocProc(__FILE__,__LINE__,sizeof(*dictionary->entries) * initialCapacity);
         if (dictionary->entries == nullptr) {
             rc = -1;
         }
@@ -223,7 +223,7 @@ int dictionaryAddValue(Dictionary* dictionary, const char* key, const void* valu
     }
 
     // Make a copy of the key.
-    char* keyCopy = (char*)gDictionaryMallocProc(strlen(key) + 1);
+    char* keyCopy = (char*)gDictionaryMallocProc(__FILE__,__LINE__,strlen(key) + 1);
     if (keyCopy == nullptr) {
         return -1;
     }
@@ -233,7 +233,7 @@ int dictionaryAddValue(Dictionary* dictionary, const char* key, const void* valu
     // Make a copy of the value.
     void* valueCopy = nullptr;
     if (value != nullptr && dictionary->valueSize != 0) {
-        valueCopy = gDictionaryMallocProc(dictionary->valueSize);
+        valueCopy = gDictionaryMallocProc(__FILE__,__LINE__,dictionary->valueSize);
         if (valueCopy == nullptr) {
             gDictionaryFreeProc(keyCopy);
             return -1;
@@ -420,7 +420,7 @@ int dictionaryLoad(FILE* stream, Dictionary* dictionary, int a3)
         return 0;
     }
 
-    dictionary->entries = (DictionaryEntry*)gDictionaryMallocProc(sizeof(*dictionary->entries) * dictionary->entriesCapacity);
+    dictionary->entries = (DictionaryEntry*)gDictionaryMallocProc(__FILE__,__LINE__,sizeof(*dictionary->entries) * dictionary->entriesCapacity);
     if (dictionary->entries == nullptr) {
         return -1;
     }
@@ -442,7 +442,7 @@ int dictionaryLoad(FILE* stream, Dictionary* dictionary, int a3)
             return -1;
         }
 
-        entry->key = (char*)gDictionaryMallocProc(keyLength + 1);
+        entry->key = (char*)gDictionaryMallocProc(__FILE__,__LINE__,keyLength + 1);
         if (entry->key == nullptr) {
             return -1;
         }
@@ -452,7 +452,7 @@ int dictionaryLoad(FILE* stream, Dictionary* dictionary, int a3)
         }
 
         if (dictionary->valueSize != 0) {
-            entry->value = gDictionaryMallocProc(dictionary->valueSize);
+            entry->value = gDictionaryMallocProc(__FILE__,__LINE__,dictionary->valueSize);
             if (entry->value == nullptr) {
                 return -1;
             }

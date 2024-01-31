@@ -393,7 +393,7 @@ void tickersAdd(TickerProc* proc)
         curr = curr->next;
     }
 
-    curr = (TickerListNode*)internal_malloc(sizeof(*curr));
+    curr = (TickerListNode*)internal_malloc(__FILE__,__LINE__,sizeof(*curr));
     curr->flags = 0;
     curr->proc = proc;
     curr->next = gTickerListHead;
@@ -498,7 +498,7 @@ void takeScreenshot()
 {
     int width = _scr_size.right - _scr_size.left + 1;
     int height = _scr_size.bottom - _scr_size.top + 1;
-    gScreenshotBuffer = (unsigned char*)internal_malloc(width * height);
+    gScreenshotBuffer = (unsigned char*)internal_malloc(__FILE__,__LINE__,width * height);
     if (gScreenshotBuffer == nullptr) {
         return;
     }

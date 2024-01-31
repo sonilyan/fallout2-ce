@@ -1050,7 +1050,7 @@ static int gameLoadGlobalVars()
         return -1;
     }
 
-    gGameGlobalPointers = reinterpret_cast<void**>(internal_malloc(sizeof(*gGameGlobalPointers) * gGameGlobalVarsLength));
+    gGameGlobalPointers = reinterpret_cast<void**>(internal_malloc(__FILE__,__LINE__,sizeof(*gGameGlobalPointers) * gGameGlobalVarsLength));
     if (gGameGlobalPointers == nullptr) {
         return -1;
     }
@@ -1495,7 +1495,7 @@ static void showSplash()
         return;
     }
 
-    unsigned char* palette = reinterpret_cast<unsigned char*>(internal_malloc(768));
+    unsigned char* palette = reinterpret_cast<unsigned char*>(internal_malloc(__FILE__,__LINE__,768));
     if (palette == nullptr) {
         fileClose(stream);
         return;
@@ -1514,7 +1514,7 @@ static void showSplash()
     short height;
     fileRead(&height, sizeof(height), 1, stream);
 
-    unsigned char* data = reinterpret_cast<unsigned char*>(internal_malloc(width * height));
+    unsigned char* data = reinterpret_cast<unsigned char*>(internal_malloc(__FILE__,__LINE__,width * height));
     if (data == nullptr) {
         internal_free(palette);
         fileClose(stream);
@@ -1559,7 +1559,7 @@ static void showSplash()
             }
         }
 
-        unsigned char* scaled = reinterpret_cast<unsigned char*>(internal_malloc(scaledWidth * scaledHeight));
+        unsigned char* scaled = reinterpret_cast<unsigned char*>(internal_malloc(__FILE__,__LINE__,scaledWidth * scaledHeight));
         if (scaled != nullptr) {
             blitBufferToBufferStretch(data, width, height, width, scaled, scaledWidth, scaledHeight, scaledWidth);
 

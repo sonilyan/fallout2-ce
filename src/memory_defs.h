@@ -5,7 +5,7 @@
 
 namespace fallout {
 
-typedef void*(MallocProc)(size_t size);
+typedef void*(MallocProc)(char *,int b, size_t size);
 typedef void*(ReallocProc)(void* ptr, size_t newSize);
 typedef void(FreeProc)(void* ptr);
 

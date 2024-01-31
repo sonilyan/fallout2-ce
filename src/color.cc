@@ -20,7 +20,7 @@ typedef struct ColorPaletteStackEntry {
 static int colorPaletteFileOpen(const char* filePath, int flags);
 static int colorPaletteFileRead(int fd, void* buffer, size_t size);
 static int colorPaletteFileClose(int fd);
-static void* colorPaletteMallocDefaultImpl(size_t size);
+static void* colorPaletteMallocDefaultImpl(char *a,int b,size_t size);
 static void* colorPaletteReallocDefaultImpl(void* ptr, size_t size);
 static void colorPaletteFreeDefaultImpl(void* ptr);
 static void _setIntensityTableColor(int a1);
@@ -154,7 +154,7 @@ void colorPaletteSetFileIO(ColorPaletteFileOpenProc* openProc, ColorPaletteFileR
 }
 
 // 0x4C725C
-static void* colorPaletteMallocDefaultImpl(size_t size)
+static void* colorPaletteMallocDefaultImpl(char *a,int b, size_t size)
 {
     return malloc(size);
 }
@@ -548,7 +548,7 @@ unsigned char* _getColorBlendTable(int ch)
     unsigned char* ptr;
 
     if (_blendTable[ch] == nullptr) {
-        ptr = (unsigned char*)gColorPaletteMallocProc(4100);
+        ptr = (unsigned char*)gColorPaletteMallocProc(__FILE__,__LINE__,4100);
         *(int*)ptr = 1;
         _blendTable[ch] = ptr + 4;
         _buildBlendTable(_blendTable[ch], ch);

@@ -232,7 +232,7 @@ static int optionsWindowInit()
 
     int cycle = 0;
     for (int index = 0; index < OPTIONS_WINDOW_BUTTONS_COUNT; index++) {
-        _opbtns[index] = (unsigned char*)internal_malloc(_optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth() * _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getHeight() + 1024);
+        _opbtns[index] = (unsigned char*)internal_malloc(__FILE__,__LINE__,_optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth() * _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getHeight() + 1024);
         if (_opbtns[index] == nullptr) {
             while (--index >= 0) {
                 internal_free(_opbtns[index]);

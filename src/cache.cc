@@ -46,7 +46,7 @@ bool cacheInit(Cache* cache, CacheSizeProc* sizeProc, CacheReadProc* readProc, C
     cache->entriesLength = 0;
     cache->entriesCapacity = CACHE_ENTRIES_INITIAL_CAPACITY;
     cache->hits = 0;
-    cache->entries = (CacheEntry**)internal_malloc(sizeof(*cache->entries) * cache->entriesCapacity);
+    cache->entries = (CacheEntry**)internal_malloc(__FILE__,__LINE__,sizeof(*cache->entries) * cache->entriesCapacity);
     cache->sizeProc = sizeProc;
     cache->readProc = readProc;
     cache->freeProc = freeProc;
@@ -210,7 +210,7 @@ bool cachePrintStats(Cache* cache, char* dest, size_t size)
 // 0x4203AC
 static bool cacheFetchEntryForKey(Cache* cache, int key, int* indexPtr)
 {
-    CacheEntry* cacheEntry = (CacheEntry*)internal_malloc(sizeof(*cacheEntry));
+    CacheEntry* cacheEntry = (CacheEntry*)internal_malloc(__FILE__,__LINE__,sizeof(*cacheEntry));
     if (cacheEntry == nullptr) {
         return false;
     }
@@ -424,7 +424,7 @@ static bool cacheResetStatistics(Cache* cache)
         return false;
     }
 
-    CacheEntry** entries = (CacheEntry**)internal_malloc(sizeof(*entries) * cache->entriesLength);
+    CacheEntry** entries = (CacheEntry**)internal_malloc(__FILE__,__LINE__,sizeof(*entries) * cache->entriesLength);
     if (entries == nullptr) {
         return false;
     }
@@ -461,7 +461,7 @@ static bool cacheEnsureSize(Cache* cache, int size)
         return true;
     }
 
-    CacheEntry** entries = (CacheEntry**)internal_malloc(sizeof(*entries) * cache->entriesLength);
+    CacheEntry** entries = (CacheEntry**)internal_malloc(__FILE__,__LINE__,sizeof(*entries) * cache->entriesLength);
     if (entries != nullptr) {
         memcpy(entries, cache->entries, sizeof(*entries) * cache->entriesLength);
         qsort(entries, cache->entriesLength, sizeof(*entries), cacheEntriesCompareByUsage);

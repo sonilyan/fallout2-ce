@@ -636,7 +636,7 @@ int automapRenderInPipboyWindow(int window, int map, int elevation)
     unsigned char wallColor = _colorTable[992];
     unsigned char sceneryColor = _colorTable[480];
 
-    gAutomapEntry.data = (unsigned char*)internal_malloc(11024);
+    gAutomapEntry.data = (unsigned char*)internal_malloc(__FILE__,__LINE__,11024);
     if (gAutomapEntry.data == nullptr) {
         debugPrint("\nAUTOMAP: Error allocating data buffer!\n");
         return -1;
@@ -704,9 +704,9 @@ int automapSaveCurrent()
     debugPrint("\nAUTOMAP: Saving AutoMap DB index %d, level %d\n", map, elevation);
 
     bool dataBuffersAllocated = false;
-    gAutomapEntry.data = (unsigned char*)internal_malloc(11024);
+    gAutomapEntry.data = (unsigned char*)internal_malloc(__FILE__,__LINE__,11024);
     if (gAutomapEntry.data != nullptr) {
-        gAutomapEntry.compressedData = (unsigned char*)internal_malloc(11024);
+        gAutomapEntry.compressedData = (unsigned char*)internal_malloc(__FILE__,__LINE__,11024);
         if (gAutomapEntry.compressedData != nullptr) {
             dataBuffersAllocated = true;
         }
@@ -980,7 +980,7 @@ static int automapLoadEntry(int map, int elevation)
     }
 
     if (gAutomapEntry.isCompressed == 1) {
-        gAutomapEntry.compressedData = (unsigned char*)internal_malloc(11024);
+        gAutomapEntry.compressedData = (unsigned char*)internal_malloc(__FILE__,__LINE__,11024);
         if (gAutomapEntry.compressedData == nullptr) {
             debugPrint("\nAUTOMAP: Error allocating decompression buffer!\n");
             fileClose(stream);
@@ -1139,7 +1139,7 @@ static int automapCreate()
 // 0x41CD6C
 static int _copy_file_data(File* stream1, File* stream2, int length)
 {
-    void* buffer = internal_malloc(0xFFFF);
+    void* buffer = internal_malloc(__FILE__,__LINE__,0xFFFF);
     if (buffer == nullptr) {
         return -1;
     }

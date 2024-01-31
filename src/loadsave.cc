@@ -851,7 +851,7 @@ int lsgSaveGame(int mode)
 // 0x47C5B4
 static int _QuickSnapShot()
 {
-    _snapshot = (unsigned char*)internal_malloc(LS_PREVIEW_SIZE);
+    _snapshot = (unsigned char*)internal_malloc(__FILE__,__LINE__,LS_PREVIEW_SIZE);
     if (_snapshot == nullptr) {
         return -1;
     }
@@ -1311,7 +1311,7 @@ static int lsgWindowInit(int windowType)
         return -1;
     }
 
-    _snapshot = (unsigned char*)internal_malloc(61632);
+    _snapshot = (unsigned char*)internal_malloc(__FILE__,__LINE__,61632);
     if (_snapshot == nullptr) {
         messageListFree(&gLoadSaveMessageList);
         fontSetCurrent(gLoadSaveWindowOldFont);
@@ -2738,7 +2738,7 @@ static int _copy_file(const char* existingFileName, const char* newFileName)
         goto out;
     }
 
-    buf = internal_malloc(0xFFFF);
+    buf = internal_malloc(__FILE__,__LINE__,0xFFFF);
     if (buf == nullptr) {
         goto out;
     }
