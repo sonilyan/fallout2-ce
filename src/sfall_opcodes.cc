@@ -1271,6 +1271,7 @@ static void op_load_shader(Program* program)
 }
 static void op_free_shader(Program* program)
 {
+    int value1 = programStackPopInteger(program);
 }
 static void op_activate_shader(Program* program)
 {
@@ -1280,6 +1281,7 @@ static void op_activate_shader(Program* program)
 }
 static void op_deactivate_shader(Program* program)
 {
+    int value1 = programStackPopInteger(program);
 }
 
 static void op_set_pipboy_available(Program* program)
@@ -1338,6 +1340,9 @@ static void op_clear_selectable_perks(Program* program)
 }
 static void op_set_critter_hit_chance_mod(Program* program)
 {
+    Object* a1 = static_cast<Object*>(programStackPopPointer(program));
+    int a2 = programStackPopInteger(program);
+    int a3 = programStackPopInteger(program);
 }
 static void op_play_sfall_sound(Program* program)
 {
