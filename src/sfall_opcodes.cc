@@ -1341,8 +1341,8 @@ static void op_set_critter_hit_chance_mod(Program* program)
 }
 static void op_play_sfall_sound(Program* program)
 {
-    const char* string = programStackPopString(program);
     int value = programStackPopInteger(program);
+    const char* string = programStackPopString(program);
 
     programStackPushInteger(program, 0);
 }
