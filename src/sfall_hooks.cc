@@ -45,9 +45,12 @@ void sfall_hooks_clear(Program *program)
 {
     if (program->hook == true) {
         for (int id = 0; id < HOOK_COUNT; id++) {
-            for (std::vector<HookScript>::iterator it = hooks[id].begin(); it != hooks[id].end(); ++it) {
+            for (std::vector<HookScript>::iterator it = hooks[id].begin(); it != hooks[id].end();) {
                 if (it->program == program) {
-                    hooks[id].erase(it);
+                    it = hooks[id].erase(it);
+                    debugPrint("sfall_hooks_clear %s proc=%d", program->name, id);
+                } else {
+                    it++;
                 }
             }
         }
