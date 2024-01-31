@@ -1321,7 +1321,7 @@ static int wmConfigInit()
 
             wmMaxTileNum++;
 
-            TileInfo* worldmapTiles = (TileInfo*)internal_realloc(wmTileInfoList, sizeof(*wmTileInfoList) * wmMaxTileNum);
+            TileInfo* worldmapTiles = (TileInfo*)internal_realloc(__FILE__,__LINE__,wmTileInfoList, sizeof(*wmTileInfoList) * wmMaxTileNum);
             if (worldmapTiles == nullptr) {
                 showMesageBox("\nwmConfigInit::Error loading tiles!");
                 exit(1);
@@ -1376,7 +1376,7 @@ static int wmReadEncounterType(Config* config, char* lookupName, char* sectionKe
 {
     wmMaxEncounterInfoTables++;
 
-    EncounterTable* encounterTables = (EncounterTable*)internal_realloc(wmEncounterTableList, sizeof(EncounterTable) * wmMaxEncounterInfoTables);
+    EncounterTable* encounterTables = (EncounterTable*)internal_realloc(__FILE__,__LINE__,wmEncounterTableList, sizeof(EncounterTable) * wmMaxEncounterInfoTables);
     if (encounterTables == nullptr) {
         showMesageBox("\nwmConfigInit::Error loading Encounter Table!");
         exit(1);
@@ -1641,7 +1641,7 @@ static int wmReadEncBaseType(char* name, int* valuePtr)
 
     wmMaxEncBaseTypes++;
 
-    Encounter* encounters = (Encounter*)internal_realloc(wmEncBaseTypeList, sizeof(*wmEncBaseTypeList) * wmMaxEncBaseTypes);
+    Encounter* encounters = (Encounter*)internal_realloc(__FILE__,__LINE__,wmEncBaseTypeList, sizeof(*wmEncBaseTypeList) * wmMaxEncBaseTypes);
     if (encounters == nullptr) {
         showMesageBox("\nwmConfigInit::Error Reading EncBaseType!");
         exit(1);
@@ -2421,7 +2421,7 @@ static int wmAreaInit()
 
             wmMaxAreaNum++;
 
-            cities = (CityInfo*)internal_realloc(wmAreaInfoList, sizeof(CityInfo) * wmMaxAreaNum);
+            cities = (CityInfo*)internal_realloc(__FILE__,__LINE__,wmAreaInfoList, sizeof(CityInfo) * wmMaxAreaNum);
             if (cities == nullptr) {
                 showMesageBox("\nwmConfigInit::Error loading areas!");
                 exit(1);
@@ -2623,7 +2623,7 @@ static int wmMapInit()
 
             wmMaxMapNum++;
 
-            maps = (MapInfo*)internal_realloc(wmMapInfoList, sizeof(*wmMapInfoList) * wmMaxMapNum);
+            maps = (MapInfo*)internal_realloc(__FILE__,__LINE__,wmMapInfoList, sizeof(*wmMapInfoList) * wmMaxMapNum);
             if (maps == nullptr) {
                 showMesageBox("\nwmConfigInit::Error loading maps!");
                 exit(1);
@@ -6431,7 +6431,7 @@ static int wmMakeTabsLabelList(int** quickDestinationsPtr, int* quickDestination
             if (capacity <= quickDestinationsLength) {
                 capacity += 10;
 
-                quickDestinations = (int*)internal_realloc(quickDestinations, sizeof(*quickDestinations) * capacity);
+                quickDestinations = (int*)internal_realloc(__FILE__,__LINE__,quickDestinations, sizeof(*quickDestinations) * capacity);
                 if (quickDestinations == nullptr) {
                     return -1;
                 }

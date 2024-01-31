@@ -1377,7 +1377,7 @@ static int scriptsLoadScriptsList()
     while (fileReadString(string, 260, stream)) {
         gScriptsListEntriesLength++;
 
-        ScriptsListEntry* entries = (ScriptsListEntry*)internal_realloc(gScriptsListEntries, sizeof(*entries) * gScriptsListEntriesLength);
+        ScriptsListEntry* entries = (ScriptsListEntry*)internal_realloc(__FILE__,__LINE__,gScriptsListEntries, sizeof(*entries) * gScriptsListEntriesLength);
         if (entries == nullptr) {
             return -1;
         }
@@ -2237,7 +2237,7 @@ static int scriptsRemoveLocalVars(Script* script)
                     gMapLocalVars + (script->localVarsOffset + script->localVarsCount),
                     sizeof(*gMapLocalVars) * (oldMapLocalVarsCount - script->localVarsCount - script->localVarsOffset));
 
-                gMapLocalVars = (int*)internal_realloc(gMapLocalVars, sizeof(*gMapLocalVars) * gMapLocalVarsLength);
+                gMapLocalVars = (int*)internal_realloc(__FILE__,__LINE__,gMapLocalVars, sizeof(*gMapLocalVars) * gMapLocalVarsLength);
                 if (gMapLocalVars == nullptr) {
                     debugPrint("\nError in mem_realloc in scr_remove_local_vars!\n");
                 }

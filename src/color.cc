@@ -21,7 +21,7 @@ static int colorPaletteFileOpen(const char* filePath, int flags);
 static int colorPaletteFileRead(int fd, void* buffer, size_t size);
 static int colorPaletteFileClose(int fd);
 static void* colorPaletteMallocDefaultImpl(char *a,int b,size_t size);
-static void* colorPaletteReallocDefaultImpl(void* ptr, size_t size);
+static void* colorPaletteReallocDefaultImpl(char *a,int b,void* ptr, size_t size);
 static void colorPaletteFreeDefaultImpl(char *a,int b,void* ptr);
 static void _setIntensityTableColor(int a1);
 static void _setIntensityTables();
@@ -160,7 +160,7 @@ static void* colorPaletteMallocDefaultImpl(char *a,int b, size_t size)
 }
 
 // 0x4C7264
-static void* colorPaletteReallocDefaultImpl(void* ptr, size_t size)
+static void* colorPaletteReallocDefaultImpl(char *a,int b,void* ptr, size_t size)
 {
     return realloc(ptr, size);
 }

@@ -561,7 +561,7 @@ static bool cacheSetCapacity(Cache* cache, int newCapacity)
         return false;
     }
 
-    CacheEntry** entries = (CacheEntry**)internal_realloc(cache->entries, sizeof(*cache->entries) * newCapacity);
+    CacheEntry** entries = (CacheEntry**)internal_realloc(__FILE__,__LINE__,cache->entries, sizeof(*cache->entries) * newCapacity);
     if (entries == nullptr) {
         return false;
     }

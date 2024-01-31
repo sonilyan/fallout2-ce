@@ -14,7 +14,7 @@ namespace fallout {
 #define DICTIONARY_MARKER 0xFEBAFEBA
 
 static void* dictionaryMallocDefaultImpl(char *a,int b,size_t size);
-static void* dictionaryReallocDefaultImpl(void* ptr, size_t newSize);
+static void* dictionaryReallocDefaultImpl(char* a, int b,void* ptr, size_t newSize);
 static void dictionaryFreeDefaultImpl(char *a,int b,void* ptr);
 static int dictionaryFindIndexForKey(Dictionary* dictionary, const char* key, int* index);
 
@@ -34,7 +34,7 @@ static void* dictionaryMallocDefaultImpl(char *a,int b, size_t size)
 }
 
 // 0x4D9B98
-static void* dictionaryReallocDefaultImpl(void* ptr, size_t newSize)
+static void* dictionaryReallocDefaultImpl(char *a,int b,void* ptr, size_t newSize)
 {
     return realloc(ptr, newSize);
 }
@@ -90,7 +90,7 @@ int dictionarySetCapacity(Dictionary* dictionary, int newCapacity)
         return -1;
     }
 
-    DictionaryEntry* entries = (DictionaryEntry*)gDictionaryReallocProc(dictionary->entries, sizeof(*dictionary->entries) * newCapacity);
+    DictionaryEntry* entries = (DictionaryEntry*)gDictionaryReallocProc(__FILE__,__LINE__,dictionary->entries, sizeof(*dictionary->entries) * newCapacity);
     if (entries == nullptr) {
         return -1;
     }

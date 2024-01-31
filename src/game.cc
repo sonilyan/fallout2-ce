@@ -1100,7 +1100,7 @@ int globalVarsRead(const char* path, const char* section, int* variablesListLeng
         }
 
         *variablesListLengthPtr = *variablesListLengthPtr + 1;
-        *variablesListPtr = (int*)internal_realloc(*variablesListPtr, sizeof(int) * *variablesListLengthPtr);
+        *variablesListPtr = (int*)internal_realloc(__FILE__,__LINE__,*variablesListPtr, sizeof(int) * *variablesListLengthPtr);
 
         if (*variablesListPtr == nullptr) {
             exit(1);

@@ -7092,7 +7092,7 @@ static int karmaInit()
 
         entry.description = atoi(tok);
 
-        KarmaEntry* entries = (KarmaEntry*)internal_realloc(gKarmaEntries, sizeof(*entries) * (gKarmaEntriesLength + 1));
+        KarmaEntry* entries = (KarmaEntry*)internal_realloc(__FILE__,__LINE__,gKarmaEntries, sizeof(*entries) * (gKarmaEntriesLength + 1));
         if (entries == nullptr) {
             fileClose(stream);
 
@@ -7177,7 +7177,7 @@ static int genericReputationInit()
 
         entry.name = atoi(tok);
 
-        GenericReputationEntry* entries = (GenericReputationEntry*)internal_realloc(gGenericReputationEntries, sizeof(*entries) * (gGenericReputationEntriesLength + 1));
+        GenericReputationEntry* entries = (GenericReputationEntry*)internal_realloc(__FILE__,__LINE__,gGenericReputationEntries, sizeof(*entries) * (gGenericReputationEntriesLength + 1));
         if (entries == nullptr) {
             fileClose(stream);
 

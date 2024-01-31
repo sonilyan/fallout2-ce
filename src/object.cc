@@ -3000,7 +3000,7 @@ int _obj_create_intersect_list(int x, int y, int elevation, int objectType, Obje
                     && object != gEgg) {
                     int flags = _obj_intersects_with(object, x, y);
                     if (flags != 0) {
-                        ObjectWithFlags* entries = (ObjectWithFlags*)internal_realloc(*entriesPtr, sizeof(*entries) * (count + 1));
+                        ObjectWithFlags* entries = (ObjectWithFlags*)internal_realloc(__FILE__,__LINE__,*entriesPtr, sizeof(*entries) * (count + 1));
                         if (entries != nullptr) {
                             *entriesPtr = entries;
                             entries[count].object = object;

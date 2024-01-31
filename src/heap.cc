@@ -648,7 +648,7 @@ static bool heapFindFreeHandle(Heap* heap, int* handleIndexPtr)
     }
 
     // If we're here the search above failed, we have to allocate more handles.
-    HeapHandle* handles = (HeapHandle*)internal_realloc(heap->handles, sizeof(*handles) * (heap->handlesLength + HEAP_HANDLES_INITIAL_LENGTH));
+    HeapHandle* handles = (HeapHandle*)internal_realloc(__FILE__,__LINE__,heap->handles, sizeof(*handles) * (heap->handlesLength + HEAP_HANDLES_INITIAL_LENGTH));
     if (handles == nullptr) {
         return false;
     }
@@ -724,7 +724,7 @@ static bool heapFindFreeBlock(Heap* heap, int size, void** blockPtr, int a4)
     // Ensure the length of [gHeapReservedFreeBlockIndexes] array is big enough
     // to index all blocks for longest moveable extent.
     if (maxBlocksCount > gHeapReservedFreeBlockIndexesLength) {
-        int* indexes = (int*)internal_realloc(gHeapReservedFreeBlockIndexes, sizeof(*gHeapReservedFreeBlockIndexes) * maxBlocksCount);
+        int* indexes = (int*)internal_realloc(__FILE__,__LINE__,gHeapReservedFreeBlockIndexes, sizeof(*gHeapReservedFreeBlockIndexes) * maxBlocksCount);
         if (indexes == nullptr) {
             goto system;
         }
@@ -951,7 +951,7 @@ static bool heapBuildMoveableBlocksList(int extentIndex)
 {
     HeapMoveableExtent* extent = &(gHeapMoveableExtents[extentIndex]);
     if (extent->moveableBlocksLength > gHeapMoveableBlocksLength) {
-        unsigned char** moveableBlocks = (unsigned char**)internal_realloc(gHeapMoveableBlocks, sizeof(*gHeapMoveableBlocks) * extent->moveableBlocksLength);
+        unsigned char** moveableBlocks = (unsigned char**)internal_realloc(__FILE__,__LINE__,gHeapMoveableBlocks, sizeof(*gHeapMoveableBlocks) * extent->moveableBlocksLength);
         if (moveableBlocks == nullptr) {
             return false;
         }
@@ -989,7 +989,7 @@ static bool heapBuildFreeBlocksList(Heap* heap)
     }
 
     if (heap->freeBlocks > gHeapFreeBlocksLength) {
-        unsigned char** freeBlocks = (unsigned char**)internal_realloc(gHeapFreeBlocks, sizeof(*freeBlocks) * heap->freeBlocks);
+        unsigned char** freeBlocks = (unsigned char**)internal_realloc(__FILE__,__LINE__,gHeapFreeBlocks, sizeof(*freeBlocks) * heap->freeBlocks);
         if (freeBlocks == nullptr) {
             return false;
         }
@@ -1062,7 +1062,7 @@ static bool heapBuildMoveableExtentsList(Heap* heap, int* moveableExtentsLengthP
     }
 
     if (maxExtentsCount > gHeapMoveableExtentsLength) {
-        HeapMoveableExtent* moveableExtents = (HeapMoveableExtent*)internal_realloc(gHeapMoveableExtents, sizeof(*gHeapMoveableExtents) * maxExtentsCount);
+        HeapMoveableExtent* moveableExtents = (HeapMoveableExtent*)internal_realloc(__FILE__,__LINE__,gHeapMoveableExtents, sizeof(*gHeapMoveableExtents) * maxExtentsCount);
         if (moveableExtents == nullptr) {
             return false;
         }

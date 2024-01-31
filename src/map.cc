@@ -479,7 +479,7 @@ int _map_malloc_local_var(int a1)
     int oldMapLocalVarsLength = gMapLocalVarsLength;
     gMapLocalVarsLength += a1;
 
-    int* vars = (int*)internal_realloc(gMapLocalVars, sizeof(*vars) * gMapLocalVarsLength);
+    int* vars = (int*)internal_realloc(__FILE__,__LINE__,gMapLocalVars, sizeof(*vars) * gMapLocalVarsLength);
     if (vars == nullptr) {
         debugPrint("\nError: Ran out of memory!");
     }
@@ -1154,7 +1154,7 @@ static int _map_age_dead_critters()
 
                     if (count >= capacity) {
                         capacity *= 2;
-                        objects = (Object**)internal_realloc(objects, sizeof(*objects) * capacity);
+                        objects = (Object**)internal_realloc(__FILE__,__LINE__,objects, sizeof(*objects) * capacity);
                         if (objects == nullptr) {
                             debugPrint("\nError: Out of Memory!");
                             return -1;
@@ -1166,7 +1166,7 @@ static int _map_age_dead_critters()
             objects[count++] = obj;
             if (count >= capacity) {
                 capacity *= 2;
-                objects = (Object**)internal_realloc(objects, sizeof(*objects) * capacity);
+                objects = (Object**)internal_realloc(__FILE__,__LINE__,objects, sizeof(*objects) * capacity);
                 if (objects == nullptr) {
                     debugPrint("\nError: Out of Memory!");
                     return -1;

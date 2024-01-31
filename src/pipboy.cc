@@ -2518,7 +2518,7 @@ static int questInit()
 
         entry.completedThreshold = atoi(tok);
 
-        QuestDescription* entries = (QuestDescription*)internal_realloc(gQuestDescriptions, sizeof(*gQuestDescriptions) * (gQuestsCount + 1));
+        QuestDescription* entries = (QuestDescription*)internal_realloc(__FILE__,__LINE__,gQuestDescriptions, sizeof(*gQuestDescriptions) * (gQuestsCount + 1));
         if (entries == nullptr) {
             goto err;
         }
@@ -2614,7 +2614,7 @@ static int holodiskInit()
 
         entry.description = atoi(tok);
 
-        HolodiskDescription* entries = (HolodiskDescription*)internal_realloc(gHolodiskDescriptions, sizeof(*gHolodiskDescriptions) * (gHolodisksCount + 1));
+        HolodiskDescription* entries = (HolodiskDescription*)internal_realloc(__FILE__,__LINE__,gHolodiskDescriptions, sizeof(*gHolodiskDescriptions) * (gHolodisksCount + 1));
         if (entries == nullptr) {
             goto err;
         }

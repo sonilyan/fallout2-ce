@@ -30,7 +30,7 @@ typedef struct MemoryBlockFooter {
 } MemoryBlockFooter;
 
 static void* memoryBlockMallocImpl(char *a,int b,size_t size);
-static void* memoryBlockReallocImpl(void* ptr, size_t size);
+static void* memoryBlockReallocImpl(char *a,int b,void* ptr, size_t size);
 static void memoryBlockFreeImpl(char *a,int b,void* ptr);
 static void* mem_prep_block(void* block, size_t size);
 static void memoryBlockValidate(void* block);
@@ -105,14 +105,15 @@ static void* memoryBlockMallocImpl(char *a,int b,size_t size)
 }
 
 // 0x4C5B50
-void* internal_realloc(void* ptr, size_t size)
+void* internal_realloc(char *a,int b, void* ptr, size_t size)
 {
-    return gReallocProc(ptr, size);
+    return gReallocProc(a,b,ptr, size);
 }
 
 // 0x4C5B58
-static void* memoryBlockReallocImpl(void* ptr, size_t size)
+static void* memoryBlockReallocImpl(char *a,int b,void* ptr, size_t size)
 {
+    debugPrint("====realloc %s %d", a, b);
     if (ptr != nullptr) {
         unsigned char* block = (unsigned char*)ptr - sizeof(MemoryBlockHeader);
 

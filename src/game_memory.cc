@@ -9,7 +9,7 @@
 namespace fallout {
 
 static void* gameMemoryMalloc(char *a,int b,size_t size);
-static void* gameMemoryRealloc(void* ptr, size_t newSize);
+static void* gameMemoryRealloc(char *a,int b,void* ptr, size_t newSize);
 static void gameMemoryFree(char *a,int b,void* ptr);
 
 // 0x44B250
@@ -28,9 +28,9 @@ static void* gameMemoryMalloc(char *a,int b, size_t size)
 }
 
 // 0x44B29C
-static void* gameMemoryRealloc(void* ptr, size_t newSize)
+static void* gameMemoryRealloc(char *a,int b,void* ptr, size_t newSize)
 {
-    return internal_realloc(ptr, newSize);
+    return internal_realloc(a,b,ptr, newSize);
 }
 
 // 0x44B2A4

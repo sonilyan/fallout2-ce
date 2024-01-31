@@ -43,7 +43,7 @@ typedef struct FadeSound {
 } FadeSound;
 
 static void* soundMallocProcDefaultImpl(char *a,int b,size_t size);
-static void* soundReallocProcDefaultImpl(void* ptr, size_t size);
+static void* soundReallocProcDefaultImpl(char *a,int b,void* ptr, size_t size);
 static void soundFreeProcDefaultImpl(char *a,int b,void* ptr);
 static long soundFileSize(int fileHandle);
 static long soundTellData(int fileHandle);
@@ -172,7 +172,7 @@ void* soundMallocProcDefaultImpl(char *a,int b,size_t size)
 }
 
 // 0x4AC6F8
-void* soundReallocProcDefaultImpl(void* ptr, size_t size)
+void* soundReallocProcDefaultImpl(char *a,int b,void* ptr, size_t size)
 {
     return realloc(ptr, size);
 }

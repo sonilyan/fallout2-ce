@@ -13,7 +13,7 @@ static void memoryManagerDefaultPrintErrorImpl(const char* string);
 static int memoryManagerPrintError(const char* format, ...);
 [[noreturn]] static void memoryManagerFatalAllocationError(const char* func, size_t size, const char* file, int line);
 static void* memoryManagerDefaultMallocImpl(char *a,int b,size_t size);
-static void* memoryManagerDefaultReallocImpl(void* ptr, size_t size);
+static void* memoryManagerDefaultReallocImpl(char *a,int b,void* ptr, size_t size);
 static void memoryManagerDefaultFreeImpl(char *a,int b,void* ptr);
 
 // 0x519588
@@ -68,7 +68,7 @@ static void* memoryManagerDefaultMallocImpl(char *a,int b, size_t size)
 }
 
 // 0x484634
-static void* memoryManagerDefaultReallocImpl(void* ptr, size_t size)
+static void* memoryManagerDefaultReallocImpl(char *a,int b,void* ptr, size_t size)
 {
     return realloc(ptr, size);
 }
@@ -101,7 +101,7 @@ void* internal_malloc_safe(size_t size, const char* file, int line)
 // 0x4846B4
 void* internal_realloc_safe(void* ptr, size_t size, const char* file, int line)
 {
-    ptr = gMemoryManagerReallocProc(ptr, size);
+    ptr = gMemoryManagerReallocProc((char *)file,line,ptr, size);
     if (ptr == nullptr) {
         memoryManagerFatalAllocationError("realloc", size, file, line);
     }

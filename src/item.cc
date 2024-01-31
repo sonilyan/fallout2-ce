@@ -338,7 +338,7 @@ int itemAdd(Object* owner, Object* itemToAdd, int quantity)
 
     if (index == inventory->length) {
         if (inventory->length == inventory->capacity || inventory->items == nullptr) {
-            InventoryItem* inventoryItems = (InventoryItem*)internal_realloc(inventory->items, sizeof(InventoryItem) * (inventory->capacity + 10));
+            InventoryItem* inventoryItems = (InventoryItem*)internal_realloc(__FILE__,__LINE__,inventory->items, sizeof(InventoryItem) * (inventory->capacity + 10));
             if (inventoryItems == nullptr) {
                 return -1;
             }

@@ -956,7 +956,7 @@ static int endgameEndingInit()
             entry.direction = 1;
         }
 
-        entries = (EndgameEnding*)internal_realloc(gEndgameEndings, sizeof(*entries) * (gEndgameEndingsLength + 1));
+        entries = (EndgameEnding*)internal_realloc(__FILE__,__LINE__,gEndgameEndings, sizeof(*entries) * (gEndgameEndingsLength + 1));
         if (entries == nullptr) {
             goto err;
         }
@@ -1078,7 +1078,7 @@ int endgameDeathEndingInit()
             entry.voiceOverBaseName[narratorFileNameLength - 1] = '\0';
         }
 
-        entries = (EndgameDeathEnding*)internal_realloc(gEndgameDeathEndings, sizeof(*entries) * (gEndgameDeathEndingsLength + 1));
+        entries = (EndgameDeathEnding*)internal_realloc(__FILE__,__LINE__,gEndgameDeathEndings, sizeof(*entries) * (gEndgameDeathEndingsLength + 1));
         if (entries == nullptr) {
             goto err;
         }

@@ -390,7 +390,7 @@ static bool _message_add(MessageList* msg, MessageListItem* new_entry)
         }
     } else {
         if (msg->entries != nullptr) {
-            entries = (MessageListItem*)internal_realloc(msg->entries, sizeof(MessageListItem) * (msg->entries_num + 1));
+            entries = (MessageListItem*)internal_realloc(__FILE__,__LINE__,msg->entries, sizeof(MessageListItem) * (msg->entries_num + 1));
             if (entries == nullptr) {
                 return false;
             }
