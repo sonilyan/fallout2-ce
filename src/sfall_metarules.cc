@@ -375,7 +375,7 @@ void mf_inventory_redraw(Program* program, int args)
 void mf_display_stats(Program* program, int args)
 {
      if (GameMode::getCurrentGameMode() & GameMode::kInventory){
-         redrawInventory(0);
+         redrawInventory(0,0);
      }
 }
 
