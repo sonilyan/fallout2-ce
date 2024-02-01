@@ -27,6 +27,9 @@ static char basePath[COMPAT_MAX_PATH];
 /// or `nullptr` on any error.
 static const char* parse_ini_triplet(const char* triplet, char* fileName, char* section)
 {
+    compat_windows_path_to_native((char *)triplet);
+    compat_resolve_path((char *)triplet);
+
     const char* fileNameSectionSep = strchr(triplet, '|');
     if (fileNameSectionSep == nullptr) {
         return nullptr;

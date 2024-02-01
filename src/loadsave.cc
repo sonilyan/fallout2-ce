@@ -59,6 +59,7 @@
 #include "window_manager.h"
 #include "word_wrap.h"
 #include "worldmap.h"
+#include "HeroAppearance.h"
 
 namespace fallout {
 
@@ -1793,9 +1794,11 @@ static int lsgLoadGameInSlot(int slot)
         fileClose(_flptr);
     }
 
+
     snprintf(_str, sizeof(_str), "%s\\", "MAPS");
     MapDirErase(_str, "BAK");
     _proto_dude_update_gender();
+    LoadHeroAppearance();
 
     // Game Loaded.
     gLoadSaveMessageListItem.num = 141;

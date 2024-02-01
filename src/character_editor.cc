@@ -46,6 +46,7 @@
 #include "window_manager.h"
 #include "word_wrap.h"
 #include "worldmap.h"
+#include "HeroAppearance.h"
 
 namespace fallout {
 
@@ -57,7 +58,7 @@ namespace fallout {
 #define NAME_BUTTON_X 9
 #define NAME_BUTTON_Y 0
 
-#define TAG_SKILLS_BUTTON_X 347
+#define TAG_SKILLS_BUTTON_X (347)
 #define TAG_SKILLS_BUTTON_Y 26
 #define TAG_SKILLS_BUTTON_CODE 536
 
@@ -228,6 +229,8 @@ typedef struct KillInfo {
     int killTypeId;
     int kills;
 } KillInfo;
+
+int drawFlag = -1;
 
 static int characterEditorWindowInit();
 static void characterEditorWindowFree();
@@ -661,6 +664,8 @@ static int gCharacterEditorPrimaryStatMinusBtns[7];
 // 0x570608
 static unsigned char* gCharacterEditorWindowBuffer;
 
+static unsigned char* gHeroAppearanceModBuffer;
+
 // 0x57060C
 int gCharacterEditorWindow;
 
@@ -789,9 +794,87 @@ struct CustomKarmaFolderDescription {
 static std::vector<CustomKarmaFolderDescription> gCustomKarmaFolderDescriptions;
 static std::vector<TownReputationEntry> gCustomTownReputationEntries;
 
+int charRotTick = -1;
+int charRotOri = 0;
+
+static void surface_draw(long width, long height, long fromWidth, long fromX, long fromY, unsigned char* fromBuff,
+    long toWidth, long toX, long toY, unsigned char* toBuff, int maskRef)
+{
+    fromBuff += fromY * fromWidth + fromX;
+    toBuff += toY * toWidth + toX;
+
+    for (long h = 0; h < height; h++) {
+        for (long w = 0; w < width; w++) {
+            if (fromBuff[w] != maskRef) toBuff[w] = fromBuff[w];
+        }
+        fromBuff += fromWidth;
+        toBuff += toWidth;
+    }
+}
+
+static int BuildFrmId(int lstRef, int lstNum)
+{
+    return (lstRef << 24) | lstNum;
+}
+
+static void surface_draw(long width, long height, long fromWidth, long fromX, long fromY,unsigned char* fromBuff,
+    long toWidth, long toX, long toY, unsigned char* toBuff)
+{
+    fromBuff += fromY * fromWidth + fromX;
+    toBuff += toY * toWidth + toX;
+
+    for (long h = 0; h < height; h++) {
+        std::memcpy(toBuff, fromBuff, width);
+        fromBuff += fromWidth;
+        toBuff += toWidth;
+    }
+}
+
+static void DrawBody(long critNum,unsigned char* surface, long x, long y, long toWidth)
+{
+    CacheEntry* critFrmLock;
+
+    Art* critFrm = artLock(BuildFrmId(1, critNum), &critFrmLock);
+    int critWidth = artGetWidth(critFrm, 0, charRotOri);
+    int critHeight = artGetHeight(critFrm, 0, charRotOri);
+    unsigned char* critSurface = artGetFrameData(critFrm, 0, charRotOri);
+
+    long xOffset = x + (35 - (critWidth / 2));
+    long yOffset = y + (51 - (critHeight / 2));
+    surface_draw(critWidth, critHeight, critWidth, 0, 0, critSurface, toWidth, xOffset, yOffset, surface, 0);
+
+    artUnlock(critFrmLock);
+}
+
+static void DrawPCConsole()
+{
+    unsigned int NewTick = getTicks();
+    int RotSpeed = 150; // get rotation speed - inventory rotation speed
+
+    if (charRotTick > NewTick)
+        charRotTick = NewTick;
+
+    if (NewTick - charRotTick > RotSpeed) {
+        charRotTick = NewTick;
+        if (charRotOri < 5) {
+            charRotOri++;
+        } else {
+            charRotOri = 0;
+        }
+
+        int critNum = gDude->fid; // pointer to current armored hero critter FrmId
+
+        surface_draw(70, 102, 640, 338, 78, gHeroAppearanceModBuffer, 640, 338, 78, gCharacterEditorWindowBuffer); // restore background image
+        DrawBody(critNum, gCharacterEditorWindowBuffer, 338, 78, 640);
+
+        windowRefresh(gCharacterEditorWindow);
+    }
+}
+
 // 0x431DF8
 int characterEditorShow(bool isCreationMode)
 {
+    //sonil
     ScopedGameMode gm(!isCreationMode ? GameMode::kEditor : 0);
 
     char* messageListItemText;
@@ -1156,6 +1239,54 @@ int characterEditorShow(bool isCreationMode)
                 characterEditorFolderViewScroll(1);
                 windowRefresh(gCharacterEditorWindow);
                 break;
+            case 0x511: // race left button pushed
+                if (currentRaceVal == 0) {
+                    drawFlag = 4;
+                    break;
+                }
+                currentStyleVal = 0; // reset style
+                currentRaceVal--;
+                if (LoadHeroDat(currentRaceVal, currentStyleVal, true) != 0) {
+                    currentRaceVal = 0;
+                    LoadHeroDat(currentRaceVal, currentStyleVal, false);
+                }
+                drawFlag = 1;
+                break;
+            case 0x513: // race right button pushed
+                currentRaceVal++;
+
+                if (LoadHeroDat(currentRaceVal, 0, true) != 0) {
+                    currentRaceVal--;
+                    LoadHeroDat(currentRaceVal, currentStyleVal, false);
+                    drawFlag = 4;
+                } else {
+                    currentStyleVal = 0; // reset style
+                    drawFlag = 1;
+                }
+                break;
+            case 0x512: // style left button pushed
+                if (currentStyleVal == 0) {
+                    drawFlag = 4;
+                    break;
+                }
+                currentStyleVal--;
+                if (LoadHeroDat(currentRaceVal, currentStyleVal, true)) {
+                    currentStyleVal = 0;
+                    LoadHeroDat(currentRaceVal, currentStyleVal, true);
+                }
+                drawFlag = 0;
+                break;
+            case 0x514: // style right button pushed
+                currentStyleVal++;
+
+                if (LoadHeroDat(currentRaceVal, currentStyleVal, true) != 0) {
+                    currentStyleVal--;
+                    LoadHeroDat(currentRaceVal, currentStyleVal, false);
+                    drawFlag = 4;
+                } else {
+                    drawFlag = 0;
+                }
+                break;
             default:
                 if (gCharacterEditorIsCreationMode && (keyCode >= 536 && keyCode < 554)) {
                     characterEditorToggleTaggedSkill(keyCode - 536);
@@ -1171,6 +1302,30 @@ int characterEditorShow(bool isCreationMode)
                     windowRefresh(gCharacterEditorWindow);
                 }
             }
+        }
+
+        if (heroAppearanceMod > 0) {
+            if (drawFlag != -1) {
+                bool style = false; // Race;
+                switch (drawFlag) {
+                case 0:
+                    style = true;
+                    goto play;
+                case 1:
+                play:
+                    soundPlayFile("ib3p1xx1");
+                    break;
+                case 2:
+                    style = true;
+                case 3:
+                    soundPlayFile("ISDXXXX1");
+                    break;
+                default:
+                    soundPlayFile("IB3LU1X1");
+                }
+                drawFlag = -1;
+            }
+            DrawPCConsole();
         }
 
         renderPresent();
@@ -1199,9 +1354,54 @@ int characterEditorShow(bool isCreationMode)
     return rc;
 }
 
+unsigned char* newButtonSurface;
+    // Create race and style selection buttons when creating a character (hero)
+static void AddCharScrnButtons()
+{
+    if (heroAppearanceMod <= 0)
+        return;
+
+    // race and style title buttons
+    buttonCreate(gCharacterEditorWindow, 332, 0, 82, 32, -1, -1, 0x501, -1, 0, 0, 0, 0);
+    buttonCreate(gCharacterEditorWindow, 332, 226, 82, 32, -1, -1, 0x502, -1, 0, 0, 0, 0);
+
+    if (gCharacterEditorIsCreationMode) { // equals 1 if new char screen - equals 0 if ingame char screen
+        if (newButtonSurface == nullptr) {
+            newButtonSurface = new unsigned char[20 * 18 * 4];
+
+            CacheEntry* frmLock; // frm objects for char screen Appearance button
+            unsigned char* frmSurface;
+
+            frmSurface = artLockFrameData(BuildFrmId(6, 122), 0, 0, &frmLock); // SLUFrm
+            surface_draw(20, 18, 20, 0, 0, frmSurface, 20, 0, 0, newButtonSurface);
+            artUnlock(frmLock);
+
+            frmSurface = artLockFrameData(BuildFrmId(6, 123), 0, 0, &frmLock); // SLDFrm
+            surface_draw(20, 18, 20, 0, 0, frmSurface, 20, 0, 18, newButtonSurface);
+            artUnlock(frmLock);
+
+            frmSurface = artLockFrameData(BuildFrmId(6, 124), 0, 0, &frmLock); // SRUFrm
+            surface_draw(20, 18, 20, 0, 0, frmSurface, 20, 0, 18 * 2, newButtonSurface);
+            artUnlock(frmLock);
+
+            frmSurface = artLockFrameData(BuildFrmId(6, 125), 0, 0, &frmLock); // SRDFrm
+            surface_draw(20, 18, 20, 0, 0, frmSurface, 20, 0, 18 * 3, newButtonSurface);
+            artUnlock(frmLock);
+        }
+        if (true) { // race selection buttons
+            buttonCreate(gCharacterEditorWindow, 348, 37, 20, 18, -1, -1, -1, 0x511, newButtonSurface, newButtonSurface + (20 * 18), 0, 0x20);
+            buttonCreate(gCharacterEditorWindow, 374, 37, 20, 18, -1, -1, -1, 0x513, newButtonSurface + (20 * 18 * 2), newButtonSurface + (20 * 18 * 3), 0, 0x20);
+        }
+        if (true) { // style selection buttons
+            buttonCreate(gCharacterEditorWindow, 348, 199, 20, 18, -1, -1, -1, 0x512, newButtonSurface, newButtonSurface + (20 * 18), 0, 0x20);
+            buttonCreate(gCharacterEditorWindow, 374, 199, 20, 18, -1, -1, -1, 0x514, newButtonSurface + (20 * 18 * 2), newButtonSurface + (20 * 18 * 3), 0, 0x20);
+        }
+    }
+}
+
 // 0x4329EC
 static int characterEditorWindowInit()
-{
+{//sonil
     int i;
     int v1;
     int v3;
@@ -1401,7 +1601,103 @@ static int characterEditorWindowInit()
     }
 
     gCharacterEditorWindowBuffer = windowGetBuffer(gCharacterEditorWindow);
-    memcpy(gCharacterEditorWindowBuffer, _editorBackgroundFrmImage.getData(), 640 * 480);
+    if (heroAppearanceMod > 0) { //sonil
+        if (gHeroAppearanceModBuffer == nullptr)
+            gHeroAppearanceModBuffer = new unsigned char[640 * 480];
+
+        memcpy(gHeroAppearanceModBuffer, _editorBackgroundFrmImage.getData(), 640 * 480);
+
+        unsigned char* oldCharScrnBackSurface = _editorBackgroundFrmImage.getData();
+        unsigned char* charScrnBackSurface = gHeroAppearanceModBuffer;
+
+        surface_draw(38, 26, 640, 519, 228, oldCharScrnBackSurface, 640, 519 + 36, 228, charScrnBackSurface);
+
+        // copy a blank part of the Tag Skill Bar hiding the old counter
+        surface_draw(38, 26, 640, 460, 228, oldCharScrnBackSurface, 640, 519, 228, charScrnBackSurface);
+
+        surface_draw(36, 258, 640, 332, 0, oldCharScrnBackSurface, 640, 408, 0, charScrnBackSurface); // shift behind button rail
+        surface_draw(6, 32, 640, 331, 233, oldCharScrnBackSurface, 640, 330, 6, charScrnBackSurface); // shadow for style/race button
+
+        CacheEntry *FrmObj, *FrmMaskObj; // frm objects for char screen Appearance button
+        unsigned char *FrmSurface, *FrmMaskSurface;
+
+        FrmSurface = artLockFrameData(BuildFrmId(OBJ_TYPE_INTERFACE, 113), 0, 0, &FrmObj); // "Use Item On" window
+
+        surface_draw(81, 132, 292, 163, 20, FrmSurface, 640, 331, 63, charScrnBackSurface); // char view win
+        surface_draw(79, 31, 292, 154, 228, FrmSurface, 640, 331, 32, charScrnBackSurface); // upper  char view win
+        surface_draw(79, 30, 292, 158, 236, FrmSurface, 640, 331, 195, charScrnBackSurface); // lower  char view win
+
+        artUnlock(FrmObj);
+
+        // Sexoff Frm
+        FrmSurface = artLockFrameData(BuildFrmId(OBJ_TYPE_INTERFACE, 188), 0, 0, &FrmObj);
+        unsigned char* newFrmSurface = new unsigned char[80 * 32];
+        surface_draw(80, 32, 80, 0, 0, FrmSurface, 80, 0, 0, newFrmSurface);
+        artUnlock(FrmObj);
+
+        // Sex button mask frm
+        FrmMaskSurface = artLockFrameData(BuildFrmId(OBJ_TYPE_INTERFACE, 187), 0, 0, &FrmMaskObj);
+        // crop the Sexoff image by mask
+        surface_draw(80, 28, 80, 0, 0, FrmMaskSurface, 80, 0, 0, newFrmSurface, 0x39); // mask for style and race buttons
+        artUnlock(FrmMaskObj);
+
+        newFrmSurface[80 * 32 - 1] = 0;
+        newFrmSurface[80 * 31 - 1] = 0;
+        newFrmSurface[80 * 30 - 1] = 0;
+
+        newFrmSurface[80 * 32 - 2] = 0;
+        newFrmSurface[80 * 31 - 2] = 0;
+        newFrmSurface[80 * 30 - 2] = 0;
+
+        newFrmSurface[80 * 32 - 3] = 0;
+        newFrmSurface[80 * 31 - 3] = 0;
+        newFrmSurface[80 * 30 - 3] = 0;
+
+        newFrmSurface[80 * 32 - 4] = 0;
+        newFrmSurface[80 * 31 - 4] = 0;
+        newFrmSurface[80 * 30 - 4] = 0;
+
+        surface_draw(80, 32, 80, 0, 0, newFrmSurface, 640, 332, 0, charScrnBackSurface, 0); // race buttons
+        surface_draw(80, 32, 80, 0, 0, newFrmSurface, 640, 332, 225, charScrnBackSurface, 0); // style buttons
+        delete[] newFrmSurface;
+
+        // frm background for char screen Appearance button
+        if (gCharacterEditorIsCreationMode) {
+            FrmSurface = artLockFrameData(BuildFrmId(OBJ_TYPE_INTERFACE, 174), 0, 0, &FrmObj); // Pickchar frm
+            if (true) surface_draw(69, 20, 640, 281, 319, FrmSurface, 640, 337, 36, charScrnBackSurface); // button backround top
+            if (true) surface_draw(69, 20, 640, 281, 319, FrmSurface, 640, 337, 198, charScrnBackSurface); // button backround bottom
+            artUnlock(FrmObj);
+        }
+
+        int oldFont = fontGetCurrent();
+        fontSetCurrent(0x67);
+
+        char *RaceBtn, *StyleBtn;
+        MessageList MsgList;
+
+        /*
+        if (messageListLoad(&MsgList, "game\\AppIface.msg") == 1) {
+            RaceBtn = getmsg(&MsgList, 100, 2);
+            StyleBtn = getmsg(&MsgList, 101, 2);
+        } else {
+            // Get alternate text from ini if available (TODO: remove this in the future)
+            char RaceText[8], StyleText[8];
+            Translate::Get("AppearanceMod", "RaceText", "Race", RaceText, 8);
+            Translate::Get("AppearanceMod", "StyleText", "Style", StyleText, 8);
+            RaceBtn = RaceText;
+            StyleBtn = StyleText;
+        }
+        int raceTextWidth = fontGetStringWidth(RaceBtn);
+        int styleTextWidth = fontGetStringWidth(StyleBtn);
+
+        char PeanutButter = fo::var::PeanutButter; // palette offset stored in mem
+
+        fontDrawText
+        fo::util::PrintText(RaceBtn, PeanutButter, 372 - raceTextWidth / 2, 6, raceTextWidth, 640, charScrnBackSurface);
+        fo::util::PrintText(StyleBtn, PeanutButter, 372 - styleTextWidth / 2, 231, styleTextWidth, 640, charScrnBackSurface);
+        fontSetCurrent(oldFont);*/
+        memcpy(gCharacterEditorWindowBuffer, gHeroAppearanceModBuffer, 640 * 480);
+    }
 
     if (gCharacterEditorIsCreationMode) {
         fontSetCurrent(103);
@@ -1422,8 +1718,13 @@ static int characterEditorWindowInit()
 
         // TAG SKILLS
         str = getmsg(&gCharacterEditorMessageList, &gCharacterEditorMessageListItem, 138);
-        fontDrawText(gCharacterEditorWindowBuffer + (233 * 640) + 422, str, 640, 640, _colorTable[18979]);
-        characterEditorDrawBigNumber(522, 228, 0, gCharacterEditorTaggedSkillCount, 0, gCharacterEditorWindow);
+        if (heroAppearanceMod <= 0) {
+            fontDrawText(gCharacterEditorWindowBuffer + (233 * 640) + 422, str, 640, 640, _colorTable[18979]);
+            characterEditorDrawBigNumber(522, 228, 0, gCharacterEditorTaggedSkillCount, 0, gCharacterEditorWindow);
+        } else {
+            fontDrawText(gCharacterEditorWindowBuffer + (233 * 640) + 422 + 36, str, 640, 640, _colorTable[18979]);
+            characterEditorDrawBigNumber(522 + 36, 228, 0, gCharacterEditorTaggedSkillCount, 0, gCharacterEditorWindow);
+        }
     } else {
         fontSetCurrent(103);
 
@@ -1633,7 +1934,7 @@ static int characterEditorWindowInit()
         for (i = 0; i < SKILL_COUNT; i++) {
             gCharacterEditorTagSkillBtns[i] = buttonCreate(
                 gCharacterEditorWindow,
-                TAG_SKILLS_BUTTON_X,
+                heroAppearanceMod > 0 ? TAG_SKILLS_BUTTON_X+76 : TAG_SKILLS_BUTTON_X,
                 y,
                 _editorFrmImages[EDITOR_GRAPHIC_TAG_SKILL_BUTTON_ON].getWidth(),
                 _editorFrmImages[EDITOR_GRAPHIC_TAG_SKILL_BUTTON_ON].getHeight(),
@@ -2516,6 +2817,26 @@ static void characterEditorDrawPrimaryStat(int stat, bool animate, int previousV
     }
 }
 
+
+int tmpGender = -1;
+
+static void HeroGenderChange(long gender)
+{
+    if (tmpGender == -1) {
+        tmpGender = gender;
+        return;
+    }
+
+    if (tmpGender != gender) {
+        tmpGender = gender;
+        // reset race and style to defaults
+        currentRaceVal = 0;
+        currentStyleVal = 0;
+        LoadHeroDat(0, 0, false);
+        _proto_dude_update_gender();
+    }
+}
+
 // 0x434F18
 static void characterEditorDrawGender()
 {
@@ -2544,6 +2865,8 @@ static void characterEditorDrawGender()
     x += 6 * width;
     fontDrawText(gCharacterEditorFrmCopy[EDITOR_GRAPHIC_SEX_ON] + x, text, width, width, _colorTable[14723]);
     fontDrawText(gCharacterEditorFrmCopy[EDITOR_GRAPHIC_SEX_OFF] + x, text, width, width, _colorTable[18979]);
+
+    HeroGenderChange(gender);
 }
 
 // 0x43501C
@@ -2969,7 +3292,7 @@ static void characterEditorDrawDerivedStats()
 
 // 0x436154
 static void characterEditorDrawSkills(int a1)
-{
+{//sonil
     int selectedSkill = -1;
     const char* str;
     int i;
@@ -2989,30 +3312,50 @@ static void characterEditorDrawSkills(int a1)
         gCharacterEditorSliderPlusBtn = -1;
     }
 
-    blitBufferToBuffer(_editorBackgroundFrmImage.getData() + 370, 270, 252, 640, gCharacterEditorWindowBuffer + 370, 640);
+    if(heroAppearanceMod <=0)
+        blitBufferToBuffer(_editorBackgroundFrmImage.getData() + 370, 270, 252, 640, gCharacterEditorWindowBuffer + 370, 640);
+    else
+        blitBufferToBuffer(gHeroAppearanceModBuffer + 470, 170, 252, 640, gCharacterEditorWindowBuffer + 470, 640);
 
     fontSetCurrent(103);
 
     // SKILLS
     str = getmsg(&gCharacterEditorMessageList, &gCharacterEditorMessageListItem, 117);
-    fontDrawText(gCharacterEditorWindowBuffer + 640 * 5 + 380, str, 640, 640, _colorTable[18979]);
+    if (heroAppearanceMod <= 0)
+        fontDrawText(gCharacterEditorWindowBuffer + 640 * 5 + 380, str, 640, 640, _colorTable[18979]);
+    else
+        fontDrawText(gCharacterEditorWindowBuffer + 640 * 5 + 380 + 68, str, 640, 640, _colorTable[18979]);
 
     if (!gCharacterEditorIsCreationMode) {
         // SKILL POINTS
         str = getmsg(&gCharacterEditorMessageList, &gCharacterEditorMessageListItem, 112);
-        fontDrawText(gCharacterEditorWindowBuffer + 640 * 233 + 400, str, 640, 640, _colorTable[18979]);
-
+    
         value = pcGetStat(PC_STAT_UNSPENT_SKILL_POINTS);
-        characterEditorDrawBigNumber(522, 228, 0, value, 0, gCharacterEditorWindow);
+        if (heroAppearanceMod <= 0) {
+            fontDrawText(gCharacterEditorWindowBuffer + 640 * 233 + 400, str, 640, 640, _colorTable[18979]);
+            characterEditorDrawBigNumber(522, 228, 0, value, 0, gCharacterEditorWindow);
+        } else {
+            fontDrawText(gCharacterEditorWindowBuffer + 640 * 233 + 400 + 36, str, 640, 640, _colorTable[18979]);
+            characterEditorDrawBigNumber(522 + 36, 228, 0, value, 0, gCharacterEditorWindow);
+        }
     } else {
         // TAG SKILLS
         str = getmsg(&gCharacterEditorMessageList, &gCharacterEditorMessageListItem, 138);
-        fontDrawText(gCharacterEditorWindowBuffer + 640 * 233 + 422, str, 640, 640, _colorTable[18979]);
+        if (heroAppearanceMod <= 0)
+            fontDrawText(gCharacterEditorWindowBuffer + 640 * 233 + 422, str, 640, 640, _colorTable[18979]);
+        else
+            fontDrawText(gCharacterEditorWindowBuffer + 640 * 233 + 422 + 36, str, 640, 640, _colorTable[18979]);
 
         if (a1 == 2 && !gCharacterEditorIsSkillsFirstDraw) {
-            characterEditorDrawBigNumber(522, 228, ANIMATE, gCharacterEditorTaggedSkillCount, gCharacterEditorOldTaggedSkillCount, gCharacterEditorWindow);
+            if (heroAppearanceMod <= 0)
+                characterEditorDrawBigNumber(522, 228, ANIMATE, gCharacterEditorTaggedSkillCount, gCharacterEditorOldTaggedSkillCount, gCharacterEditorWindow);
+            else
+                characterEditorDrawBigNumber(522 + 36, 228, ANIMATE, gCharacterEditorTaggedSkillCount, gCharacterEditorOldTaggedSkillCount, gCharacterEditorWindow);
         } else {
-            characterEditorDrawBigNumber(522, 228, 0, gCharacterEditorTaggedSkillCount, 0, gCharacterEditorWindow);
+            if (heroAppearanceMod <= 0)
+                characterEditorDrawBigNumber(522, 228, 0, gCharacterEditorTaggedSkillCount, 0, gCharacterEditorWindow);
+            else
+                characterEditorDrawBigNumber(522 + 36, 228, 0, gCharacterEditorTaggedSkillCount, 0, gCharacterEditorWindow);
             gCharacterEditorIsSkillsFirstDraw = 0;
         }
     }
@@ -3038,12 +3381,18 @@ static void characterEditorDrawSkills(int a1)
         }
 
         str = skillGetName(i);
-        fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 380, str, 640, 640, color);
+        if (heroAppearanceMod <= 0)
+            fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 380, str, 640, 640, color);
+        else
+            fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 380 + 68, str, 640, 640, color);
 
         value = skillGetValue(gDude, i);
         snprintf(valueString, sizeof(valueString), "%d%%", value);
 
-        fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 573, valueString, 640, 640, color);
+        if (heroAppearanceMod <= 0)
+            fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 573, valueString, 640, 640, color);
+        else
+            fontDrawText(gCharacterEditorWindowBuffer + 640 * y + 573 + 10, valueString, 640, 640, color);
 
         // Adapt to other languages, because the pixels here are fixed, so the calculation of LineHeight brings trouble - replaces it with fixed pixel values
         //y += fontGetLineHeight() + 1;
@@ -4852,9 +5201,17 @@ static void characterEditorRegisterInfoAreas()
 
     buttonCreate(gCharacterEditorWindow, 191, 41, 122, 110, -1, -1, 528, -1, nullptr, nullptr, nullptr, 0);
     buttonCreate(gCharacterEditorWindow, 191, 175, 122, 135, -1, -1, 529, -1, nullptr, nullptr, nullptr, 0);
-    buttonCreate(gCharacterEditorWindow, 376, 5, 223, 20, -1, -1, 530, -1, nullptr, nullptr, nullptr, 0);
-    buttonCreate(gCharacterEditorWindow, 370, 27, 223, 195, -1, -1, 531, -1, nullptr, nullptr, nullptr, 0);
-    buttonCreate(gCharacterEditorWindow, 396, 228, 171, 25, -1, -1, 532, -1, nullptr, nullptr, nullptr, 0);
+    if (heroAppearanceMod <= 0) {
+        buttonCreate(gCharacterEditorWindow, 376, 5, 223, 20, -1, -1, 530, -1, nullptr, nullptr, nullptr, 0);
+        buttonCreate(gCharacterEditorWindow, 370, 27, 223, 195, -1, -1, 531, -1, nullptr, nullptr, nullptr, 0);
+        buttonCreate(gCharacterEditorWindow, 396, 228, 171, 25, -1, -1, 532, -1, nullptr, nullptr, nullptr, 0);
+    } else {
+        buttonCreate(gCharacterEditorWindow, 376 + 76, 5, 223, 20, -1, -1, 530, -1, nullptr, nullptr, nullptr, 0);
+        buttonCreate(gCharacterEditorWindow, 370 + 76, 27, 223 - 76, 195, -1, -1, 531, -1, nullptr, nullptr, nullptr, 0);
+        buttonCreate(gCharacterEditorWindow, 396 + 36, 228, 171, 25, -1, -1, 532, -1, nullptr, nullptr, nullptr, 0);
+    
+        AddCharScrnButtons();
+    }
 }
 
 // copy character to editor
@@ -5321,7 +5678,11 @@ static void characterEditorHandleAdjustSkillButtonPressed(int keyCode)
                 flags = 0;
             }
 
-            characterEditorDrawBigNumber(522, 228, flags, pcGetStat(PC_STAT_UNSPENT_SKILL_POINTS), unspentSp, gCharacterEditorWindow);
+            //sonil
+            if (heroAppearanceMod > 0)
+                characterEditorDrawBigNumber(522 + 36, 228, flags, pcGetStat(PC_STAT_UNSPENT_SKILL_POINTS), unspentSp, gCharacterEditorWindow);
+            else
+                characterEditorDrawBigNumber(522, 228, flags, pcGetStat(PC_STAT_UNSPENT_SKILL_POINTS), unspentSp, gCharacterEditorWindow);
 
             windowRefresh(gCharacterEditorWindow);
         }

@@ -259,7 +259,9 @@ target_sources(${EXECUTABLE_NAME} PUBLIC
     "src/edge_border.cc"
     "src/sfall_hooks.h"
     "src/sfall_hooks.cc"
-)
+    "src/HeroAppearance.h"
+    "src/HeroAppearance.cc"
+ )
 
 target_sources(${EXECUTABLE_NAME} PUBLIC
     "src/audio_engine.cc"

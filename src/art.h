@@ -10,6 +10,14 @@
 
 namespace fallout {
 
+typedef struct ArtListDescription {
+    int flags;
+    char name[16];
+    char* fileNames; // dynamic array of null terminated strings 13 bytes long each
+    void* field_18;
+    int fileNamesLength; // number of entries in list
+} ArtListDescription;
+
 typedef enum Head {
     HEAD_INVALID,
     HEAD_MARCUS,
@@ -151,6 +159,7 @@ int buildFid(int objectType, int frmId, int animType, int a4, int rotation);
 Art* artLoad(const char* path);
 int artRead(const char* path, unsigned char* data);
 int artWrite(const char* path, unsigned char* data);
+ArtListDescription* getArtListDescription();
 
 class FrmImage {
 public:

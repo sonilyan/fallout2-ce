@@ -480,6 +480,9 @@ size_t dfileRead(void* ptr, size_t size, size_t count, DFile* stream)
         stream->position += bytesRead;
     }
 
+    if (bytesRead == 0)
+        return -1;
+
     return bytesRead / size;
 }
 

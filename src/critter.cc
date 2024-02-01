@@ -30,6 +30,7 @@
 #include "tile.h"
 #include "trait.h"
 #include "worldmap.h"
+#include "HeroAppearance.h"
 
 namespace fallout {
 
@@ -1056,7 +1057,30 @@ int gcdLoad(const char* path)
     proto->critter.data.experience = 0;
     proto->critter.data.killType = 0;
 
+    currentRaceVal = 0;
+    currentStyleVal = 0;
+
+    int temp;
+    if (fileReadInt32(stream, &temp) != -1 && temp < 100) {
+        currentRaceVal = (int)temp;
+        if (fileReadInt32(stream, &temp) != -1 && temp < 100) {
+            currentStyleVal = (int)temp;
+        }
+    }
+
     fileClose(stream);
+
+    // load hero appearance
+    if (LoadHeroDat(currentRaceVal, currentStyleVal, true) != 0) { // if load fails
+        currentStyleVal = 0; // set style to default
+        if (LoadHeroDat(currentRaceVal, currentStyleVal, false) != 0) { // if race fails with style at default
+            currentRaceVal = 0; // set race to default
+            LoadHeroDat(currentRaceVal, currentStyleVal, false);
+        }
+    }
+
+    _proto_dude_update_gender();
+
     return 0;
 }
 
@@ -1121,6 +1145,10 @@ int gcdSave(const char* path)
     if (fileWriteInt32(stream, gCharacterEditorRemainingCharacterPoints) == -1) {
         fileClose(stream);
         return -1;
+    }
+
+    if (fileWriteInt32(stream, (int32_t)currentRaceVal) != -1) {
+        fileWriteInt32(stream, (int32_t)currentStyleVal);
     }
 
     fileClose(stream);

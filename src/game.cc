@@ -78,6 +78,7 @@
 #include "window_manager_private.h"
 #include "worldmap.h"
 #include "sfall_hooks.h"
+#include "HeroAppearance.h"
 
 namespace fallout {
 
@@ -138,6 +139,8 @@ int gameInitWithOptions(const char* windowTitle, bool isMapper, int font, int a4
     if (gameMemoryInit() == -1) {
         return -1;
     }
+
+    heroAppearanceModinit();
 
     // Sfall config should be initialized before game config, since it can
     // override it's file name.

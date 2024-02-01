@@ -13,16 +13,9 @@
 #include "proto.h"
 #include "settings.h"
 #include "sfall_config.h"
+#include "HeroAppearance.h"
 
 namespace fallout {
-
-typedef struct ArtListDescription {
-    int flags;
-    char name[16];
-    char* fileNames; // dynamic array of null terminated strings 13 bytes long each
-    void* field_18;
-    int fileNamesLength; // number of entries in list
-} ArtListDescription;
 
 typedef struct HeadDescription {
     int goodFidgetCount;
@@ -30,7 +23,7 @@ typedef struct HeadDescription {
     int badFidgetCount;
 } HeadDescription;
 
-static int artReadList(const char* path, char** out_arr, int* out_count);
+static int artReadList(const char* path, char** out_arr, int* out_count,int type);
 static int artCacheGetFileSizeImpl(int a1, int* out_size);
 static int artCacheReadDataImpl(int a1, int* a2, unsigned char* data);
 static void artCacheFreeImpl(void* ptr);
@@ -65,6 +58,11 @@ static ArtListDescription gArtListDescriptions[OBJ_TYPE_COUNT] = {
     { 0, "backgrnd", nullptr, nullptr, 0 },
     { 0, "skilldex", nullptr, nullptr, 0 },
 };
+
+ArtListDescription* getArtListDescription()
+{
+    return gArtListDescriptions;
+}
 
 // This flag denotes that localized arts should be looked up first. Used
 // together with [gArtLanguage].
@@ -151,7 +149,7 @@ int artInit()
         gArtListDescriptions[objectType].flags = 0;
         snprintf(path, sizeof(path), "%s%s%s\\%s.lst", _cd_path_base, "art\\", gArtListDescriptions[objectType].name, gArtListDescriptions[objectType].name);
 
-        if (artReadList(path, &(gArtListDescriptions[objectType].fileNames), &(gArtListDescriptions[objectType].fileNamesLength)) != 0) {
+        if (artReadList(path, &(gArtListDescriptions[objectType].fileNames), &(gArtListDescriptions[objectType].fileNamesLength), objectType) != 0) {
             debugPrint("art_read_lst failed in art_init\n");
             cacheFree(&gArtCache);
             return -1;
@@ -230,7 +228,7 @@ int artInit()
         critterFileNames += 13;
     }
 
-    for (int critterIndex = 0; critterIndex < gArtListDescriptions[OBJ_TYPE_CRITTER].fileNamesLength; critterIndex++) {
+    for (int critterIndex = 0; critterIndex < gArtListDescriptions[OBJ_TYPE_CRITTER].fileNamesLength / 2; critterIndex++) {
         if (!fileReadString(string, sizeof(string), stream)) {
             break;
         }
@@ -250,6 +248,15 @@ int artInit()
             gArtCritterFidShoudRunData[critterIndex] = 1;
         }
     }
+
+    //for heroappearance
+    //DoubleArtAlias
+    memcpy(_anon_alias + gArtListDescriptions[OBJ_TYPE_CRITTER].fileNamesLength / 2, _anon_alias, gArtListDescriptions[OBJ_TYPE_CRITTER].fileNamesLength / 2 * 4);
+    AddHeroCritNames();
+
+    //for (int i = 0; i < gArtListDescriptions[OBJ_TYPE_CRITTER].fileNamesLength; i++) {
+    //    debugPrint("%s %d", gArtListDescriptions[OBJ_TYPE_CRITTER].fileNames + 13 * i, _anon_alias[i]);
+    //}
 
     fileClose(stream);
 
@@ -611,6 +618,17 @@ int _art_get_code(int animation, int weaponType, char* a3, char* a4)
     return 0;
 }
 
+static bool characterFileExists(const char* fname)
+{
+    File* stream = fileOpen(fname, "rb");
+    if (stream == nullptr) {
+        return false;
+    }
+
+    fileClose(stream);
+    return true;
+}
+
 // 0x419428
 char* artBuildFilePath(int fid)
 {
@@ -663,12 +681,16 @@ char* artBuildFilePath(int fid)
         snprintf(_art_name, sizeof(_art_name), "%s%s%s\\%s", _cd_path_base, "art\\", gArtListDescriptions[type].name, gArtListDescriptions[type].fileNames + v8);
     }
 
+    if (type == OBJ_TYPE_CRITTER && ((fid & 0xfff) > gArtListDescriptions[OBJ_TYPE_CRITTER].fileNamesLength / 2)) {
+        if (!characterFileExists(_art_name))
+            return artBuildFilePath(fid - gArtListDescriptions[OBJ_TYPE_CRITTER].fileNamesLength / 2);
+    }
     return _art_name;
 }
 
 // art_read_lst
 // 0x419664
-static int artReadList(const char* path, char** artListPtr, int* artListSizePtr)
+static int artReadList(const char* path, char** artListPtr, int* artListSizePtr,int type)
 {
     File* stream = fileOpen(path, "rt");
     if (stream == nullptr) {
@@ -680,6 +702,11 @@ static int artReadList(const char* path, char** artListPtr, int* artListSizePtr)
     while (fileReadString(string, sizeof(string), stream)) {
         count++;
     }
+
+    //for heroappearance
+    //DoubleArt
+    if (OBJ_TYPE_CRITTER == type)
+        count *= 2;
 
     fileSeek(stream, 0, SEEK_SET);
 

@@ -46,6 +46,7 @@
 #include "tile.h"
 #include "window_manager.h"
 #include "word_wrap.h"
+#include "HeroAppearance.h"
 
 namespace fallout {
 
@@ -486,7 +487,7 @@ static Object* gInventoryLeftHandItem;
 // Rotating character's fid.
 //
 // 0x59E95C
-static int gInventoryWindowDudeFid;
+int gInventoryWindowDudeFid;
 
 // 0x59E960
 static Inventory* _pud;
@@ -521,10 +522,10 @@ void SetInventoryValue(int addr, int value)
 {
     switch (addr) {
     case 0x59E95C:
-        static int gInventoryWindowDudeFid = value;
+        gInventoryWindowDudeFid = value;
         break;
     case 0x5190F8:
-        static int gInventoryWindowDudeRotation = value;
+        gInventoryWindowDudeRotation = value;
         break;
     }
 }
@@ -2670,6 +2671,7 @@ static void _adjust_fid()
     }
 
     gInventoryWindowDudeFid = fid;
+    AdjustHeroArmorArt(fid);
 }
 
 // 0x4717E4

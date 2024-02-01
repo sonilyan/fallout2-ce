@@ -68,7 +68,7 @@ bool xbaseOpen(const char* path);
 bool xlistInit(const char* pattern, XList* xlist);
 void xlistFree(XList* xlist);
 void printDb();
-
+extern XBase* gXbaseHead;
 } // namespace fallout
 
 #endif /* XFILE_H */

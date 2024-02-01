@@ -47,6 +47,7 @@
 #include "window_manager.h"
 #include "interface.h"
 #include "sfall_hooks.h"
+#include "HeroAppearance.h"
 
 namespace fallout {
 
@@ -5444,7 +5445,13 @@ static void _print_tohit(unsigned char* dest, int destPitch, int accuracy)
 static char* hitLocationGetName(Object* critter, int hitLocation)
 {
     MessageListItem messageListItem;
-    messageListItem.num = 1000 + 10 * _art_alias_num(critter->fid & 0xFFF) + hitLocation;
+
+    if ((critter->fid & 0xFFF) > critterListSize) {
+        messageListItem.num = 1000 + 10 * _art_alias_num((critter->fid & 0xFFF) - critterListSize) + hitLocation;
+    } else {
+        messageListItem.num = 1000 + 10 * _art_alias_num(critter->fid & 0xFFF) + hitLocation;
+    }
+
     if (messageListGetItem(&gCombatMessageList, &messageListItem)) {
         return messageListItem.text;
     }

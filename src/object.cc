@@ -27,6 +27,7 @@
 #include "text_object.h"
 #include "tile.h"
 #include "worldmap.h"
+#include "HeroAppearance.h"
 
 namespace fallout {
 
@@ -3602,7 +3603,9 @@ int _obj_save_dude(File* stream)
     gDude->flags &= ~OBJECT_NO_SAVE;
     gDude->sid = -1;
 
+    SetHeroArt(false);
     int rc = _obj_save_obj(stream, gDude);
+    SetHeroArt(true);
 
     gDude->sid = field_78;
     gDude->flags |= OBJECT_NO_SAVE;

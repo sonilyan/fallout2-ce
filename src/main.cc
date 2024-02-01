@@ -41,6 +41,7 @@
 #include "window_manager_private.h"
 #include "word_wrap.h"
 #include "worldmap.h"
+#include "HeroAppearance.h"
 
 namespace fallout {
 
@@ -309,6 +310,8 @@ static int _main_load_new(char* mapFileName)
     gameMouseSetCursor(MOUSE_CURSOR_NONE);
     mouseShowCursor();
     mapLoadByName(mapFileName);
+    SetNewCharAppearanceGlobals();
+    LoadHeroAppearance();
     wmMapMusicStart();
     paletteFadeTo(gPaletteWhite);
     windowDestroy(win);

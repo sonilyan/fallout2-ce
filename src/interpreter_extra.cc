@@ -45,6 +45,7 @@
 #include "trait.h"
 #include "vcr.h"
 #include "worldmap.h"
+#include "HeroAppearance.h"
 
 namespace fallout {
 
@@ -4658,7 +4659,11 @@ static void opGetObjectFid(Program* program)
         scriptPredefinedError(program, "obj_art_fid", SCRIPT_ERROR_OBJECT_IS_NULL);
     }
 
-    programStackPushInteger(program, fid);
+    if (FID_TYPE(fid) == OBJ_TYPE_CRITTER && (fid & 0xfff) > critterListSize) {
+        programStackPushInteger(program, fid - critterListSize);
+    } else {
+        programStackPushInteger(program, fid);
+    }
 }
 
 // art_anim

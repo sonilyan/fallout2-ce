@@ -10,6 +10,7 @@
 #include "platform_compat.h"
 #include "scripts.h"
 #include "sfall_config.h"
+#include "HeroAppearance.h"
 
 namespace fallout {
 
@@ -99,6 +100,9 @@ void sfall_gl_scr_exit()
 
 void sfall_gl_scr_exec_start_proc()
 {
+    //SetNewCharAppearanceGlobals();
+    //LoadHeroAppearance();
+
     for (auto& path : state->paths) {
         Program* program = programCreateByPath(path.c_str());
         if (program != nullptr) {

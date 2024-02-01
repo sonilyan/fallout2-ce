@@ -21,6 +21,7 @@
 #include "skill.h"
 #include "stat.h"
 #include "trait.h"
+#include "HeroAppearance.h"
 
 namespace fallout {
 
@@ -865,7 +866,8 @@ int _proto_dude_update_gender()
         frmId = _art_vault_person_nums[nativeLook][GENDER_FEMALE];
     }
 
-    _art_vault_guy_num = frmId;
+    //AdjustHeroBaseArt
+    _art_vault_guy_num = frmId + critterListSize;
 
     if (critterGetArmor(gDude) == nullptr) {
         int v1 = 0;

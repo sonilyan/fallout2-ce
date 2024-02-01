@@ -1066,7 +1066,7 @@ int _gsound_play_sfx_file_volume(const char* a1, int a2)
 }
 
 // 0x4510DC
-Sound* soundEffectLoad(const char* name, Object* object)
+Sound* soundEffectLoadInternal(char* name, Object* object)
 {
     if (!gGameSoundInitialized) {
         return nullptr;
@@ -1182,7 +1182,17 @@ Sound* soundEffectLoad(const char* name, Object* object)
     return nullptr;
 }
 
-// 0x45145C
+Sound* soundEffectLoad(const char* name, Object* object)
+{
+    if (name[0] == '_') {
+        char tmp[120];
+        strcpy(tmp, name + 1);
+        return soundEffectLoadInternal(tmp, object);
+    }
+
+    return soundEffectLoadInternal((char *)name, object);
+}
+    // 0x45145C
 Sound* soundEffectLoadWithVolume(const char* name, Object* object, int volume)
 {
     Sound* sound = soundEffectLoad(name, object);

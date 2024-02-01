@@ -33,6 +33,7 @@
 #include "text_font.h"
 #include "trait.h"
 #include "window_manager.h"
+#include "HeroAppearance.h"
 
 namespace fallout {
 
@@ -188,6 +189,9 @@ int characterSelectorOpen()
             break;
         case KEY_UPPERCASE_C:
         case KEY_LOWERCASE_C:
+            currentRaceVal = 0;
+            currentStyleVal = 0;
+            LoadHeroDat(currentRaceVal, currentStyleVal, false);
             _ResetPlayer();
             if (characterEditorShow(1) == 0) {
                 rc = 2;

@@ -36,6 +36,8 @@ void redrawInventory(int i,int mode);
 void SetInventoryValue(int addr, int value);
    
 extern int gInventoryWindow;
+extern int gInventoryWindowDudeFid;
+
 } // namespace fallout
 
 #endif /* INVENTORY_H */
