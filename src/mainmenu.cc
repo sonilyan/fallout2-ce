@@ -18,7 +18,12 @@
 #include "version.h"
 #include "window_manager.h"
 
+
 namespace fallout {
+
+#ifndef BUILDTIME
+#define BUILDTIME "sonilversion"
+#endif
 
 #define MAIN_MENU_WINDOW_WIDTH 640
 #define MAIN_MENU_WINDOW_HEIGHT 480
@@ -150,9 +155,16 @@ int mainMenuWindowInit()
     // TODO: Allow to move version text
     // Version.
     char version[VERSION_MAX];
+    char version_ce[VERSION_MAX];
     versionGetVersion(version, sizeof(version));
+    sprintf(version_ce, "Fallout-CE %s", BUILDTIME);
     len = fontGetStringWidth(version);
-    windowDrawText(gMainMenuWindow, version, 0, 615 - len, 460, fontSettings | 0x06000000);
+    int len_ce = fontGetStringWidth(version_ce);
+    if (len_ce > len)
+        len = len_ce;
+
+    windowDrawText(gMainMenuWindow, version, 0, 615 - len, 460 - fontGetLineHeight() / 2 - 2, fontSettings | 0x06000000);
+    windowDrawText(gMainMenuWindow, version_ce, 0, 615 - len, 460 + fontGetLineHeight() / 2, fontSettings | 0x06000000);
 
     // menuup.frm
     fid = buildFid(OBJ_TYPE_INTERFACE, 299, 0, 0, 0);

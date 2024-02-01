@@ -4,6 +4,11 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
 set(EXECUTABLE_NAME fallout2-ce)
 
+string(TIMESTAMP bt %Y%m%d-%H%M)
+set(BUILDTIME ${bt})
+
+add_definitions(-DBUILDTIME="${bt}")
+
 if(APPLE)
     if(IOS)
         set(CMAKE_OSX_DEPLOYMENT_TARGET "11" CACHE STRING "")

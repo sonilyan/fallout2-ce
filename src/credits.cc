@@ -25,6 +25,10 @@
 
 namespace fallout {
 
+#ifndef BUILDTIME
+#define BUILDTIME "sonilversion"
+#endif
+
 #define CREDITS_WINDOW_SCROLLING_DELAY (38)
 
 static bool creditsFileParseNextLine(char* dest, int* font, int* color);
@@ -135,7 +139,26 @@ void creditsOpen(const char* filePath, int backgroundFid, bool useReversedStyle)
                                 int color;
                                 unsigned int tick = 0;
                                 bool stop = false;
-                                while (creditsFileParseNextLine(str, &font, &color)) {
+                                bool shouldstop = false;
+                                bool last = false;
+                                int i = 0;
+                                while (1) {
+                                    if (last == false) {
+                                        if (!creditsFileParseNextLine(str, &font, &color)) {
+                                            sprintf(str, "Fallout 2 Community Edition by alexbatalov");
+                                            last = true;
+                                        }
+                                    } else {
+                                        if (i == 0)
+                                            sprintf(str, "https://github.com/alexbatalov/fallout2-ce");
+                                        if (i == 1)
+                                            sprintf(str, "sonil edition");
+                                        if (i == 2) {
+                                            sprintf(str, "buildtime: %s", BUILDTIME);
+                                            shouldstop = true;
+                                        }
+                                        i++;
+                                    }
                                     fontSetCurrent(font);
 
                                     int stringWidth = fontGetStringWidth(str);
@@ -185,7 +208,7 @@ void creditsOpen(const char* filePath, int backgroundFid, bool useReversedStyle)
                                         renderPresent();
                                     }
 
-                                    if (stop) {
+                                    if (stop || shouldstop) {
                                         break;
                                     }
                                 }
