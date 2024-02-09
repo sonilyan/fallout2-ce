@@ -1572,7 +1572,7 @@ static int _partyMemberCopyLevelInfo(Object* critter, int a2)
         return -1;
     }
 
-    Object* item2 = critterGetItem2(critter);
+    Object* item2 = critterGetItemRightHand(critter);
     _invenUnwieldFunc(critter, 1, 0);
 
     Object* armor = critterGetArmor(critter);

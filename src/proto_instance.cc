@@ -301,7 +301,7 @@ int _obj_examine_func(Object* critter, Object* target, void (*fn)(char* string))
                 hpMessageListItem.num = 535 + critterGetStat(target, STAT_GENDER);
             }
 
-            Object* item2 = critterGetItem2(target);
+            Object* item2 = critterGetItemRightHand(target);
             if (item2 != nullptr && itemGetType(item2) != ITEM_TYPE_WEAPON) {
                 item2 = nullptr;
             }
@@ -621,7 +621,7 @@ static int _obj_remove_from_inven(Object* critter, Object* item)
     Rect updatedRect;
     int fid;
     int v11 = 0;
-    if (critterGetItem2(critter) == item) {
+    if (critterGetItemRightHand(critter) == item) {
         if (critter != gDude || interfaceGetCurrentHand()) {
             fid = buildFid(OBJ_TYPE_CRITTER, critter->fid & 0xFFF, FID_ANIM_TYPE(critter->fid), 0, critter->rotation);
             objectSetFid(critter, fid, &updatedRect);
@@ -629,7 +629,7 @@ static int _obj_remove_from_inven(Object* critter, Object* item)
         } else {
             v11 = 1;
         }
-    } else if (critterGetItem1(critter) == item) {
+    } else if (critterGetItemLeftHand(critter) == item) {
         if (critter == gDude && !interfaceGetCurrentHand()) {
             fid = buildFid(OBJ_TYPE_CRITTER, critter->fid & 0xFFF, FID_ANIM_TYPE(critter->fid), 0, critter->rotation);
             objectSetFid(critter, fid, &updatedRect);

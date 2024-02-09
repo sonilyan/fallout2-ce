@@ -871,7 +871,7 @@ int _proto_dude_update_gender()
 
     if (critterGetArmor(gDude) == nullptr) {
         int v1 = 0;
-        if (critterGetItem2(gDude) != nullptr || critterGetItem1(gDude) != nullptr) {
+        if (critterGetItemRightHand(gDude) != nullptr || critterGetItemLeftHand(gDude) != nullptr) {
             v1 = (gDude->fid & 0xF000) >> 12;
         }
 

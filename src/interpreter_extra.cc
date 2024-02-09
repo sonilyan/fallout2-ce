@@ -3027,23 +3027,23 @@ static void opCritterGetInventoryObject(Program* program)
         case INVEN_TYPE_RIGHT_HAND:
             if (critter == gDude) {
                 if (interfaceGetCurrentHand() != HAND_LEFT) {
-                    programStackPushPointer(program, critterGetItem2(critter));
+                    programStackPushPointer(program, critterGetItemRightHand(critter));
                 } else {
                     programStackPushPointer(program, nullptr);
                 }
             } else {
-                programStackPushPointer(program, critterGetItem2(critter));
+                programStackPushPointer(program, critterGetItemRightHand(critter));
             }
             break;
         case INVEN_TYPE_LEFT_HAND:
             if (critter == gDude) {
                 if (interfaceGetCurrentHand() == HAND_LEFT) {
-                    programStackPushPointer(program, critterGetItem1(critter));
+                    programStackPushPointer(program, critterGetItemLeftHand(critter));
                 } else {
                     programStackPushPointer(program, nullptr);
                 }
             } else {
-                programStackPushPointer(program, critterGetItem1(critter));
+                programStackPushPointer(program, critterGetItemLeftHand(critter));
             }
             break;
         case INVEN_TYPE_INV_COUNT:
@@ -3278,7 +3278,7 @@ static void opMetarule(Program* program)
                 bool animated = !gameUiIsDisabled();
                 interfaceUpdateItems(animated, INTERFACE_ITEM_ACTION_DEFAULT, INTERFACE_ITEM_ACTION_DEFAULT);
             } else {
-                Object* item = critterGetItem1(object);
+                Object* item = critterGetItemLeftHand(object);
                 if (itemGetType(item) == ITEM_TYPE_WEAPON) {
                     item->flags &= ~OBJECT_IN_LEFT_HAND;
                 }
@@ -4607,7 +4607,7 @@ static void opMoveObjectInventoryToObject(Program* program)
     if (object1 == gDude) {
         oldArmor = critterGetArmor(object1);
     } else {
-        item2 = critterGetItem2(object1);
+        item2 = critterGetItemRightHand(object1);
     }
 
     if (object1 != gDude && item2 != nullptr) {

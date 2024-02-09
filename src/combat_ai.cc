@@ -2010,7 +2010,7 @@ Object* _ai_search_inven_weap(Object* critter, bool checkRequiredActionPoints, O
 
     int token = -1;
     Object* bestWeapon = nullptr;
-    Object* rightHandWeapon = critterGetItem2(critter);
+    Object* rightHandWeapon = critterGetItemRightHand(critter);
     while (true) {
         Object* weapon = _inven_find_type(critter, ITEM_TYPE_WEAPON, &token);
         if (weapon == nullptr) {
@@ -2191,7 +2191,7 @@ static Object* _ai_search_environ(Object* critter, int itemType)
     _ai_sort_list_distance(objects, count, critter);
 
     int perception = critterGetStat(critter, STAT_PERCEPTION) + 5;
-    Object* item2 = critterGetItem2(critter);
+    Object* item2 = critterGetItemRightHand(critter);
 
     Object* foundItem = nullptr;
 
@@ -2696,7 +2696,7 @@ static int _ai_try_attack(Object* attacker, Object* defender)
     CritterCombatData* combatData = &(attacker->data.critter.combat);
     bool taunt = true;
 
-    Object* weapon = critterGetItem2(attacker);
+    Object* weapon = critterGetItemRightHand(attacker);
     if (weapon != nullptr && itemGetType(weapon) != ITEM_TYPE_WEAPON) {
         weapon = nullptr;
     }
@@ -2913,7 +2913,7 @@ int _cAIPrepWeaponItem(Object* critter, Object* item)
 // 0x42AECC
 void aiAttemptWeaponReload(Object* critter, int animate)
 {
-    Object* weapon = critterGetItem2(critter);
+    Object* weapon = critterGetItemRightHand(critter);
     if (weapon == nullptr) {
         return;
     }
@@ -3467,12 +3467,12 @@ static int _combatai_rating(Object* obj)
 
     melee_damage = critterGetStat(obj, STAT_MELEE_DAMAGE);
 
-    item = critterGetItem2(obj);
+    item = critterGetItemRightHand(obj);
     if (item != nullptr && itemGetType(item) == ITEM_TYPE_WEAPON && weaponGetDamageMinMax(item, &weapon_damage_min, &weapon_damage_max) != -1 && melee_damage < weapon_damage_max) {
         melee_damage = weapon_damage_max;
     }
 
-    item = critterGetItem1(obj);
+    item = critterGetItemLeftHand(obj);
     if (item != nullptr && itemGetType(item) == ITEM_TYPE_WEAPON && weaponGetDamageMinMax(item, &weapon_damage_min, &weapon_damage_max) != -1 && melee_damage < weapon_damage_max) {
         melee_damage = weapon_damage_max;
     }

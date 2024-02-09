@@ -1,5 +1,10 @@
 #include "sfall_hooks.h"
 #include "debug.h"
+#include "game_dialog.h"
+#include "item.h"
+#include "inventory.h"
+#include "sfall_arrays.h"
+#include "interpreter.h"
 
 namespace fallout {
 
@@ -18,13 +23,18 @@ enum class DataType : unsigned long {
 bool allowNonIntReturn;
 
 DataType retTypes[maxRets]; // current hook return value types
-long args[maxArgs]; // current hook arguments
+ProgramValue args[maxArgs]; // current hook arguments
 int rets[maxRets]; // current hook return values
 int argCount;
 int cArg; // how many arguments were taken by current hook script
 int cRet; // how many return values were set by current hook script
 int cRetTmp; // how many return values were set by specific hook script (when using register_hook)
 
+
+ProgramValue GetHSArgAt(int id)
+{
+    return args[id];
+}
 
 struct HookScript {
     Program* program;
@@ -106,13 +116,58 @@ void RunHook(int id)
     }
 }
 
+void RunBarterPriceHook(Object* source, Object* target, bool offers_button_pressed)
+{
+    bool barterIsParty = gGameDialogSpeakerIsPartyMember;
+    long computeCost = _barter_compute_value2(source, target);
 
-void RunCombatTurnHook(long critter, int dudeBegin)
+    argCount = 10;
+
+    args[0] = ProgramValue(source);
+    args[1] = ProgramValue(target);
+    args[2] = ProgramValue (!barterIsParty ? computeCost : 0);
+
+    Object* bTable = _btable;
+    args[3] = ProgramValue(bTable);
+    args[4] = ProgramValue(itemGetTotalCaps(bTable));
+    args[5] = ProgramValue(objectGetCost(bTable));
+
+    Object* pTable = _ptable;
+    args[6] = ProgramValue(pTable);
+
+    long pcCost = 0;
+    if (barterIsParty) {
+        args[7] = ProgramValue(pcCost);
+        pcCost = objectGetInventoryWeight(pTable);
+    } else {
+        args[7] = ProgramValue(pcCost = objectGetCost(pTable));
+    }
+
+    args[8] = ProgramValue(offers_button_pressed ? 1 : 0); // offers button pressed
+    args[9] = ProgramValue((int) barterIsParty);
+
+    RunHook(HOOK_BARTERPRICE);
+}
+
+void RunMoveItemHook(Object* from, Object* to, Object* item, int quantity,int wtf)
+{
+    argCount = 5;
+    args[0] = ProgramValue(from);
+    args[1] = ProgramValue(item);
+    args[2] = ProgramValue(quantity);
+    args[3] = ProgramValue(wtf);
+    args[4] = ProgramValue(to);
+
+    RunHook(HOOK_REMOVEINVENOBJ);
+}
+
+
+void RunCombatTurnHook(Object* critter, int dudeBegin)
 {
     argCount = 3;
-    args[0] = 1;
-    args[1] = critter;
-    args[2] = dudeBegin;
+    args[0] = ProgramValue(1);
+    args[1] = ProgramValue(critter);
+    args[2] = ProgramValue(dudeBegin);
 
     RunHook(HOOK_KEYPRESS);
     /*
@@ -127,17 +182,17 @@ void RunCombatTurnHook(long critter, int dudeBegin)
 void RunMouseClickHook(int button, int pressed)
 {
     argCount = 2;
-    args[0] = pressed;
-    args[1] = button;
+    args[0] = ProgramValue(pressed);
+    args[1] = ProgramValue(button);
     RunHook(HOOK_MOUSECLICK);
 }
 
 void RunKeyPressHook(int pressed,int v1,int v2)
 {
     argCount = 3;
-    args[0] = pressed;
-    args[1] = v1;
-    args[2] = v2;
+    args[0] = ProgramValue(pressed);
+    args[1] = ProgramValue(v1);
+    args[2] = ProgramValue(v2);
     RunHook(HOOK_KEYPRESS);
     /*
     if (cRet != 0) {
@@ -149,13 +204,23 @@ void RunKeyPressHook(int pressed,int v1,int v2)
 
  void get_sfall_arg(Program* program)
 {
-     programStackPushInteger(program, (cArg == argCount) ? 0 : args[cArg++]);
- }
+    ProgramValue value = ProgramValue(0);
+    if (cArg == argCount)
+        programStackPushValue(program,value);
+    else
+        programStackPushValue(program, args[cArg++]);
+}
 
  void op_get_sfall_args(Program* program)
-{
-    programStackPushInteger(program, 0);
-}
+ {
+     ArrayId result = CreateTempArray(argCount, 0); // associative
+     
+     for (int i = 0; i < argCount; i++) {
+         SetArray(result, ProgramValue(i), args[i], false, program);
+     }
+
+     programStackPushInteger(program, result);
+ }
 
  void set_sfall_return(Program* program)
 {
@@ -164,6 +229,9 @@ void RunKeyPressHook(int pressed,int v1,int v2)
 
  void op_set_sfall_arg(Program* program)
 {
+    int id = programStackPopInteger(program);
+    if (id < argCount)
+        args[id] = programStackPopValue(program);
 }
 
 } // namespace fallout

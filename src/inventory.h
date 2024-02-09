@@ -11,11 +11,12 @@ void _inven_reset_dude();
 void inventoryOpen();
 void _adjust_ac(Object* critter, Object* oldArmor, Object* newArmor);
 void inventoryOpenUseItemOn(Object* a1);
-Object* critterGetItem2(Object* obj);
-Object* critterGetItem1(Object* obj);
+Object* critterGetItemRightHand(Object* obj);
+Object* critterGetItemLeftHand(Object* obj);
 Object* critterGetArmor(Object* obj);
 Object* objectGetCarriedObjectByPid(Object* obj, int pid);
 int objectGetCarriedQuantityByPid(Object* obj, int pid);
+int _barter_compute_value2(Object* a1, Object* a2);
 Object* _inven_find_type(Object* obj, int a2, int* inout_a3);
 Object* _inven_find_id(Object* obj, int a2);
 Object* _inven_index_ptr(Object* obj, int a2);
@@ -37,6 +38,10 @@ void SetInventoryValue(int addr, int value);
    
 extern int gInventoryWindow;
 extern int gInventoryWindowDudeFid;
+extern Object* _btable;
+extern Object* _ptable;
+
+
 
 } // namespace fallout
 

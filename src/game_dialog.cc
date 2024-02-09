@@ -3528,7 +3528,7 @@ void partyMemberControlWindowUpdate()
     char formattedText[256];
 
     // Render item in right hand.
-    Object* item2 = critterGetItem2(gGameDialogSpeaker);
+    Object* item2 = critterGetItemRightHand(gGameDialogSpeaker);
     text = item2 != nullptr ? itemGetName(item2) : getmsg(&gProtoMessageList, &messageListItem, 10);
     snprintf(formattedText, sizeof(formattedText), "%s", text);
     fontDrawText(windowBuffer + windowWidth * 20 + 112, formattedText, 110, windowWidth, _colorTable[992]);

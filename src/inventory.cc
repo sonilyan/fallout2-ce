@@ -47,6 +47,7 @@
 #include "window_manager.h"
 #include "word_wrap.h"
 #include "HeroAppearance.h"
+#include "sfall_hooks.h"
 
 namespace fallout {
 
@@ -455,7 +456,7 @@ static Inventory* _ptable_pud;
 static InventoryCursorData gInventoryCursorData[INVENTORY_WINDOW_CURSOR_COUNT];
 
 // 0x59E934
-static Object* _ptable;
+Object* _ptable;
 
 // 0x59E938
 static InventoryPrintItemDescriptionHandler* gInventoryPrintItemDescriptionHandler;
@@ -467,7 +468,7 @@ static int _im_value;
 static int gInventoryCursor;
 
 // 0x59E944
-static Object* _btable;
+Object* _btable;
 
 // 0x59E948
 static int _target_curr_stack;
@@ -576,9 +577,8 @@ static int inventoryMessageListFree()
 void redrawInventory(int i, int mode)
 {
     if (i == 0) {
-        _display_inventory(_stack_offset[_curr_stack], -1, INVENTORY_WINDOW_TYPE_NORMAL);
+        inventoryRenderSummary();
     } else if (i == 1) {
-
         _stack_offset[_curr_stack] = 0;
         _display_inventory(0, -1, mode);
     } else if (i == 2) {
@@ -2519,9 +2519,9 @@ static void _inven_pickup(int keyCode, int a2)
     if (_inven_dude == gDude) {
         Object* item;
         if (interfaceGetCurrentHand() == HAND_LEFT) {
-            item = critterGetItem1(_inven_dude);
+            item = critterGetItemLeftHand(_inven_dude);
         } else {
-            item = critterGetItem2(_inven_dude);
+            item = critterGetItemRightHand(_inven_dude);
         }
 
         if (item != nullptr) {
@@ -2815,7 +2815,7 @@ void inventoryOpenUseItemOn(Object* a1)
 }
 
 // 0x471B70
-Object* critterGetItem2(Object* critter)
+Object* critterGetItemRightHand(Object* critter)
 {
     int i;
     Inventory* inventory;
@@ -2837,7 +2837,7 @@ Object* critterGetItem2(Object* critter)
 }
 
 // 0x471BBC
-Object* critterGetItem1(Object* critter)
+Object* critterGetItemLeftHand(Object* critter)
 {
     int i;
     Inventory* inventory;
@@ -3363,10 +3363,10 @@ int _invenWieldFunc(Object* critter, Object* item, int a3, bool a4)
 
         Object* v17;
         if (a3) {
-            v17 = critterGetItem2(critter);
+            v17 = critterGetItemRightHand(critter);
             item->flags |= OBJECT_IN_RIGHT_HAND;
         } else {
-            v17 = critterGetItem1(critter);
+            v17 = critterGetItemLeftHand(critter);
             item->flags |= OBJECT_IN_LEFT_HAND;
         }
 
@@ -3470,9 +3470,9 @@ int _invenUnwieldFunc(Object* obj, int a2, int a3)
     }
 
     if (a2) {
-        item_obj = critterGetItem2(obj);
+        item_obj = critterGetItemRightHand(obj);
     } else {
-        item_obj = critterGetItem1(obj);
+        item_obj = critterGetItemLeftHand(obj);
     }
 
     if (item_obj) {
@@ -4116,12 +4116,12 @@ int inventoryOpenLooting(Object* looter, Object* target)
     Object* armor = nullptr;
 
     if (_gIsSteal) {
-        item1 = critterGetItem1(target);
+        item1 = critterGetItemLeftHand(target);
         if (item1 != nullptr) {
             itemRemove(target, item1, 1);
         }
 
-        item2 = critterGetItem2(target);
+        item2 = critterGetItemRightHand(target);
         if (item2 != nullptr) {
             itemRemove(target, item2, 1);
         }
@@ -4657,7 +4657,7 @@ static InventoryMoveResult _move_inventory(Object* item, int slotIndex, Object* 
 }
 
 // 0x474B2C
-static int _barter_compute_value(Object* a1, Object* a2)
+int _barter_compute_value(Object* a1, Object* a2)
 {
     if (gGameDialogSpeakerIsPartyMember) {
         return objectGetInventoryWeight(_btable);
@@ -4689,13 +4689,18 @@ static int _barter_compute_value(Object* a1, Object* a2)
     return rounded;
 }
 
+int _barter_compute_value2(Object* a1, Object* a2)
+{
+    return _barter_compute_value(a1, a2);
+}
+
 // 0x474C50
-static int _barter_attempt_transaction(Object* a1, Object* a2, Object* a3, Object* a4)
+static int _barter_attempt_transaction(Object* inven_dude, Object* pt, Object* barterer, Object* bt)
 {
     MessageListItem messageListItem;
 
-    int v8 = critterGetStat(a1, STAT_CARRY_WEIGHT) - objectGetInventoryWeight(a1);
-    if (objectGetInventoryWeight(a4) > v8) {
+    int v8 = critterGetStat(inven_dude, STAT_CARRY_WEIGHT) - objectGetInventoryWeight(inven_dude);
+    if (objectGetInventoryWeight(bt) > v8) {
         // Sorry, you cannot carry that much.
         messageListItem.num = 31;
         if (messageListGetItem(&gInventoryMessageList, &messageListItem)) {
@@ -4705,8 +4710,8 @@ static int _barter_attempt_transaction(Object* a1, Object* a2, Object* a3, Objec
     }
 
     if (gGameDialogSpeakerIsPartyMember) {
-        int v10 = critterGetStat(a3, STAT_CARRY_WEIGHT) - objectGetInventoryWeight(a3);
-        if (objectGetInventoryWeight(a2) > v10) {
+        int v10 = critterGetStat(barterer, STAT_CARRY_WEIGHT) - objectGetInventoryWeight(barterer);
+        if (objectGetInventoryWeight(pt) > v10) {
             // Sorry, that's too much to carry.
             messageListItem.num = 32;
             if (messageListGetItem(&gInventoryMessageList, &messageListItem)) {
@@ -4716,19 +4721,19 @@ static int _barter_attempt_transaction(Object* a1, Object* a2, Object* a3, Objec
         }
     } else {
         bool v11 = false;
-        if (a2->data.inventory.length == 0) {
+        if (pt->data.inventory.length == 0) {
             v11 = true;
         } else {
-            if (itemIsQueued(a2)) {
-                if (a2->pid != PROTO_ID_GEIGER_COUNTER_I || miscItemTurnOff(a2) == -1) {
+            if (itemIsQueued(pt)) {
+                if (pt->pid != PROTO_ID_GEIGER_COUNTER_I || miscItemTurnOff(pt) == -1) {
                     v11 = true;
                 }
             }
         }
 
         if (!v11) {
-            int cost = objectGetCost(a2);
-            if (_barter_compute_value(a1, a3) > cost) {
+            int cost = objectGetCost(pt);
+            if (_barter_compute_value(inven_dude, barterer) > cost) {
                 v11 = true;
             }
         }
@@ -4743,8 +4748,11 @@ static int _barter_attempt_transaction(Object* a1, Object* a2, Object* a3, Objec
         }
     }
 
-    itemMoveAll(a4, a1);
-    itemMoveAll(a2, a3);
+    itemMoveAll(bt, inven_dude);
+    itemMoveAll(pt, barterer);
+
+    RunBarterPriceHook(inven_dude, barterer, true);
+    
     return 0;
 }
 
@@ -4961,7 +4969,7 @@ static void _barter_move_from_table_inventory(Object* a1, int quantity, int a3, 
 }
 
 // 0x475334
-static void inventoryWindowRenderInnerInventories(int win, Object* a2, Object* a3, int a4)
+static void inventoryWindowRenderInnerInventories(int win, Object* playerTable, Object* barterTable, int a4)
 {
     unsigned char* windowBuffer = windowGetBuffer(gInventoryWindow);
 
@@ -4971,12 +4979,12 @@ static void inventoryWindowRenderInnerInventories(int win, Object* a2, Object* a
     char formattedText[80];
     int v45 = fontGetLineHeight() + INVENTORY_SLOT_HEIGHT * gInventorySlotsCount;
 
-    if (a2 != nullptr) {
+    if (playerTable != nullptr) {
         unsigned char* src = windowGetBuffer(win);
         blitBufferToBuffer(src + INVENTORY_TRADE_BACKGROUND_WINDOW_WIDTH * INVENTORY_TRADE_INNER_LEFT_SCROLLER_Y + INVENTORY_TRADE_INNER_LEFT_SCROLLER_X_PAD + INVENTORY_TRADE_WINDOW_OFFSET, INVENTORY_SLOT_WIDTH, v45 + 1, INVENTORY_TRADE_BACKGROUND_WINDOW_WIDTH, windowBuffer + INVENTORY_TRADE_WINDOW_WIDTH * INVENTORY_TRADE_INNER_LEFT_SCROLLER_Y + INVENTORY_TRADE_INNER_LEFT_SCROLLER_X_PAD, INVENTORY_TRADE_WINDOW_WIDTH);
 
         unsigned char* dest = windowBuffer + INVENTORY_TRADE_WINDOW_WIDTH * INVENTORY_TRADE_INNER_LEFT_SCROLLER_Y_PAD + INVENTORY_TRADE_INNER_LEFT_SCROLLER_X_PAD;
-        Inventory* inventory = &(a2->data.inventory);
+        Inventory* inventory = &(playerTable->data.inventory);
         for (int index = 0; index < gInventorySlotsCount && index + _ptable_offset < inventory->length; index++) {
             InventoryItem* inventoryItem = &(inventory->items[inventory->length - (index + _ptable_offset + 1)]);
             int inventoryFid = itemGetInventoryFid(inventoryItem->item);
@@ -4991,11 +4999,11 @@ static void inventoryWindowRenderInnerInventories(int win, Object* a2, Object* a
             messageListItem.num = 30;
 
             if (messageListGetItem(&gInventoryMessageList, &messageListItem)) {
-                int weight = objectGetInventoryWeight(a2);
+                int weight = objectGetInventoryWeight(playerTable);
                 snprintf(formattedText, sizeof(formattedText), "%s %d", messageListItem.text, weight);
             }
         } else {
-            int cost = objectGetCost(a2);
+            int cost = objectGetCost(playerTable);
             snprintf(formattedText, sizeof(formattedText), "$%d", cost);
         }
 
@@ -5010,12 +5018,12 @@ static void inventoryWindowRenderInnerInventories(int win, Object* a2, Object* a
         windowRefreshRect(gInventoryWindow, &rect);
     }
 
-    if (a3 != nullptr) {
+    if (barterTable != nullptr) {
         unsigned char* src = windowGetBuffer(win);
         blitBufferToBuffer(src + INVENTORY_TRADE_BACKGROUND_WINDOW_WIDTH * INVENTORY_TRADE_INNER_RIGHT_SCROLLER_Y + INVENTORY_TRADE_INNER_RIGHT_SCROLLER_X_PAD + INVENTORY_TRADE_WINDOW_OFFSET, INVENTORY_SLOT_WIDTH, v45 + 1, INVENTORY_TRADE_BACKGROUND_WINDOW_WIDTH, windowBuffer + INVENTORY_TRADE_WINDOW_WIDTH * INVENTORY_TRADE_INNER_RIGHT_SCROLLER_Y + INVENTORY_TRADE_INNER_RIGHT_SCROLLER_X_PAD, INVENTORY_TRADE_WINDOW_WIDTH);
 
         unsigned char* dest = windowBuffer + INVENTORY_TRADE_WINDOW_WIDTH * INVENTORY_TRADE_INNER_RIGHT_SCROLLER_Y_PAD + INVENTORY_TRADE_INNER_RIGHT_SCROLLER_X_PAD;
-        Inventory* inventory = &(a3->data.inventory);
+        Inventory* inventory = &(barterTable->data.inventory);
         for (int index = 0; index < gInventorySlotsCount && index + _btable_offset < inventory->length; index++) {
             InventoryItem* inventoryItem = &(inventory->items[inventory->length - (index + _btable_offset + 1)]);
             int inventoryFid = itemGetInventoryFid(inventoryItem->item);
@@ -5050,6 +5058,7 @@ static void inventoryWindowRenderInnerInventories(int win, Object* a2, Object* a
     }
 
     fontSetCurrent(oldFont);
+    RunBarterPriceHook(gDude, _target_stack[0], false);
 }
 
 // 0x4757F0
@@ -5069,7 +5078,7 @@ void inventoryOpenTrade(int win, Object* barterer, Object* playerTable, Object* 
     }
 
     Object* item1 = nullptr;
-    Object* item2 = critterGetItem2(barterer);
+    Object* item2 = critterGetItemRightHand(barterer);
     if (item2 != nullptr) {
         itemRemove(barterer, item2, 1);
     } else {

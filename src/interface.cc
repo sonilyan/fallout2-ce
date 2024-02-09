@@ -1054,7 +1054,7 @@ int interfaceUpdateItems(bool animated, int leftItemAction, int rightItemAction)
     Object* oldCurrentItem = gInterfaceItemStates[gInterfaceCurrentHand].item;
 
     InterfaceItemState* leftItemState = &(gInterfaceItemStates[HAND_LEFT]);
-    Object* item1 = critterGetItem1(gDude);
+    Object* item1 = critterGetItemLeftHand(gDude);
     if (item1 == leftItemState->item && leftItemState->item != nullptr) {
         if (leftItemState->item != nullptr) {
             leftItemState->isDisabled = dudeIsWeaponDisabled(item1);
@@ -1103,7 +1103,7 @@ int interfaceUpdateItems(bool animated, int leftItemAction, int rightItemAction)
 
     InterfaceItemState* rightItemState = &(gInterfaceItemStates[HAND_RIGHT]);
 
-    Object* item2 = critterGetItem2(gDude);
+    Object* item2 = critterGetItemRightHand(gDude);
     if (item2 == rightItemState->item && rightItemState->item != nullptr) {
         if (rightItemState->item != nullptr) {
             rightItemState->isDisabled = dudeIsWeaponDisabled(rightItemState->item);

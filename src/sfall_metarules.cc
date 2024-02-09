@@ -26,6 +26,9 @@
 #include "worldmap.h"
 #include "character_editor.h"
 #include "skilldex.h"
+#include "item.h"
+#include "sfall_hooks.h"
+#include "interpreter.h"
 
 namespace fallout {
 
@@ -39,7 +42,9 @@ typedef struct MetaruleInfo {
     int maxArgs;
 } MetaruleInfo;
 
-static void mf_car_gas_amount(Program* program, int args);
+Window* GetWindow(long winType);
+
+    static void mf_car_gas_amount(Program* program, int args);
 static void mf_combat_data(Program* program, int args);
 static void mf_critter_inven_obj2(Program* program, int args);
 static void mf_dialog_obj(Program* program, int args);
@@ -61,6 +66,14 @@ static void mf_show_window(Program* program, int args);
 static void mf_tile_refresh_display(Program* program, int args);
 static void mf_display_stats(Program* program, int args);
 static void mf_inventory_redraw(Program* program, int args);
+
+static void mf_item_weight(Program* program, int args);
+static void mf_get_sfall_arg_at(Program* program, int args);
+static void mf_create_win(Program* program, int args);
+static void mf_win_fill_color(Program* program, int args);
+static void mf_get_current_inven_size(Program* program, int args);
+static void mf_dialog_message(Program* program, int args);
+static void mf_interface_art_draw(Program* program, int args);
 
 constexpr MetaruleInfo kMetarules[] = {
     { "car_gas_amount", mf_car_gas_amount, 0, 0 },
@@ -85,9 +98,107 @@ constexpr MetaruleInfo kMetarules[] = {
     { "display_stats", mf_display_stats, 0, 0 },
     { "inventory_redraw", mf_inventory_redraw, 0, 1 },
     { "tile_refresh_display", mf_tile_refresh_display, 0, 0 },
+
+    { "item_weight", mf_item_weight, 0, 1 },
+    { "get_sfall_arg_at", mf_get_sfall_arg_at, 0, 1 },
+    { "create_win", mf_create_win, 0, 1 },
+    { "win_fill_color", mf_win_fill_color, 0, 1 },
+    { "get_current_inven_size", mf_get_current_inven_size, 0, 1 },
+    { "dialog_message", mf_dialog_message, 0, 1 },
+    { "interface_art_draw", mf_interface_art_draw, 0, 1 },
 };
 
 constexpr int kMetarulesMax = sizeof(kMetarules) / sizeof(kMetarules[0]);
+
+void mf_item_weight(Program* program, int args)
+{
+    Object* obj = static_cast<Object*>(programStackPopPointer(program));
+    programStackPushInteger(program, itemGetWeight(obj));
+}
+
+void mf_get_sfall_arg_at(Program* program, int args)
+{
+    long id = programStackPopInteger(program);
+    if (id >= argCount || id < 0) {
+        debugPrint("%s() - invalid value for argument.", "mf_get_sfall_arg_at");
+        programStackPushInteger(program, 0);
+        return;
+    }
+    ProgramValue value = GetHSArgAt(id);
+    programStackPushValue(program, value);
+}
+
+void mf_win_fill_color(Program* program, int args)
+{
+}
+
+void mf_dialog_message(Program* program, int args)
+{
+    if (GameMode::isInGameMode(GameMode::kDialog) && !GameMode::isInGameMode(GameMode::kDialogReview)) {
+        char* message = programStackPopString(program);
+        gameDialogRenderSupplementaryMessage(message);
+    }
+}
+
+void mf_create_win(Program* program, int args)
+{
+    programStackPushInteger(program, wmCarGasAmount());
+    int flags = 0x000004;
+
+    char* name = programStackPopString(program);
+    int a1 = programStackPopInteger(program);
+    int a2 = programStackPopInteger(program);
+    int a3 = programStackPopInteger(program);
+    int a4 = programStackPopInteger(program);
+
+    if (args > 5)
+        flags = programStackPopInteger(program);
+
+    if (_createWindow(name, a1, a2, a3, a4,
+            (flags & 0x000020) ? 0 : 256, flags)
+        == -1) {
+        debugPrint("%s() - couldn't create window.", "mf_create_win");
+        programStackPushInteger(program, -1);
+    }
+}
+
+void mf_get_current_inven_size(Program* program, int args)
+{
+    Object* critter = static_cast<Object*>(programStackPopPointer(program));
+    int totalSize = containerGetTotalSize(critter);
+
+    if (FID_TYPE(critter->fid) == OBJ_TYPE_CRITTER) {
+        Object* item = critterGetItemRightHand(critter);
+        if (item && !(item->flags & OBJECT_IN_RIGHT_HAND)) {
+            totalSize += itemGetSize(item);
+        }
+
+        Object* itemL = critterGetItemLeftHand(critter);
+        if (itemL && item != itemL && !(itemL->flags & OBJECT_IN_LEFT_HAND)) {
+            totalSize += itemGetSize(itemL);
+        }
+
+        item = critterGetArmor(critter);
+        if (item && !(item->flags & OBJECT_WORN)) {
+            totalSize += itemGetSize(item);
+        }
+    }
+    programStackPushInteger(program, totalSize);
+}
+
+void mf_interface_art_draw(Program* program, int args)
+{
+    int a1 = programStackPopInteger(program);
+    long result = -1;
+    Window *win = GetWindow(a1 & 0xFF);
+    if (win && win != ((Window*)(-1))) {
+        result = 0;
+        //todo InterfaceDrawImage(ctx, win);
+    } else {
+        debugPrint("%s() - the game interface window is not created or invalid window type number.", "mf_interface_art_draw");
+    }
+    programStackPushInteger(program, result);
+}
 
 void mf_car_gas_amount(Program* program, int args)
 {
@@ -113,10 +224,10 @@ void mf_critter_inven_obj2(Program* program, int args)
         programStackPushPointer(program, critterGetArmor(obj));
         break;
     case 1:
-        programStackPushPointer(program, critterGetItem2(obj));
+        programStackPushPointer(program, critterGetItemRightHand(obj));
         break;
     case 2:
-        programStackPushPointer(program, critterGetItem1(obj));
+        programStackPushPointer(program, critterGetItemLeftHand(obj));
         break;
     case -2:
         programStackPushInteger(program, obj->data.inventory.length);
@@ -375,6 +486,7 @@ void mf_inventory_redraw(Program* program, int args)
 void mf_display_stats(Program* program, int args)
 {
      if (GameMode::getCurrentGameMode() & GameMode::kInventory){
+         redrawInventory(1,0);
          redrawInventory(0,0);
      }
 }

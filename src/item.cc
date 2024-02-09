@@ -32,6 +32,7 @@
 #include "stat.h"
 #include "tile.h"
 #include "trait.h"
+#include "sfall_hooks.h"
 
 namespace fallout {
 
@@ -401,8 +402,8 @@ int itemAdd(Object* owner, Object* itemToAdd, int quantity)
 int itemRemove(Object* owner, Object* itemToRemove, int quantity)
 {
     Inventory* inventory = &(owner->data.inventory);
-    Object* item1 = critterGetItem1(owner);
-    Object* item2 = critterGetItem2(owner);
+    Object* item1 = critterGetItemLeftHand(owner);
+    Object* item2 = critterGetItemRightHand(owner);
 
     int index = 0;
     for (; index < inventory->length; index++) {
@@ -512,13 +513,18 @@ static int _item_move_func(Object* source, Object* target, Object* item, int qua
 // 0x47769C
 int itemMove(Object* from, Object* to, Object* item, int quantity)
 {
-    return _item_move_func(from, to, item, quantity, false);
+    //47761d
+    int ret = _item_move_func(from, to, item, quantity, false);
+    RunMoveItemHook(from, to, item, quantity, 0x47761d);
+    return ret;
 }
 
 // 0x4776A4
 int itemMoveForce(Object* from, Object* to, Object* item, int quantity)
 {
-    return _item_move_func(from, to, item, quantity, true);
+    int ret = _item_move_func(from, to, item, quantity, true);
+    RunMoveItemHook(from, to, item, quantity, 0x0);
+    return ret;
 }
 
 // 0x4776AC
@@ -896,12 +902,12 @@ int objectGetCost(Object* obj)
     }
 
     if (FID_TYPE(obj->fid) == OBJ_TYPE_CRITTER) {
-        Object* item2 = critterGetItem2(obj);
+        Object* item2 = critterGetItemRightHand(obj);
         if (item2 != nullptr && (item2->flags & OBJECT_IN_RIGHT_HAND) == 0) {
             cost += itemGetCost(item2);
         }
 
-        Object* item1 = critterGetItem1(obj);
+        Object* item1 = critterGetItemLeftHand(obj);
         if (item1 != nullptr && (item1->flags & OBJECT_IN_LEFT_HAND) == 0) {
             cost += itemGetCost(item1);
         }
@@ -934,14 +940,14 @@ int objectGetInventoryWeight(Object* obj)
     }
 
     if (FID_TYPE(obj->fid) == OBJ_TYPE_CRITTER) {
-        Object* item2 = critterGetItem2(obj);
+        Object* item2 = critterGetItemRightHand(obj);
         if (item2 != nullptr) {
             if ((item2->flags & OBJECT_IN_RIGHT_HAND) == 0) {
                 weight += itemGetWeight(item2);
             }
         }
 
-        Object* item1 = critterGetItem1(obj);
+        Object* item1 = critterGetItemLeftHand(obj);
         if (item1 != nullptr) {
             if ((item1->flags & OBJECT_IN_LEFT_HAND) == 0) {
                 weight += itemGetWeight(item1);
@@ -1006,11 +1012,11 @@ Object* critterGetWeaponForHitMode(Object* critter, int hitMode)
     case HIT_MODE_LEFT_WEAPON_PRIMARY:
     case HIT_MODE_LEFT_WEAPON_SECONDARY:
     case HIT_MODE_LEFT_WEAPON_RELOAD:
-        return critterGetItem1(critter);
+        return critterGetItemLeftHand(critter);
     case HIT_MODE_RIGHT_WEAPON_PRIMARY:
     case HIT_MODE_RIGHT_WEAPON_SECONDARY:
     case HIT_MODE_RIGHT_WEAPON_RELOAD:
-        return critterGetItem2(critter);
+        return critterGetItemRightHand(critter);
     }
 
     return nullptr;
@@ -2477,12 +2483,12 @@ static int stealthBoyTurnOn(Object* object)
 // 0x479998
 static int stealthBoyTurnOff(Object* critter, Object* item)
 {
-    Object* item1 = critterGetItem1(critter);
+    Object* item1 = critterGetItemLeftHand(critter);
     if (item1 != nullptr && item1 != item && item1->pid == PROTO_ID_STEALTH_BOY_II) {
         return -1;
     }
 
-    Object* item2 = critterGetItem2(critter);
+    Object* item2 = critterGetItemRightHand(critter);
     if (item2 != nullptr && item2 != item && item2->pid == PROTO_ID_STEALTH_BOY_II) {
         return -1;
     }
