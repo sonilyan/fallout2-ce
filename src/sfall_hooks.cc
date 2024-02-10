@@ -169,7 +169,7 @@ void RunCombatTurnHook(Object* critter, int dudeBegin)
     args[1] = ProgramValue(critter);
     args[2] = ProgramValue(dudeBegin);
 
-    RunHook(HOOK_KEYPRESS);
+    RunHook(HOOK_COMBATTURN);
     /*
     if (cRet != 0) {
         long retKey = rets[0];
