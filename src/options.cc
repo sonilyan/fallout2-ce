@@ -20,7 +20,6 @@
 #include "text_font.h"
 #include "tile.h"
 #include "window_manager.h"
-#include "display_monitor.h"
 
 namespace fallout {
 
@@ -155,41 +154,6 @@ int showOptions()
             case 503:
                 showQuitConfirmationDialog();
                 break;
-            case 510:
-                if (1) {
-                    soundPlayFile("ib1p1xx1");
-
-                    int rc = lsgSaveGame(LOAD_SAVE_MODE_QUICK);
-                    if (rc == -1) {
-                        debugPrint("\n ** Error calling SaveGame()! **\n");
-                    } else if (rc == 1) {
-                        MessageListItem messageListItem;
-                        // Quick save game successfully saved.
-                        char* msg = getmsg(&gMiscMessageList, &messageListItem, 5);
-                        displayMonitorAddMessage(msg);
-                    }
-                }
-                rc = 0;
-                break;
-            case 511:
-                if (1) {
-                    soundPlayFile("ib1p1xx1");
-
-                    int rc = lsgLoadGame(LOAD_SAVE_MODE_QUICK);
-                    if (rc == -1) {
-                        debugPrint("\n ** Error calling LoadGame()! **\n");
-                    } else if (rc == 1) {
-                        MessageListItem messageListItem;
-                        // Quick load game successfully loaded.
-                        char* msg = getmsg(&gMiscMessageList, &messageListItem, 4);
-                        displayMonitorAddMessage(msg);
-                    }
-                }
-                rc = 0;
-                break;
-            case 512:
-                doPreferences(false);
-                break;
             }
         }
 
@@ -233,7 +197,7 @@ static int optionsWindowInit()
     int cycle = 0;
     for (int index = 0; index < OPTIONS_WINDOW_BUTTONS_COUNT; index++) {
         _opbtns[index] = (unsigned char*)internal_malloc(_optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth() * _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getHeight() + 1024);
-        if (_opbtns[index] == nullptr) {
+        if (_opbtns[index] == NULL) {
             while (--index >= 0) {
                 internal_free(_opbtns[index]);
             }
@@ -252,11 +216,11 @@ static int optionsWindowInit()
         memcpy(_opbtns[index], _optionsFrmImages[cycle + 1].getData(), _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth() * _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getHeight());
     }
 
-    int optionsWindowX = (screenGetWidth() - _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getWidth() * 2) / 2;
+    int optionsWindowX = (screenGetWidth() - _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getWidth()) / 2;
     int optionsWindowY = (screenGetHeight() - _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getHeight()) / 2 - 60;
     gOptionsWindow = windowCreate(optionsWindowX,
         optionsWindowY,
-        _optionsFrmImages[0].getWidth() * 2,
+        _optionsFrmImages[0].getWidth(),
         _optionsFrmImages[0].getHeight(),
         256,
         WINDOW_MODAL | WINDOW_DONT_MOVE_TOP);
@@ -284,12 +248,8 @@ static int optionsWindowInit()
 
     gameMouseSetCursor(MOUSE_CURSOR_ARROW);
 
-    int width = _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getWidth();
-    int height = _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getHeight();
-
     gOptionsWindowBuffer = windowGetBuffer(gOptionsWindow);
-    blitBufferToBuffer(_optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getData(), width, height, width, gOptionsWindowBuffer, width * 2);
-    blitBufferToBuffer(_optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getData(), width, height, width, gOptionsWindowBuffer + width, width * 2);
+    memcpy(gOptionsWindowBuffer, _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getData(), _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getWidth() * _optionsFrmImages[OPTIONS_WINDOW_FRM_BACKGROUND].getHeight());
 
     fontSetCurrent(103);
 
@@ -321,7 +281,7 @@ static int optionsWindowInit()
             index / 2 + 500,
             _opbtns[index],
             _opbtns[index + 1],
-            nullptr,
+            NULL,
             BUTTON_FLAG_TRANSPARENT);
         if (btn != -1) {
             buttonSetCallbacks(btn, _gsound_lrg_butt_press, _gsound_lrg_butt_release);
@@ -329,43 +289,6 @@ static int optionsWindowInit()
 
         buttonY += _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getHeight() + 3;
     }
-
-    buttonY = 17;
-
-    for (int index = 0; index < 6; index += 2) {
-        char text[128];
-
-        const char* msg = getmsg(&gPreferencesMessageList, &gPreferencesMessageListItem, index / 2);
-        strcpy(text, msg);
-
-        int textX = (_optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth() - fontGetStringWidth(text)) / 2;
-        if (textX < 0) {
-            textX = 0;
-        }
-
-        fontDrawText(_opbtns[index] + _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth() * textY + textX, text, _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth(), _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth(), _colorTable[18979]);
-        fontDrawText(_opbtns[index + 1] + _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth() * textY + textX, text, _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth(), _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth(), _colorTable[14723]);
-
-        int btn = buttonCreate(gOptionsWindow,
-            13+width,
-            buttonY,
-            _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getWidth(),
-            _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getHeight(),
-            -1,
-            -1,
-            -1,
-            index / 2 + 510,
-            _opbtns[index],
-            _opbtns[index + 1],
-            nullptr,
-            BUTTON_FLAG_TRANSPARENT);
-        if (btn != -1) {
-            buttonSetCallbacks(btn, _gsound_lrg_butt_press, _gsound_lrg_butt_release);
-        }
-
-        buttonY += _optionsFrmImages[OPTIONS_WINDOW_FRM_BUTTON_ON].getHeight() + 3;
-    }
-
 
     fontSetCurrent(101);
 
